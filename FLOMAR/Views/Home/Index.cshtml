@@ -1,8 +1,238 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    body {
+        background-color: #f5f5f5;
+    }
+
+    .hero {
+        background: linear-gradient(135deg, #111111, #2b2b2b);
+        color: white;
+        padding: 50px;
+        border-radius: 18px;
+        margin-top: 25px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    .hero h1 {
+        font-size: 42px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .hero span {
+        color: #ffc107;
+    }
+
+    .hero p {
+        font-size: 18px;
+        color: #dddddd;
+    }
+
+    .menu-card {
+        background: white;
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        transition: 0.3s;
+        height: 100%;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        border-top: 5px solid #ffc107;
+    }
+
+    .menu-card:hover {
+        transform: translateY(-7px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .menu-card h4 {
+        font-weight: bold;
+        color: #111;
+        margin-top: 15px;
+    }
+
+    .menu-card p {
+        color: #666;
+    }
+
+    .btn-flomar {
+        background-color: #ffc107;
+        color: #111;
+        font-weight: bold;
+        border: none;
+        padding: 10px 22px;
+        border-radius: 8px;
+    }
+
+    .btn-flomar:hover {
+        background-color: #e0a800;
+        color: #000;
+    }
+
+    .stats-card {
+        background: #111;
+        color: white;
+        border-radius: 15px;
+        padding: 20px;
+    }
+
+    .stats-card h3 {
+        color: #ffc107;
+        font-weight: bold;
+    }
+
+    .section-title {
+        font-weight: bold;
+        margin-top: 40px;
+        margin-bottom: 25px;
+        color: #222;
+    }
+</style>
+
+<div class="container">
+
+    <!-- PORTADA -->
+    <div class="hero">
+        <h1>Sistema Web <span>FLOMAR</span></h1>
+
+        <p>
+            Gestión de ventas, inventario y repuestos automotrices.
+        </p>
+
+        <a asp-controller="Ventas"
+           asp-action="Index"
+           class="btn btn-flomar mt-3">
+            Nueva Venta
+        </a>
+    </div>
+
+
+    <!-- RESUMEN -->
+    <h2 class="section-title">Resumen del sistema</h2>
+
+    <div class="row g-4">
+
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h6>Ventas del día</h6>
+                <h3>0</h3>
+                <small>Ventas registradas</small>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h6>Productos</h6>
+                <h3>0</h3>
+                <small>Productos registrados</small>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h6>Stock bajo</h6>
+                <h3>0</h3>
+                <small>Productos por reponer</small>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="stats-card">
+                <h6>Ventas Bs.</h6>
+                <h3>0.00</h3>
+                <small>Total vendido hoy</small>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- MENU PRINCIPAL -->
+    <h2 class="section-title">Accesos rápidos</h2>
+
+    <div class="row g-4 mb-5">
+
+        <!-- VENTAS -->
+        <div class="col-md-3">
+            <div class="menu-card">
+
+                <h4>Ventas</h4>
+
+                <p>
+                    Registrar ventas y buscar repuestos rápidamente.
+                </p>
+
+                <a asp-controller="Ventas"
+                   asp-action="Index"
+                   class="btn btn-flomar">
+                    Ingresar
+                </a>
+
+            </div>
+        </div>
+
+
+        <!-- PRODUCTOS -->
+        <div class="col-md-3">
+            <div class="menu-card">
+
+                <h4>Productos</h4>
+
+                <p>
+                    Registrar y administrar los repuestos disponibles.
+                </p>
+
+                <a asp-controller="Productos"
+                   asp-action="Index"
+                   class="btn btn-flomar">
+                    Ver productos
+                </a>
+
+            </div>
+        </div>
+
+
+        <!-- INVENTARIO -->
+        <div class="col-md-3">
+            <div class="menu-card">
+
+                <h4>Inventario</h4>
+
+                <p>
+                    Controlar stock, ingresos y productos por llegar.
+                </p>
+
+                <a asp-controller="Inventario"
+                   asp-action="Index"
+                   class="btn btn-flomar">
+                    Ver inventario
+                </a>
+
+            </div>
+        </div>
+
+
+        <!-- REPORTES -->
+        <div class="col-md-3">
+            <div class="menu-card">
+
+                <h4>Reportes</h4>
+
+                <p>
+                    Consultar ventas, inventario y rendimiento.
+                </p>
+
+                <a asp-controller="Reportes"
+                   asp-action="Index"
+                   class="btn btn-flomar">
+                    Ver reportes
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+
 </div>
