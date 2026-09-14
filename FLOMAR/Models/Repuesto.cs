@@ -42,4 +42,6 @@ namespace FLOMAR.Models
 
         public bool Activo { get; set; } = true;
     }
+
+
 }
