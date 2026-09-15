@@ -4,35 +4,223 @@
     ViewData["Title"] = "Editar Repuesto";
 }
 
-<h1>Editar Repuesto</h1>
+<style>
+    .editar-page {
+        min-height: 100vh;
+        background: #181818;
+        padding: 35px;
+        color: white;
+    }
 
-<form asp-controller="Repuestos"
-      asp-action="Edit"
-      method="post">
+    .editar-container {
+        max-width: 750px;
+        margin: 0 auto;
+    }
 
-    <input type="hidden" asp-for="Id" />
+    .editar-header {
+        margin-bottom: 25px;
+    }
 
-    <div>
-        <label asp-for="Codigo">Código</label>
-        <input asp-for="Codigo" />
-        <span asp-validation-for="Codigo"></span>
+        .editar-header h1 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+            .editar-header h1 span {
+                color: #e0b72f;
+            }
+
+        .editar-header p {
+            color: #aaa;
+            margin: 0;
+        }
+
+    .editar-card {
+        background: #202020;
+        border: 1px solid #3b3b3b;
+        border-radius: 10px;
+        padding: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #eee;
+        }
+
+    .form-control-flomar {
+        width: 100%;
+        background: #181818;
+        color: white;
+        border: 1px solid #555;
+        border-radius: 6px;
+        padding: 12px 14px;
+        outline: none;
+        box-sizing: border-box;
+    }
+
+        .form-control-flomar:focus {
+            border-color: #e0b72f;
+        }
+
+        .form-control-flomar::placeholder {
+            color: #777;
+        }
+
+    .validation-message {
+        display: block;
+        margin-top: 6px;
+        color: #ff6b6b;
+        font-size: 14px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    .btn-guardar {
+        background: #e0b72f;
+        color: #111;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .btn-guardar:hover {
+            background: #f0c83c;
+        }
+
+    .btn-cancelar {
+        background: transparent;
+        color: #ddd;
+        border: 1px solid #555;
+        padding: 11px 22px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .btn-cancelar:hover {
+            border-color: #e0b72f;
+            color: #e0b72f;
+        }
+
+    .id-info {
+        background: #292929;
+        border-left: 4px solid #e0b72f;
+        padding: 12px 15px;
+        margin-bottom: 25px;
+        border-radius: 4px;
+        color: #bbb;
+    }
+
+        .id-info strong {
+            color: #e0b72f;
+        }
+</style>
+
+
+<div class="editar-page">
+
+    <div class="editar-container">
+
+        <div class="editar-header">
+
+            <h1>
+                Editar <span>Repuesto</span>
+            </h1>
+
+            <p>
+                Modifica la información del repuesto seleccionado.
+            </p>
+
+        </div>
+
+
+        <div class="editar-card">
+
+            <div class="id-info">
+                Repuesto seleccionado:
+                <strong>#@Model.Id</strong>
+            </div>
+
+
+            <form asp-controller="Repuestos"
+                  asp-action="Edit"
+                  method="post">
+
+                <!-- ID oculto -->
+                <input type="hidden"
+                       asp-for="Id" />
+
+
+                <!-- CÓDIGO -->
+                <div class="form-group">
+
+                    <label asp-for="Codigo">
+                        Código del repuesto
+                    </label>
+
+                    <input asp-for="Codigo"
+                           class="form-control-flomar"
+                           placeholder="Ej: REP-001" />
+
+                    <span asp-validation-for="Codigo"
+                          class="validation-message">
+                    </span>
+
+                </div>
+
+
+                <!-- NOMBRE -->
+                <div class="form-group">
+
+                    <label asp-for="Nombre">
+                        Nombre del repuesto
+                    </label>
+
+                    <input asp-for="Nombre"
+                           class="form-control-flomar"
+                           placeholder="Ej: Pastilla de freno" />
+
+                    <span asp-validation-for="Nombre"
+                          class="validation-message">
+                    </span>
+
+                </div>
+
+
+                <!-- BOTONES -->
+                <div class="form-actions">
+
+                    <button type="submit"
+                            class="btn-guardar">
+                        Guardar cambios
+                    </button>
+
+
+                    <a asp-controller="Repuestos"
+                       asp-action="Index"
+                       class="btn-cancelar">
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
     </div>
 
-    <div>
-        <label asp-for="Nombre">Nombre</label>
-        <input asp-for="Nombre" />
-        <span asp-validation-for="Nombre"></span>
-    </div>
-
-    <br />
-
-    <button type="submit">
-        Guardar cambios
-    </button>
-
-    <a asp-controller="Repuestos"
-       asp-action="Index">
-        Cancelar
-    </a>
-
-</form>
+</div>

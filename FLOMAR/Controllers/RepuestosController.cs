@@ -7,22 +7,24 @@ namespace FLOMAR.Controllers
 {
     public class RepuestosController : Controller
     {
-        // Lista temporal.
-        // Más adelante será reemplazada por la base de datos MySQL.
+        // LISTA TEMPORAL
+        // Después será reemplazada por MySQL
         private static List<Repuesto> repuestos = new List<Repuesto>
         {
             new Repuesto
             {
                 Id = 1,
                 Codigo = "REP-001",
-                Nombre = "Pastilla de freno"
+                Nombre = "Pastilla de freno",
+                Activo = true
             },
 
             new Repuesto
             {
                 Id = 2,
                 Codigo = "REP-002",
-                Nombre = "Filtro de aceite"
+                Nombre = "Filtro de aceite",
+                Activo = true
             }
         };
 
@@ -34,7 +36,7 @@ namespace FLOMAR.Controllers
         }
 
 
-        // MOSTRAR FORMULARIO CREAR
+        // MOSTRAR CREAR
         [HttpGet]
         public IActionResult Create()
         {
@@ -58,6 +60,9 @@ namespace FLOMAR.Controllers
                     repuesto.Id = 1;
                 }
 
+                // Todo repuesto nuevo empieza activo
+                repuesto.Activo = true;
+
                 repuestos.Add(repuesto);
 
                 return RedirectToAction(nameof(Index));
@@ -67,7 +72,7 @@ namespace FLOMAR.Controllers
         }
 
 
-        // MOSTRAR FORMULARIO EDITAR
+        // MOSTRAR EDITAR
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -107,17 +112,21 @@ namespace FLOMAR.Controllers
         }
 
 
-        // DESACTIVAR
+        // CAMBIAR ESTADO
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Desactivar(int id)
+        public IActionResult CambiarEstado(int id)
         {
             var repuesto = repuestos.FirstOrDefault(r => r.Id == id);
 
-            if (repuesto != null)
+            if (repuesto == null)
             {
-                repuestos.Remove(repuesto);
+                return NotFound();
             }
+
+            // Si está activo → lo desactiva
+            // Si está desactivado → lo activa
+            repuesto.Activo = !repuesto.Activo;
 
             return RedirectToAction(nameof(Index));
         }

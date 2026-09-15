@@ -4,59 +4,219 @@
     ViewData["Title"] = "Repuestos";
 }
 
-<h1>Listado de Repuestos</h1>
+<style>
+    .repuestos-page {
+        background: #181818;
+        min-height: 100vh;
+        padding: 30px;
+        color: white;
+    }
 
-<p>
-    <a asp-controller="Repuestos"
-       asp-action="Create">
-        Nuevo Repuesto
-    </a>
-</p>
+    .repuestos-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
 
-<table>
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Código</th>
-            <th>Nombre</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-
-    <tbody>
-
-        @foreach (var repuesto in Model)
-        {
-            <tr>
-                <td>@repuesto.Id</td>
-
-                <td>@repuesto.Codigo</td>
-
-                <td>@repuesto.Nombre</td>
-
-                <td>
-
-                    <a asp-controller="Repuestos"
-                       asp-action="Edit"
-                       asp-route-id="@repuesto.Id">
-                        Editar
-                    </a>
-
-                    <form asp-controller="Repuestos"
-                          asp-action="Desactivar"
-                          asp-route-id="@repuesto.Id"
-                          method="post"
-                          style="display:inline;">
-
-                        <button type="submit">
-                            Desactivar
-                        </button>
-
-                    </form>
-
-                </td>
-            </tr>
+        .repuestos-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
         }
 
-    </tbody>
-</table>
+            .repuestos-header h1 span {
+                color: #e0b72f;
+            }
+
+    .btn-nuevo {
+        background: #e0b72f;
+        color: #111;
+        padding: 11px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .repuestos-card {
+        background: #202020;
+        border: 1px solid #3b3b3b;
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .repuestos-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .repuestos-table th {
+            color: #e0b72f;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 1px solid #444;
+        }
+
+        .repuestos-table td {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+        }
+
+        .repuestos-table tr:hover {
+            background: #292929;
+        }
+
+    .estado-activo {
+        color: #4bd66d;
+        font-weight: bold;
+    }
+
+    .estado-inactivo {
+        color: #ff6565;
+        font-weight: bold;
+    }
+
+    .fila-inactiva {
+        opacity: 0.55;
+    }
+
+    .btn-editar {
+        display: inline-block;
+        background: #e0b72f;
+        color: #111;
+        padding: 7px 14px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        margin-right: 6px;
+    }
+
+    .btn-desactivar {
+        background: transparent;
+        color: #ff6565;
+        border: 1px solid #ff6565;
+        padding: 6px 12px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .btn-activar {
+        background: transparent;
+        color: #4bd66d;
+        border: 1px solid #4bd66d;
+        padding: 6px 12px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+</style>
+
+
+<div class="repuestos-page">
+
+    <div class="repuestos-header">
+
+        <h1>
+            Gestión de <span>Repuestos</span>
+        </h1>
+
+        <a asp-controller="Repuestos"
+           asp-action="Create"
+           class="btn-nuevo">
+            + Nuevo Repuesto
+        </a>
+
+    </div>
+
+
+    <div class="repuestos-card">
+
+        <table class="repuestos-table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var repuesto in Model)
+                {
+                    <tr class="@(!repuesto.Activo ? "fila-inactiva" : "")">
+
+                        <td>@repuesto.Id</td>
+
+                        <td>@repuesto.Codigo</td>
+
+                        <td>
+                            <strong>@repuesto.Nombre</strong>
+                        </td>
+
+                        <td>
+
+                            @if (repuesto.Activo)
+                            {
+                                <span class="estado-activo">
+                                    ● Activo
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="estado-inactivo">
+                                    ● Desactivado
+                                </span>
+                            }
+
+                        </td>
+
+                        <td>
+
+                            <a asp-controller="Repuestos"
+                               asp-action="Edit"
+                               asp-route-id="@repuesto.Id"
+                               class="btn-editar">
+                                Editar
+                            </a>
+
+
+                            <form asp-controller="Repuestos"
+                                  asp-action="CambiarEstado"
+                                  asp-route-id="@repuesto.Id"
+                                  method="post"
+                                  style="display:inline;">
+
+                                @if (repuesto.Activo)
+                                {
+                                    <button type="submit"
+                                            class="btn-desactivar">
+                                        Desactivar
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="submit"
+                                            class="btn-activar">
+                                        Activar
+                                    </button>
+                                }
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>

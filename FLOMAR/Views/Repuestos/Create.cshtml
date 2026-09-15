@@ -4,33 +4,222 @@
     ViewData["Title"] = "Crear Repuesto";
 }
 
-<h1>Crear Repuesto</h1>
+<style>
+    .crear-page {
+        min-height: 100vh;
+        background: #181818;
+        padding: 35px;
+        color: white;
+    }
 
-<form asp-controller="Repuestos"
-      asp-action="Create"
-      method="post">
+    .crear-container {
+        max-width: 750px;
+        margin: 0 auto;
+    }
 
-    <div>
-        <label asp-for="Codigo">Código</label>
-        <input asp-for="Codigo" />
-        <span asp-validation-for="Codigo"></span>
+    .crear-header {
+        margin-bottom: 25px;
+    }
+
+        .crear-header h1 {
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .crear-header h1 span {
+                color: #e0b72f;
+            }
+
+        .crear-header p {
+            margin: 0;
+            color: #aaa;
+        }
+
+    .crear-card {
+        background: #202020;
+        border: 1px solid #3b3b3b;
+        border-radius: 10px;
+        padding: 30px;
+    }
+
+    .form-group {
+        margin-bottom: 22px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #eee;
+            font-weight: 600;
+        }
+
+    .form-control-flomar {
+        width: 100%;
+        background: #181818;
+        color: white;
+        border: 1px solid #555;
+        border-radius: 6px;
+        padding: 12px 14px;
+        box-sizing: border-box;
+        outline: none;
+        font-size: 15px;
+    }
+
+        .form-control-flomar:focus {
+            border-color: #e0b72f;
+        }
+
+        .form-control-flomar::placeholder {
+            color: #777;
+        }
+
+    .validation-message {
+        display: block;
+        margin-top: 6px;
+        color: #ff6565;
+        font-size: 14px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    .btn-guardar {
+        background: #e0b72f;
+        color: #111;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .btn-guardar:hover {
+            background: #f0c83c;
+        }
+
+    .btn-cancelar {
+        background: transparent;
+        color: #ddd;
+        border: 1px solid #555;
+        padding: 11px 25px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+        .btn-cancelar:hover {
+            border-color: #e0b72f;
+            color: #e0b72f;
+        }
+
+    .crear-info {
+        background: #292929;
+        border-left: 4px solid #e0b72f;
+        padding: 13px 15px;
+        border-radius: 4px;
+        margin-bottom: 25px;
+        color: #bbb;
+    }
+
+        .crear-info strong {
+            color: #e0b72f;
+        }
+</style>
+
+
+<div class="crear-page">
+
+    <div class="crear-container">
+
+        <!-- TÍTULO -->
+        <div class="crear-header">
+
+            <h1>
+                Nuevo <span>Repuesto</span>
+            </h1>
+
+            <p>
+                Registra un nuevo repuesto en el sistema FLOMAR.
+            </p>
+
+        </div>
+
+
+        <!-- TARJETA -->
+        <div class="crear-card">
+
+            <div class="crear-info">
+                Complete la información del
+                <strong>nuevo repuesto</strong>.
+            </div>
+
+
+            <form asp-controller="Repuestos"
+                  asp-action="Create"
+                  method="post">
+
+
+                <!-- CÓDIGO -->
+                <div class="form-group">
+
+                    <label asp-for="Codigo">
+                        Código del repuesto
+                    </label>
+
+                    <input asp-for="Codigo"
+                           class="form-control-flomar"
+                           placeholder="Ej: REP-003" />
+
+                    <span asp-validation-for="Codigo"
+                          class="validation-message">
+                    </span>
+
+                </div>
+
+
+                <!-- NOMBRE -->
+                <div class="form-group">
+
+                    <label asp-for="Nombre">
+                        Nombre del repuesto
+                    </label>
+
+                    <input asp-for="Nombre"
+                           class="form-control-flomar"
+                           placeholder="Ej: Amortiguador delantero" />
+
+                    <span asp-validation-for="Nombre"
+                          class="validation-message">
+                    </span>
+
+                </div>
+
+
+                <!-- BOTONES -->
+                <div class="form-actions">
+
+                    <button type="submit"
+                            class="btn-guardar">
+                        + Guardar Repuesto
+                    </button>
+
+
+                    <a asp-controller="Repuestos"
+                       asp-action="Index"
+                       class="btn-cancelar">
+                        Cancelar
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
     </div>
 
-    <div>
-        <label asp-for="Nombre">Nombre</label>
-        <input asp-for="Nombre" />
-        <span asp-validation-for="Nombre"></span>
-    </div>
-
-    <br />
-
-    <button type="submit">
-        Guardar
-    </button>
-
-    <a asp-controller="Repuestos"
-       asp-action="Index">
-        Cancelar
-    </a>
-
-</form>
+</div>
