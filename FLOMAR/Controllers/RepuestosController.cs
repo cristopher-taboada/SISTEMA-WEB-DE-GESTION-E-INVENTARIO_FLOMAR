@@ -26,5 +26,24 @@ namespace FLOMAR.Controllers
 
             return View(repuestos);
         }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Repuesto repuesto)
+        {
+            if (ModelState.IsValid)
+            {
+
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(repuesto);
+        }
     }
 }

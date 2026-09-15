@@ -1,0 +1,31 @@
+﻿@model FLOMAR.Models.Repuesto
+
+@{
+    ViewData["Title"] = "Crear Repuesto";
+}
+
+<h1>Crear Repuesto</h1>
+
+<form asp-controller="Repuestos" asp-action="Create" method="post">
+
+    <div>
+        <label asp-for="Codigo">Código</label>
+        <input asp-for="Codigo" />
+        <span asp-validation-for="Codigo"></span>
+    </div>
+
+    <div>
+        <label asp-for="Nombre">Nombre</label>
+        <input asp-for="Nombre" />
+        <span asp-validation-for="Nombre"></span>
+    </div>
+
+    <br />
+
+    <button type="submit">Guardar</button>
+
+    <a asp-controller="Repuestos" asp-action="Index">
+        Cancelar
+    </a>
+
+</form>
