@@ -13,7 +13,7 @@
     }
 
     .editar-container {
-        max-width: 750px;
+        max-width: 850px;
         margin: 0 auto;
     }
 
@@ -22,13 +22,13 @@
     }
 
         .editar-header h1 {
+            margin: 0 0 8px 0;
             font-size: 28px;
             font-weight: bold;
-            margin-bottom: 8px;
         }
 
             .editar-header h1 span {
-                color: #e0b72f;
+                color: #d4af37;
             }
 
         .editar-header p {
@@ -43,14 +43,33 @@
         padding: 30px;
     }
 
+    .editar-info {
+        background: #292929;
+        border-left: 4px solid #d4af37;
+        padding: 13px 15px;
+        border-radius: 4px;
+        margin-bottom: 25px;
+        color: #bbb;
+    }
+
+        .editar-info strong {
+            color: #d4af37;
+        }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
     .form-group {
-        margin-bottom: 22px;
+        margin-bottom: 20px;
     }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 600;
+            font-weight: bold;
             color: #eee;
         }
 
@@ -61,72 +80,61 @@
         border: 1px solid #555;
         border-radius: 6px;
         padding: 12px 14px;
-        outline: none;
         box-sizing: border-box;
+        outline: none;
     }
 
         .form-control-flomar:focus {
-            border-color: #e0b72f;
-        }
-
-        .form-control-flomar::placeholder {
-            color: #777;
+            border-color: #d4af37;
         }
 
     .validation-message {
         display: block;
-        margin-top: 6px;
-        color: #ff6b6b;
-        font-size: 14px;
+        color: #ff6565;
+        font-size: 13px;
+        margin-top: 5px;
     }
 
     .form-actions {
         display: flex;
         gap: 10px;
-        margin-top: 30px;
+        margin-top: 15px;
     }
 
     .btn-guardar {
-        background: #e0b72f;
+        background: #d4af37;
         color: #111;
         border: none;
-        padding: 12px 22px;
+        padding: 12px 24px;
         border-radius: 6px;
         font-weight: bold;
         cursor: pointer;
     }
 
         .btn-guardar:hover {
-            background: #f0c83c;
+            background: #e5c34b;
         }
 
     .btn-cancelar {
         background: transparent;
         color: #ddd;
         border: 1px solid #555;
-        padding: 11px 22px;
+        padding: 11px 24px;
         border-radius: 6px;
         text-decoration: none;
-        font-weight: 600;
+        font-weight: bold;
     }
 
         .btn-cancelar:hover {
-            border-color: #e0b72f;
-            color: #e0b72f;
+            color: #d4af37;
+            border-color: #d4af37;
         }
 
-    .id-info {
-        background: #292929;
-        border-left: 4px solid #e0b72f;
-        padding: 12px 15px;
-        margin-bottom: 25px;
-        border-radius: 4px;
-        color: #bbb;
+    @@media (max-width: 700px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
     }
-
-        .id-info strong {
-            color: #e0b72f;
-        }
 </style>
 
 
@@ -149,9 +157,9 @@
 
         <div class="editar-card">
 
-            <div class="id-info">
-                Repuesto seleccionado:
-                <strong>#@Model.Id</strong>
+            <div class="editar-info">
+                Editando repuesto:
+                <strong>#@Model.Id - @Model.Codigo</strong>
             </div>
 
 
@@ -159,43 +167,145 @@
                   asp-action="Edit"
                   method="post">
 
-                <!-- ID oculto -->
+                <!-- ID OCULTO -->
                 <input type="hidden"
                        asp-for="Id" />
 
 
-                <!-- CÓDIGO -->
+                <!-- CÓDIGO Y NOMBRE -->
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label asp-for="Codigo">
+                            Código
+                        </label>
+
+                        <input asp-for="Codigo"
+                               class="form-control-flomar" />
+
+                        <span asp-validation-for="Codigo"
+                              class="validation-message">
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label asp-for="Nombre">
+                            Nombre del repuesto
+                        </label>
+
+                        <input asp-for="Nombre"
+                               class="form-control-flomar" />
+
+                        <span asp-validation-for="Nombre"
+                              class="validation-message">
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CATEGORÍA -->
                 <div class="form-group">
 
-                    <label asp-for="Codigo">
-                        Código del repuesto
+                    <label asp-for="Categoria">
+                        Categoría
                     </label>
 
-                    <input asp-for="Codigo"
-                           class="form-control-flomar"
-                           placeholder="Ej: REP-001" />
+                    <input asp-for="Categoria"
+                           class="form-control-flomar" />
 
-                    <span asp-validation-for="Codigo"
+                    <span asp-validation-for="Categoria"
                           class="validation-message">
                     </span>
 
                 </div>
 
 
-                <!-- NOMBRE -->
-                <div class="form-group">
+                <!-- COSTO Y PRECIO -->
+                <div class="form-row">
 
-                    <label asp-for="Nombre">
-                        Nombre del repuesto
-                    </label>
+                    <div class="form-group">
 
-                    <input asp-for="Nombre"
-                           class="form-control-flomar"
-                           placeholder="Ej: Pastilla de freno" />
+                        <label asp-for="Costo">
+                            Costo / Precio de compra (Bs)
+                        </label>
 
-                    <span asp-validation-for="Nombre"
-                          class="validation-message">
-                    </span>
+                        <input asp-for="Costo"
+                               type="number"
+                               step="0.01"
+                               min="0"
+                               class="form-control-flomar" />
+
+                        <span asp-validation-for="Costo"
+                              class="validation-message">
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label asp-for="PrecioVenta">
+                            Precio de venta (Bs)
+                        </label>
+
+                        <input asp-for="PrecioVenta"
+                               type="number"
+                               step="0.01"
+                               min="0"
+                               class="form-control-flomar" />
+
+                        <span asp-validation-for="PrecioVenta"
+                              class="validation-message">
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- STOCK -->
+                <div class="form-row">
+
+                    <div class="form-group">
+
+                        <label asp-for="Stock">
+                            Stock Actual
+                        </label>
+
+                        <input asp-for="Stock"
+                               type="number"
+                               min="0"
+                               class="form-control-flomar" />
+
+                        <span asp-validation-for="Stock"
+                              class="validation-message">
+                        </span>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label asp-for="StockMinimo">
+                            Stock Mínimo
+                        </label>
+
+                        <input asp-for="StockMinimo"
+                               type="number"
+                               min="0"
+                               class="form-control-flomar" />
+
+                        <span asp-validation-for="StockMinimo"
+                              class="validation-message">
+                        </span>
+
+                    </div>
 
                 </div>
 
