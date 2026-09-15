@@ -5,6 +5,8 @@ namespace FLOMAR.Controllers
 {
     public class RepuestosController : Controller
     {
+        // LISTA TEMPORAL
+        // Después será reemplazada por MySQL
         private static List<Repuesto> repuestos = new List<Repuesto>
         {
             new Repuesto
@@ -23,11 +25,14 @@ namespace FLOMAR.Controllers
         };
 
 
+        // LISTAR REPUESTOS
         public IActionResult Index()
         {
             return View(repuestos);
         }
 
+
+        // MOSTRAR FORMULARIO PARA CREAR
         [HttpGet]
         public IActionResult Create()
         {
@@ -35,13 +40,13 @@ namespace FLOMAR.Controllers
         }
 
 
+        // GUARDAR NUEVO REPUESTO
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Repuesto repuesto)
         {
             if (ModelState.IsValid)
             {
-
                 if (repuestos.Count > 0)
                 {
                     repuesto.Id = repuestos.Max(r => r.Id) + 1;
@@ -60,6 +65,7 @@ namespace FLOMAR.Controllers
         }
 
 
+        // MOSTRAR FORMULARIO PARA EDITAR
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -72,6 +78,9 @@ namespace FLOMAR.Controllers
 
             return View(repuesto);
         }
+
+
+        // GUARDAR CAMBIOS DEL REPUESTO
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Repuesto repuesto)
@@ -95,6 +104,8 @@ namespace FLOMAR.Controllers
             return View(repuesto);
         }
 
+
+        // DESACTIVAR REPUESTO
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Desactivar(int id)
