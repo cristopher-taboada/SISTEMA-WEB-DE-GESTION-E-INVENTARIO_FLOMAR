@@ -1,7 +1,28 @@
-﻿@{
+﻿@model IEnumerable<FLOMAR.Models.Repuesto>
+
+@{
     ViewData["Title"] = "Repuestos";
 }
 
 <h1>Listado de Repuestos</h1>
 
-<p>No hay repuestos registrados</p>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Código</th>
+            <th>Nombre</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var repuesto in Model)
+        {
+            <tr>
+                <td>@repuesto.Id</td>
+                <td>@repuesto.Codigo</td>
+                <td>@repuesto.Nombre</td>
+            </tr>
+        }
+    </tbody>
+</table>
