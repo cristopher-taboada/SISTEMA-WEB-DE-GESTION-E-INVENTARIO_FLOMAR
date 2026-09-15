@@ -1,15 +1,31 @@
+<<<<<<< Updated upstream
 ﻿@{
+=======
+﻿
+@model FLOMAR.Models.LoginViewModel
+
+@{
+>>>>>>> Stashed changes
     ViewData["Title"] = "Iniciar sesión";
 }
 
 <h1>Iniciar sesión</h1>
 
+<<<<<<< Updated upstream
 <form method="post">
+=======
+<form asp-controller="Login" asp-action="Index" method="post">
+>>>>>>> Stashed changes
 
     <div>
         <label>Usuario</label>
         <br />
+<<<<<<< Updated upstream
         <input type="text" name="usuario" />
+=======
+        <input asp-for="Usuario" />
+        <span asp-validation-for="Usuario"></span>
+>>>>>>> Stashed changes
     </div>
 
     <br />
@@ -17,11 +33,21 @@
     <div>
         <label>Contraseña</label>
         <br />
+<<<<<<< Updated upstream
         <input type="password" name="contrasena" />
+=======
+        <input asp-for="Contrasena" type="password" />
+        <span asp-validation-for="Contrasena"></span>
+>>>>>>> Stashed changes
     </div>
 
     <br />
 
     <button type="submit">Ingresar</button>
 
+<<<<<<< Updated upstream
 </form>
+=======
+</form>
+
+>>>>>>> Stashed changes
