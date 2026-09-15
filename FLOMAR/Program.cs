@@ -1,7 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using FLOMAR.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<FlomarContext>(options =>
+    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
