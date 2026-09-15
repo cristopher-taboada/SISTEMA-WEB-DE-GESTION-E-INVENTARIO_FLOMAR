@@ -6,23 +6,57 @@
 
 <h1>Listado de Repuestos</h1>
 
+<p>
+    <a asp-controller="Repuestos"
+       asp-action="Create">
+        Nuevo Repuesto
+    </a>
+</p>
+
 <table>
     <thead>
         <tr>
             <th>ID</th>
             <th>Código</th>
             <th>Nombre</th>
+            <th>Acciones</th>
         </tr>
     </thead>
 
     <tbody>
+
         @foreach (var repuesto in Model)
         {
             <tr>
                 <td>@repuesto.Id</td>
+
                 <td>@repuesto.Codigo</td>
+
                 <td>@repuesto.Nombre</td>
+
+                <td>
+
+                    <a asp-controller="Repuestos"
+                       asp-action="Edit"
+                       asp-route-id="@repuesto.Id">
+                        Editar
+                    </a>
+
+                    <form asp-controller="Repuestos"
+                          asp-action="Desactivar"
+                          asp-route-id="@repuesto.Id"
+                          method="post"
+                          style="display:inline;">
+
+                        <button type="submit">
+                            Desactivar
+                        </button>
+
+                    </form>
+
+                </td>
             </tr>
         }
+
     </tbody>
 </table>
