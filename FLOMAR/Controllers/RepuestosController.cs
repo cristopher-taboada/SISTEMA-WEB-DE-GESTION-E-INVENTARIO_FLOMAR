@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using FLOMAR.Models;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FLOMAR.Controllers
 {
     public class RepuestosController : Controller
     {
-        // LISTA TEMPORAL
-        // Después será reemplazada por MySQL
+        // Lista temporal.
+        // Más adelante será reemplazada por la base de datos MySQL.
         private static List<Repuesto> repuestos = new List<Repuesto>
         {
             new Repuesto
@@ -25,14 +27,14 @@ namespace FLOMAR.Controllers
         };
 
 
-        // LISTAR REPUESTOS
+        // LISTAR
         public IActionResult Index()
         {
             return View(repuestos);
         }
 
 
-        // MOSTRAR FORMULARIO PARA CREAR
+        // MOSTRAR FORMULARIO CREAR
         [HttpGet]
         public IActionResult Create()
         {
@@ -65,7 +67,7 @@ namespace FLOMAR.Controllers
         }
 
 
-        // MOSTRAR FORMULARIO PARA EDITAR
+        // MOSTRAR FORMULARIO EDITAR
         [HttpGet]
         public IActionResult Edit(int id)
         {
@@ -80,7 +82,7 @@ namespace FLOMAR.Controllers
         }
 
 
-        // GUARDAR CAMBIOS DEL REPUESTO
+        // GUARDAR CAMBIOS
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Repuesto repuesto)
@@ -105,7 +107,7 @@ namespace FLOMAR.Controllers
         }
 
 
-        // DESACTIVAR REPUESTO
+        // DESACTIVAR
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Desactivar(int id)
