@@ -22,6 +22,36 @@
         <span asp-validation-for="Nombre"></span>
     </div>
 
+    <div>
+        <label asp-for="Id_categoria">Categoría</label>
+        <input asp-for="Id_categoria" type="number" />
+        <span asp-validation-for="Id_categoria"></span>
+    </div>
+
+    <div>
+        <label asp-for="costo_adquisicion">Costo de adquisición</label>
+        <input asp-for="costo_adquisicion" type="number" step="0.01" />
+        <span asp-validation-for="costo_adquisicion"></span>
+    </div>
+
+    <div>
+        <label asp-for="precio_venta">Precio de venta</label>
+        <input asp-for="precio_venta" type="number" step="0.01" />
+        <span asp-validation-for="precio_venta"></span>
+    </div>
+
+    <div>
+        <label asp-for="stock_actual">Stock actual</label>
+        <input asp-for="stock_actual" type="number" />
+        <span asp-validation-for="stock_actual"></span>
+    </div>
+
+    <div>
+        <label asp-for="stock_minimo">Stock mínimo</label>
+        <input asp-for="stock_minimo" type="number" />
+        <span asp-validation-for="stock_minimo"></span>
+    </div>
+
     <br />
 
     <button type="submit">
