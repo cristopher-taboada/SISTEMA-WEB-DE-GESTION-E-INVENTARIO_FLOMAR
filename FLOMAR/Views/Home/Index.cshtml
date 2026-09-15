@@ -1,8 +1,33 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Inicio";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<h1>FLOMAR</h1>
+
+<h2>Sistema de Gestión de Ventas e Inventario</h2>
+
+<p>Bienvenido al sistema FLOMAR.</p>
+
+<h3>Menú principal</h3>
+
+<a asp-controller="Repuestos" asp-action="Index">
+    Gestión de Repuestos
+</a>
+
+<br>
+
+<a asp-controller="Ventas" asp-action="Index">
+    Ventas
+</a>
+
+<br>
+
+<a asp-controller="Inventario" asp-action="Index">
+    Inventario
+</a>
+
+<br>
+
+<a asp-controller="Reportes" asp-action="Index">
+    Reportes
+</a>
