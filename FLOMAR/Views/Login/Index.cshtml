@@ -1,8 +1,7 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Iniciar sesión";
+    Layout = null; 
 }
-
 <style>
     .login-pagina {
         position: fixed;
@@ -37,7 +36,18 @@
     .titulo {
         text-align: center;
         color: #d4af37;
-        margin-bottom: 30px;
+        margin-bottom: 20px; 
+    }
+
+    /* aqui estoy agregando un estilo para el mensaje de error osea cunado no entre le de error creo que es bueno visualmente  */
+    .error-mensaje {
+        background-color: #ff4c4c;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 20px;
+        font-weight: bold;
     }
 
     .campo {
@@ -85,36 +95,42 @@
 </style>
 
 <div class="login-pagina">
-
     <div class="login-card">
-
         <div class="logo">
             FLOMAR
         </div>
-
         <h2 class="titulo">
             Iniciar sesión
         </h2>
 
-        <form>
+        
+        @if (ViewBag.Error != null)
+        {
+            <div class="error-mensaje">
+                @ViewBag.Error
+            </div>
+        }
+
+        
+        <form asp-controller="Login" asp-action="Entrar" method="post">
 
             <div class="campo">
                 <label>Usuario</label>
-                <input type="text" placeholder="Ingrese su usuario">
+                
+                <input type="text" name="usuario_input" placeholder="Ingrese su usuario" required>
             </div>
 
             <div class="campo">
                 <label>Contraseña</label>
-                <input type="password" placeholder="Ingrese su contraseña">
+               
+                <input type="password" name="password_input" placeholder="Ingrese su contraseña" required>
             </div>
 
-            <button type="button" class="boton">
+           
+            <button type="submit" class="boton">
                 Ingresar
             </button>
 
         </form>
-
     </div>
-
 </div>
-
