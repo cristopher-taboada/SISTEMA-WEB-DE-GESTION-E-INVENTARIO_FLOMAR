@@ -1,9 +1,299 @@
 ﻿@{
-    ViewData["Title"] = "Admin";
+    ViewData["Title"] = "Administrador - FLOMAR";
 }
 
-<h1>Panel de Administrador</h1>
+<style>
 
-<p>Listar Repuestos</p>
-<p>Crear Repuesto</p>
-<p>Gestionar Usuarios</p>
+    * {
+        box-sizing: border-box;
+    }
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    body {
+        background-color: #1a1a1a;
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+
+    /* ENCABEZADO */
+
+    .encabezado {
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 35px;
+        background-color: #222222;
+        border-bottom: 1px solid #444444;
+    }
+
+    .logo {
+        color: #d4af37;
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    .cerrar-sesion {
+        background-color: #d4af37;
+        color: #1a1a1a;
+        border: none;
+        border-radius: 5px;
+        padding: 9px 18px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .cerrar-sesion:hover {
+            background-color: #e6c65c;
+        }
+
+
+    /* CONTENIDO */
+
+    .contenido {
+        height: calc(100vh - 70px);
+        padding: 35px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+
+    /* TITULO */
+
+    .titulo {
+        margin: 5px 0 25px 0;
+        color: #d4af37;
+        font-size: 28px;
+        text-align: center;
+    }
+
+
+    /* TARJETAS */
+
+    .tarjetas {
+        width: 900px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+    }
+
+
+    /* TARJETA */
+
+    .tarjeta {
+        height: 160px;
+        background-color: #2b2b2b;
+        border: 1px solid #444444;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+    }
+
+        .tarjeta:hover {
+            border-color: #d4af37;
+        }
+
+
+    /* ICONO */
+
+    .icono {
+        font-size: 30px;
+        margin-bottom: 5px;
+    }
+
+
+    /* TITULO TARJETA */
+
+    .tarjeta h3 {
+        color: #d4af37;
+        font-size: 17px;
+        margin: 4px 0;
+    }
+
+
+    /* DESCRIPCION */
+
+    .tarjeta p {
+        color: #cccccc;
+        font-size: 13px;
+        margin: 4px 0 10px 0;
+    }
+
+
+    /* BOTON */
+
+    .boton {
+        background-color: #d4af37;
+        color: #1a1a1a;
+        border: none;
+        border-radius: 5px;
+        padding: 7px 18px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .boton:hover {
+            background-color: #e6c65c;
+        }
+
+</style>
+
+
+<!-- ENCABEZADO -->
+
+<header class="encabezado">
+
+    <div class="logo">
+        FLOMAR
+    </div>
+
+    <button class="cerrar-sesion">
+        Cerrar sesión
+    </button>
+
+</header>
+
+
+<!-- CONTENIDO -->
+
+<main class="contenido">
+
+    <h1 class="titulo">
+        Panel de Administrador
+    </h1>
+
+
+    <div class="tarjetas">
+
+
+        <!-- REPUESTOS -->
+
+        <div class="tarjeta">
+
+            <div class="icono">
+                🔧
+            </div>
+
+            <h3>
+                Repuestos
+            </h3>
+
+            <p>
+                Gestión de repuestos
+            </p>
+
+            <button class="boton">
+                Repuestos
+            </button>
+
+        </div>
+
+
+        <!-- USUARIOS -->
+
+        <div class="tarjeta">
+
+            <div class="icono">
+                👤
+            </div>
+
+            <h3>
+                Usuarios
+            </h3>
+
+            <p>
+                Gestión de usuarios
+            </p>
+
+            <button class="boton">
+                Usuarios
+            </button>
+
+        </div>
+
+
+        <!-- INVENTARIO -->
+
+        <div class="tarjeta">
+
+            <div class="icono">
+                📦
+            </div>
+
+            <h3>
+                Inventario
+            </h3>
+
+            <p>
+                Control del inventario
+            </p>
+
+            <button class="boton">
+                Inventario
+            </button>
+
+        </div>
+
+
+        <!-- VENTAS -->
+
+        <div class="tarjeta">
+
+            <div class="icono">
+                🛒
+            </div>
+
+            <h3>
+                Ventas
+            </h3>
+
+            <p>
+                Gestión de ventas
+            </p>
+
+            <button class="boton">
+                Ventas
+            </button>
+
+        </div>
+
+
+        <!-- REPORTES -->
+
+        <div class="tarjeta">
+
+            <div class="icono">
+                📊
+            </div>
+
+            <h3>
+                Reportes
+            </h3>
+
+            <p>
+                Reportes del sistema
+            </p>
+
+            <button class="boton">
+                Reportes
+            </button>
+
+        </div>
+
+
+    </div>
+
+</main>
