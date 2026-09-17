@@ -1,4 +1,4 @@
-namespace FLOMAR.Models
+﻿namespace FLOMAR.Models
 {
     public class ErrorViewModel
     {
@@ -7,3 +7,4 @@ namespace FLOMAR.Models
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
     }
 }
+

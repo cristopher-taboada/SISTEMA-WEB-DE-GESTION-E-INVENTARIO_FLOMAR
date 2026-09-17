@@ -1,4 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿        using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FLOMAR.Models
@@ -13,33 +21,52 @@ namespace FLOMAR.Models
         [Required(ErrorMessage = "El código es obligatorio")]
         [StringLength(30)]
         [Column("codigo")]
+        [Display(Name = "Código")]
         public string Codigo { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El nombre es obligatorio")]
-        [StringLength(120)]
         [Column("nombre")]
         public string Nombre { get; set; } = string.Empty;
 
+        [Range(1, int.MaxValue, ErrorMessage = "Seleccione una categoría")]
         [Column("id_categoria")]
-        public int Id_categoria { get; set; }
+        [Display(Name = "Categoría")]
+        public int IdCategoria { get; set; }
 
-        [Range(0, double.MaxValue, ErrorMessage = "El costo no puede ser negativo")]
-        [Column("costo_adquisicion")]
-        public decimal costo_adquisicion { get; set; }
+        [ForeignKey(nameof(IdCategoria))]
+        public Categoria? Categoria { get; set; }
 
-        [Range(0, double.MaxValue, ErrorMessage = "El precio no puede ser negativo")]
-        [Column("precio_venta")]
-        public decimal precio_venta { get; set; }
+        [Range(0, 999999)]
+        [Column("costo_adquisicion", TypeName = "decimal(10,2)")]
+        [Display(Name = "Costo")]
+        public decimal Costo { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "El stock no puede ser negativo")]
+        [Range(0, 999999)]
+        [Column("precio_venta", TypeName = "decimal(10,2)")]
+        [Display(Name = "Precio de Venta")]
+        public decimal PrecioVenta { get; set; }
+
+        [Range(0, 999999)]
         [Column("stock_actual")]
-        public int stock_actual { get; set; }
+        [Display(Name = "Stock Actual")]
+        public int Stock { get; set; }
 
-        [Range(0, int.MaxValue, ErrorMessage = "El stock mínimo no puede ser negativo")]
+        [Range(0, 999999)]
         [Column("stock_minimo")]
-        public int stock_minimo { get; set; }
+        [Display(Name = "Stock Mínimo")]
+        public int StockMinimo { get; set; }
 
         [Column("id_estado_repuesto")]
-        public int id_estado_repuesto { get; set; } = 1;
+        public int IdEstadoRepuesto { get; set; } = 1;
+
+        [ForeignKey(nameof(IdEstadoRepuesto))]
+        public Estado_respuesto? EstadoRepuesto { get; set; }
+
+        [NotMapped]
+        public bool Activo
+        {
+            get => IdEstadoRepuesto == 1;
+            set => IdEstadoRepuesto = value ? 1 : 2;
+        }
     }
 }

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace FLOMAR.Views.Repuestos
@@ -10,3 +10,4 @@ namespace FLOMAR.Views.Repuestos
         }
     }
 }
+
