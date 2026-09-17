@@ -1,8 +1,7 @@
-﻿```html
-@{
+﻿@{
     ViewData["Title"] = "Iniciar sesión";
+    Layout = null;
 }
-
 <style>
     .login-pagina {
         position: fixed;
@@ -82,39 +81,45 @@
         .boton:hover {
             background-color: #e6c65c;
         }
+
+    .error-mensaje {
+        color: #ff4c4c;
+        text-align: center;
+        margin-bottom: 15px;
+        font-weight: bold;
+    }
 </style>
 
 <div class="login-pagina">
-
     <div class="login-card">
-
         <div class="logo">
             FLOMAR
         </div>
-
         <h2 class="titulo">
             Iniciar sesión
         </h2>
 
-        <form>
+        @if (ViewBag.Error != null)
+        {
+            <div class="error-mensaje">
+                @ViewBag.Error
+            </div>
+        }
 
+        <form asp-controller="Login" asp-action="Entrar" method="post">
             <div class="campo">
                 <label>Usuario</label>
-                <input type="text" placeholder="Ingrese su usuario">
+                <input type="text" name="usuario_input" placeholder="Ingrese su usuario" required>
             </div>
 
             <div class="campo">
                 <label>Contraseña</label>
-                <input type="password" placeholder="Ingrese su contraseña">
+                <input type="password" name="password_input" placeholder="Ingrese su contraseña" required>
             </div>
 
-            <button type="button" class="boton">
+            <button type="submit" class="boton">
                 Ingresar
             </button>
-
         </form>
-
     </div>
-
 </div>
-```
