@@ -13,41 +13,41 @@ namespace FLOMAR.Controllers
         {
             new Repuesto
             {
-                Id = 1,
+                id_repuesto = 1,
                 Codigo = "FRE-001",
                 Nombre = "Pastilla de freno",
-                Categoria = "Frenos",
-                Costo = 120,
+                id_categoria = 1,
+                costo_adquisicion = 120,
                 PrecioVenta = 180,
-                Stock = 4,
-                StockMinimo = 5,
-                Activo = true
+                stock_actual = 4,
+                stock_minimo = 5,
+                id_estado = 1
             },
 
             new Repuesto
             {
-                Id = 2,
+                id_repuesto = 2,
                 Codigo = "MOT-001",
                 Nombre = "Filtro de aceite",
-                Categoria = "Motor",
-                Costo = 45,
+                id_categoria = 2,
+                costo_adquisicion = 45,
                 PrecioVenta = 70,
-                Stock = 15,
-                StockMinimo = 5,
-                Activo = true
+                stock_actual = 15,
+                stock_minimo = 5,
+                id_estado = 1
             },
 
             new Repuesto
             {
-                Id = 3,
+                id_repuesto = 3,
                 Codigo = "ENC-001",
                 Nombre = "Bujía",
-                Categoria = "Encendido",
-                Costo = 25,
+                id_categoria = 3,
+                costo_adquisicion = 25,
                 PrecioVenta = 40,
-                Stock = 3,
-                StockMinimo = 4,
-                Activo = true
+                stock_actual = 3,
+                stock_minimo = 4,
+                id_estado = 1
             }
         };
 
@@ -84,15 +84,15 @@ namespace FLOMAR.Controllers
                 // Generar ID automáticamente
                 if (repuestos.Count > 0)
                 {
-                    repuesto.Id = repuestos.Max(r => r.Id) + 1;
+                    repuesto.id_repuesto = repuestos.Max(r => r.id_repuesto) + 1;
                 }
                 else
                 {
-                    repuesto.Id = 1;
+                    repuesto.id_repuesto = 1;
                 }
 
                 // Todo repuesto nuevo empieza activo
-                repuesto.Activo = true;
+                repuesto.id_estado = 1;
 
                 // Agregar a la lista
                 repuestos.Add(repuesto);
@@ -147,11 +147,12 @@ namespace FLOMAR.Controllers
                 // Actualizar todos sus datos
                 repuestoExistente.Codigo = repuesto.Codigo;
                 repuestoExistente.Nombre = repuesto.Nombre;
-                repuestoExistente.Categoria = repuesto.Categoria;
-                repuestoExistente.Costo = repuesto.Costo;
+                repuestoExistente.id_categoria = repuesto.id_categoria;
+                repuestoExistente.costo_adquisicion = repuesto.costo_adquisicion;
                 repuestoExistente.PrecioVenta = repuesto.PrecioVenta;
-                repuestoExistente.Stock = repuesto.Stock;
-                repuestoExistente.StockMinimo = repuesto.StockMinimo;
+                repuestoExistente.stock_actual = repuesto.stock_actual;
+                repuestoExistente.stock_minimo = repuesto.stock_minimo;
+                repuestoExistente.id_estado = repuesto.id_estado;
 
                 // No modificamos Activo aquí.
                 // Se mantiene como estaba.
@@ -172,7 +173,7 @@ namespace FLOMAR.Controllers
         {
             // Buscar el repuesto
             var repuesto =
-                repuestos.FirstOrDefault(r => r.Id == id);
+                repuestos.FirstOrDefault(r => r.id_repuesto == id);
 
             if (repuesto == null)
             {
@@ -180,7 +181,7 @@ namespace FLOMAR.Controllers
             }
 
             // Cambiar al estado contrario
-            repuesto.Activo = !repuesto.Activo;
+            repuesto.id_estado = repuesto.id_estado == 1 ? 0 : 1;
 
             return RedirectToAction(nameof(Index));
         }
