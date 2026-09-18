@@ -1,33 +1,55 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FLOMAR.Models
 {
+    [Table("REPUESTO")]
     public class Repuesto
     {
-        // ID único del repuesto
+        // =========================
+        // ID
+        // =========================
+
+        [Key]
+        [Column("id_repuesto")]
         public int id_repuesto { get; set; }
 
-        // Alias para vistas/controlador que usan "Id"
+        [NotMapped]
         public int Id => id_repuesto;
 
-        // CÓDIGO DEL REPUESTO
+
+        // =========================
+        // CÓDIGO
+        // =========================
+
         [Required(ErrorMessage = "El código es obligatorio")]
-        [StringLength(50, ErrorMessage = "El código no puede superar los 50 caracteres")]
+        [StringLength(30, ErrorMessage = "El código no puede superar los 30 caracteres")]
+        [Column("codigo")]
         [Display(Name = "Código")]
         public string Codigo { get; set; } = string.Empty;
 
-        // NOMBRE DEL REPUESTO
+
+        // =========================
+        // NOMBRE
+        // =========================
+
         [Required(ErrorMessage = "El nombre es obligatorio")]
-        [StringLength(150, ErrorMessage = "El nombre no puede superar los 150 caracteres")]
+        [StringLength(120, ErrorMessage = "El nombre no puede superar los 120 caracteres")]
+        [Column("nombre")]
         [Display(Name = "Nombre")]
         public string Nombre { get; set; } = string.Empty;
 
-        // CATEGORÍA (int para BD, string para vistas)
-        [Required(ErrorMessage = "La categoría es obligatoria")]
+
+        // =========================
+        // CATEGORÍA
+        // =========================
+
+        [Range(1, int.MaxValue, ErrorMessage = "Seleccione una categoría")]
+        [Column("id_categoria")]
         [Display(Name = "Categoría")]
         public int id_categoria { get; set; }
 
-        // Alias "Categoria" como string que las vistas usan
+        [NotMapped]
         [Display(Name = "Categoría")]
         public string Categoria
         {
@@ -36,52 +58,76 @@ namespace FLOMAR.Models
                 return id_categoria switch
                 {
                     1 => "Frenos",
-                    2 => "Motor",
-                    3 => "Encendido",
-                    4 => "Suspensión",
-                    5 => "Eléctrico",
+                    2 => "Suspensión",
+                    3 => "Motor",
+                    4 => "Eléctrico",
+                    5 => "Aceites",
                     _ => "Otra"
                 };
             }
         }
 
-        // PRECIO DE COMPRA
+
+        // =========================
+        // COSTO
+        // =========================
+
         [Range(0, 999999, ErrorMessage = "El costo no puede ser negativo")]
+        [Column("costo_adquisicion", TypeName = "decimal(10,2)")]
         [Display(Name = "Costo")]
         public decimal costo_adquisicion { get; set; }
 
-        // Alias "Costo" que las vistas usan
+        [NotMapped]
         [Display(Name = "Costo")]
         public decimal Costo => costo_adquisicion;
 
+
+        // =========================
         // PRECIO DE VENTA
+        // =========================
+
         [Range(0, 999999, ErrorMessage = "El precio de venta no puede ser negativo")]
+        [Column("precio_venta", TypeName = "decimal(10,2)")]
         [Display(Name = "Precio de Venta")]
         public decimal PrecioVenta { get; set; }
 
-        // CANTIDAD DISPONIBLE
+
+        // =========================
+        // STOCK ACTUAL
+        // =========================
+
         [Range(0, 999999, ErrorMessage = "El stock no puede ser negativo")]
+        [Column("stock_actual")]
         [Display(Name = "Stock Actual")]
         public int stock_actual { get; set; }
 
-        // Alias "Stock" que las vistas usan
+        [NotMapped]
         [Display(Name = "Stock Actual")]
         public int Stock => stock_actual;
 
-        // CANTIDAD MÍNIMA PERMITIDA
+
+        // =========================
+        // STOCK MÍNIMO
+        // =========================
+
         [Range(0, 999999, ErrorMessage = "El stock mínimo no puede ser negativo")]
+        [Column("stock_minimo")]
         [Display(Name = "Stock Mínimo")]
         public int stock_minimo { get; set; }
 
-        // Alias "StockMinimo" que las vistas usan
+        [NotMapped]
         [Display(Name = "Stock Mínimo")]
         public int StockMinimo => stock_minimo;
 
-        // ESTADO DEL REPUESTO
-        // 1 = Activo, otro = Desactivado
-        public int id_estado { get; set; }
 
-        // Alias "Activo" que las vistas/controlador usan
+        // =========================
+        // ESTADO
+        // =========================
+
+        [Column("id_estado")]
+        public int id_estado { get; set; } = 1;
+
+        [NotMapped]
         public bool Activo => id_estado == 1;
     }
 }
