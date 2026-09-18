@@ -1,0 +1,273 @@
+@model FLOMAR.Models.CompraDetalleViewModel
+
+@{
+    ViewData["Title"] = "Detalle de Compra";
+}
+
+<style>
+    .detalle-page {
+        min-height: 100vh;
+        background: #181818;
+        padding: 35px;
+        color: white;
+    }
+
+    .detalle-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .detalle-header {
+        margin-bottom: 25px;
+    }
+
+        .detalle-header h1 {
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .detalle-header h1 span {
+                color: #d4af37;
+            }
+
+        .detalle-header p {
+            color: #aaa;
+            margin: 0;
+        }
+
+    .detalle-card {
+        background: #202020;
+        border: 1px solid #3b3b3b;
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 25px;
+    }
+
+    .detalle-info {
+        background: #292929;
+        border-left: 4px solid #d4af37;
+        padding: 13px 15px;
+        border-radius: 4px;
+        margin-bottom: 25px;
+        color: #bbb;
+    }
+
+        .detalle-info strong {
+            color: #d4af37;
+        }
+
+    .detalle-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .detalle-campo {
+        margin-bottom: 15px;
+    }
+
+        .detalle-campo label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #d4af37;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .detalle-campo .valor {
+            color: #eee;
+            font-size: 15px;
+        }
+
+    .detalle-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .detalle-table th {
+            color: #d4af37;
+            text-align: left;
+            padding: 12px 10px;
+            border-bottom: 2px solid #444;
+            font-size: 13px;
+        }
+
+        .detalle-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #333;
+            color: #eee;
+        }
+
+    .precio {
+        white-space: nowrap;
+    }
+
+    .total-row td {
+        border-top: 2px solid #d4af37;
+        font-weight: bold;
+        color: #d4af37;
+        font-size: 16px;
+    }
+
+    .btn-volver {
+        display: inline-block;
+        background: transparent;
+        color: #ddd;
+        border: 1px solid #555;
+        padding: 11px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .btn-volver:hover {
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+    .btn-editar {
+        display: inline-block;
+        background: #d4af37;
+        color: #111;
+        padding: 11px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+        .btn-editar:hover {
+            background: #e5c34b;
+            color: #111;
+        }
+
+    .acciones-footer {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+</style>
+
+
+<div class="detalle-page">
+
+    <div class="detalle-container">
+
+        <div class="detalle-header">
+            <h1>Detalle de <span>Compra</span></h1>
+            <p>Información completa de la compra y sus productos.</p>
+        </div>
+
+
+        <!-- DATOS DE LA COMPRA -->
+        <div class="detalle-card">
+
+            <div class="detalle-info">
+                Compra: <strong>#@Model.numero_compra</strong>
+            </div>
+
+            <div class="detalle-grid">
+
+                <div class="detalle-campo">
+                    <label>Nro. Compra</label>
+                    <div class="valor">@Model.numero_compra</div>
+                </div>
+
+                <div class="detalle-campo">
+                    <label>Fecha de Ingreso</label>
+                    <div class="valor">@Model.fecha_ingreso.ToString("dd/MM/yyyy HH:mm")</div>
+                </div>
+
+                <div class="detalle-campo">
+                    <label>Proveedor</label>
+                    <div class="valor">@Model.proveedor</div>
+                </div>
+
+                <div class="detalle-campo">
+                    <label>Registrado por</label>
+                    <div class="valor">@Model.registrado_por</div>
+                </div>
+
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.observaciones))
+            {
+                <div class="detalle-campo">
+                    <label>Observaciones</label>
+                    <div class="valor">@Model.observaciones</div>
+                </div>
+            }
+
+        </div>
+
+
+        <!-- DETALLE DE PRODUCTOS -->
+        <div class="detalle-card">
+
+            <h2 style="color: #d4af37; margin-bottom: 20px; font-size: 20px;">
+                Productos
+            </h2>
+
+            <table class="detalle-table">
+
+                <thead>
+                    <tr>
+                        <th>Repuesto</th>
+                        <th>Cantidad</th>
+                        <th>Costo Unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var item in Model.Detalles)
+                    {
+                        <tr>
+                            <td><strong>@item.repuesto</strong></td>
+                            <td>@item.cantidad</td>
+                            <td class="precio">Bs @item.costo_unitario.ToString("0.00")</td>
+                            <td class="precio">Bs @item.subtotal.ToString("0.00")</td>
+                        </tr>
+                    }
+
+                    <tr class="total-row">
+                        <td colspan="3" style="text-align: right;">TOTAL:</td>
+                        <td class="precio">Bs @Model.monto_total.ToString("0.00")</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- BOTONES -->
+        <div class="acciones-footer">
+
+            <a asp-controller="Compras"
+               asp-action="Edit"
+               asp-route-id="@Model.Id_compra"
+               class="btn-editar">
+
+                Editar
+
+            </a>
+
+            <a asp-controller="Compras"
+               asp-action="Index"
+               class="btn-volver">
+
+                Volver
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

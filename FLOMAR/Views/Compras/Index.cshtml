@@ -107,6 +107,23 @@
         white-space: nowrap;
     }
 
+    .btn-ver {
+        display: inline-block;
+        background: transparent;
+        color: #d4af37;
+        border: 1px solid #d4af37;
+        padding: 6px 10px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+        .btn-ver:hover {
+            background: #d4af37;
+            color: #111;
+        }
+
     .btn-editar {
         display: inline-block;
         background: #d4af37;
@@ -244,6 +261,15 @@
 
                             <!-- ACCIONES -->
                             <td class="acciones">
+
+                                <a asp-controller="Compras"
+                                   asp-action="Details"
+                                   asp-route-id="@compra.Id_compra"
+                                   class="btn-ver">
+
+                                    Ver
+
+                                </a>
 
                                 <a asp-controller="Compras"
                                    asp-action="Edit"
