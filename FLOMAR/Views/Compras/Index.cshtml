@@ -1,0 +1,307 @@
+﻿@model IEnumerable<FLOMAR.Models.AdministrarInventario>
+
+@{
+    ViewData["Title"] = "Mercadería";
+}
+
+<style>
+    .compras-page {
+        min-height: 100vh;
+        background: #181818;
+        padding: 35px;
+        color: white;
+    }
+
+    .compras-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+        .compras-header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .compras-header h1 span {
+                color: #d4af37;
+            }
+
+        .compras-header p {
+            margin: 7px 0 0;
+            color: #aaa;
+        }
+
+    .btn-nuevo {
+        background: #d4af37;
+        color: #111;
+        padding: 12px 20px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .btn-nuevo:hover {
+            background: #e5c34b;
+            color: #111;
+        }
+
+    .compras-card {
+        background: #202020;
+        border: 1px solid #3b3b3b;
+        border-radius: 10px;
+        padding: 20px;
+        overflow-x: auto;
+    }
+
+    .compras-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1000px;
+    }
+
+        .compras-table th {
+            color: #d4af37;
+            text-align: left;
+            padding: 15px 12px;
+            border-bottom: 2px solid #444;
+            font-size: 14px;
+        }
+
+        .compras-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #333;
+            color: #eee;
+        }
+
+        .compras-table tbody tr:hover {
+            background: #292929;
+        }
+
+    .codigo-compra {
+        color: #bbb;
+        font-weight: bold;
+    }
+
+    .precio {
+        white-space: nowrap;
+    }
+
+    .estado-activo {
+        color: #63d471;
+        font-weight: bold;
+    }
+
+    .estado-inactivo {
+        color: #ff6b6b;
+        font-weight: bold;
+    }
+
+    .fila-inactiva {
+        opacity: 0.55;
+    }
+
+    .acciones {
+        white-space: nowrap;
+    }
+
+    .btn-editar {
+        display: inline-block;
+        background: #d4af37;
+        color: #111;
+        padding: 7px 12px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: bold;
+        margin-right: 5px;
+    }
+
+        .btn-editar:hover {
+            background: #e5c34b;
+            color: #111;
+        }
+
+    .btn-desactivar {
+        background: transparent;
+        color: #ff6b6b;
+        border: 1px solid #ff6b6b;
+        padding: 6px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .btn-desactivar:hover {
+            background: #ff6b6b;
+            color: #111;
+        }
+
+    .btn-activar {
+        background: transparent;
+        color: #63d471;
+        border: 1px solid #63d471;
+        padding: 6px 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .btn-activar:hover {
+            background: #63d471;
+            color: #111;
+        }
+
+    .sin-compras {
+        text-align: center;
+        padding: 30px !important;
+        color: #999 !important;
+    }
+</style>
+
+
+<div class="compras-page">
+
+    <!-- ENCABEZADO -->
+    <div class="compras-header">
+
+        <div>
+            <h1>
+                Administrar <span>Mercadería</span>
+            </h1>
+
+            <p>
+                Ingresos de mercadería y compras a proveedores de FLOMAR.
+            </p>
+        </div>
+
+        <a asp-controller="Compras"
+           asp-action="Create"
+           class="btn-nuevo">
+
+            + Nueva Compra
+
+        </a>
+
+    </div>
+
+
+    <!-- TARJETA -->
+    <div class="compras-card">
+
+        <table class="compras-table">
+
+            <thead>
+                <tr>
+                    <th>Nro. Compra</th>
+                    <th>Fecha Ingreso</th>
+                    <th>Proveedor</th>
+                    <th>Productos</th>
+                    <th>Monto Total</th>
+                    <th>Registrado por</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @if (Model.Any())
+                {
+                    @foreach (var compra in Model)
+                    {
+                        <tr class="@(!compra.Activo ? "fila-inactiva" : "")">
+
+                            <!-- NRO. COMPRA -->
+                            <td class="codigo-compra">
+                                @compra.numero_compra
+                            </td>
+
+                            <!-- FECHA INGRESO -->
+                            <td>
+                                @compra.fecha_ingreso.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+
+                            <!-- PROVEEDOR -->
+                            <td>
+                                <strong>@compra.proveedor</strong>
+                            </td>
+
+                            <!-- PRODUCTOS -->
+                            <td>
+                                @compra.productos
+                            </td>
+
+                            <!-- MONTO TOTAL -->
+                            <td class="precio">
+                                Bs @compra.monto_total.ToString("0.00")
+                            </td>
+
+                            <!-- REGISTRADO POR -->
+                            <td>
+                                @compra.registrado_por
+                            </td>
+
+                            <!-- ACCIONES -->
+                            <td class="acciones">
+
+                                <a asp-controller="Compras"
+                                   asp-action="Edit"
+                                   asp-route-id="@compra.Id_compra"
+                                   class="btn-editar">
+
+                                    Editar
+
+                                </a>
+
+                                <form asp-controller="Compras"
+                                      asp-action="CambiarEstado"
+                                      asp-route-id="@compra.Id_compra"
+                                      method="post"
+                                      style="display:inline;">
+
+                                    @if (compra.Activo)
+                                    {
+                                        <button type="submit"
+                                                class="btn-desactivar">
+
+                                            Desactivar
+
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button type="submit"
+                                                class="btn-activar">
+
+                                            Activar
+
+                                        </button>
+                                    }
+
+                                </form>
+
+                            </td>
+
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7"
+                            class="sin-compras">
+
+                            No existen compras registradas.
+
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
