@@ -18,10 +18,19 @@ namespace FLOMAR.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Repuesto>().ToTable("REPUESTO");
             modelBuilder.Entity<Repuesto>().HasKey(r => r.id_repuesto);
+
+            modelBuilder.Entity<Compra>().ToTable("COMPRA");
             modelBuilder.Entity<Compra>().HasKey(c => c.Id_compra);
+
+            modelBuilder.Entity<Detalle_compra>().ToTable("DETALLE_COMPRA");
             modelBuilder.Entity<Detalle_compra>().HasKey(d => d.Id_detalle_compra);
+
+            modelBuilder.Entity<Proveedor>().ToTable("PROVEEDOR");
             modelBuilder.Entity<Proveedor>().HasKey(p => p.Id_proveedor);
+
+            modelBuilder.Entity<Usuario>().ToTable("USUARIO");
             modelBuilder.Entity<Usuario>().HasKey(u => u.id_usuario);
         }
     }
