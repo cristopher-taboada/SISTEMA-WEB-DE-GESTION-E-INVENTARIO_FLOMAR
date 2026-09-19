@@ -1,0 +1,226 @@
+@model FLOMAR.Models.MovimientoCrearViewModel
+
+@{
+    ViewData["Title"] = "Nuevo Movimiento";
+}
+
+<style>
+    .crear-page {
+        min-height: 100vh;
+        background: #181818;
+        padding: 35px;
+        color: white;
+    }
+
+    .crear-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .crear-header {
+        margin-bottom: 25px;
+    }
+
+        .crear-header h1 {
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .crear-header h1 span {
+                color: #d4af37;
+            }
+
+        .crear-header p {
+            color: #aaa;
+            margin: 0;
+        }
+
+    .crear-card {
+        background: #202020;
+        border: 1px solid #3b3b3b;
+        border-radius: 10px;
+        padding: 30px;
+    }
+
+    .crear-info {
+        background: #292929;
+        border-left: 4px solid #d4af37;
+        padding: 13px 15px;
+        border-radius: 4px;
+        margin-bottom: 25px;
+        color: #bbb;
+    }
+
+        .crear-info strong {
+            color: #d4af37;
+        }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #eee;
+        }
+
+    .form-control-flomar {
+        width: 100%;
+        background: #181818;
+        color: white;
+        border: 1px solid #555;
+        border-radius: 6px;
+        padding: 12px 14px;
+        box-sizing: border-box;
+        outline: none;
+    }
+
+        .form-control-flomar:focus {
+            border-color: #d4af37;
+        }
+
+    .validation-message {
+        display: block;
+        color: #ff6565;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .validation-summary-errors {
+        color: #ff6565;
+        margin-bottom: 15px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .btn-guardar {
+        background: #d4af37;
+        color: #111;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .btn-guardar:hover {
+            background: #e5c34b;
+        }
+
+    .btn-cancelar {
+        background: transparent;
+        color: #ddd;
+        border: 1px solid #555;
+        padding: 11px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .btn-cancelar:hover {
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+    @@media (max-width: 700px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<div class="crear-page">
+    <div class="crear-container">
+
+        <div class="crear-header">
+            <h1>Nuevo <span>Movimiento</span> de Inventario</h1>
+            <p>Registra un ajuste, ingreso o merma de mercaderia.</p>
+        </div>
+
+        <div class="crear-card">
+
+            <div class="crear-info">
+                Seleccione el <strong>repuesto</strong>, el <strong>tipo de movimiento</strong> e ingrese la <strong>cantidad</strong>.
+                El stock se actualizara automaticamente segun el signo del tipo.
+            </div>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="validation-summary-errors">@TempData["Error"]</div>
+            }
+
+            <div asp-validation-summary="All" class="validation-summary-errors"></div>
+
+            <form asp-controller="MovimientoInventario" asp-action="Create" method="post">
+
+                <!-- REPUESTO Y TIPO -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="id_repuesto">Repuesto</label>
+                        <select asp-for="id_repuesto" class="form-control-flomar">
+                            <option value="">-- Seleccione un repuesto --</option>
+                            @foreach (var r in (dynamic)ViewBag.Repuestos)
+                            {
+                                <option value="@r.id_repuesto">@r.Codigo - @r.Nombre</option>
+                            }
+                        </select>
+                        <span asp-validation-for="id_repuesto" class="validation-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="id_tipo_movimiento">Tipo de Movimiento</label>
+                        <select asp-for="id_tipo_movimiento" class="form-control-flomar">
+                            <option value="">-- Seleccione un tipo --</option>
+                            @foreach (var t in (dynamic)ViewBag.TiposMovimiento)
+                            {
+                                <option value="@t.id_tipo_movimiento">@t.nombre_tipo</option>
+                            }
+                        </select>
+                        <span asp-validation-for="id_tipo_movimiento" class="validation-message"></span>
+                    </div>
+                </div>
+
+                <!-- CANTIDAD -->
+                <div class="form-group">
+                    <label asp-for="cantidad">Cantidad</label>
+                    <input asp-for="cantidad" type="number" min="1" class="form-control-flomar" placeholder="Ej: 10" />
+                    <span asp-validation-for="cantidad" class="validation-message"></span>
+                </div>
+
+                <!-- MOTIVO Y OBSERVACIONES -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="motivo">Motivo</label>
+                        <input asp-for="motivo" class="form-control-flomar" placeholder="Ej: Diferencia en inventario fisico" />
+                        <span asp-validation-for="motivo" class="validation-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="observaciones">Observaciones</label>
+                        <input asp-for="observaciones" class="form-control-flomar" placeholder="Ej: Conteo mensual" />
+                        <span asp-validation-for="observaciones" class="validation-message"></span>
+                    </div>
+                </div>
+
+                <!-- BOTONES -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-guardar">+ Guardar Movimiento</button>
+                    <a asp-controller="MovimientoInventario" asp-action="Index" class="btn-cancelar">Cancelar</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

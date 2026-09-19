@@ -61,9 +61,20 @@ namespace FLOMAR.Controllers
 
             if (compra == null) return NotFound();
 
-            var detalles = await _context.Detalle_compras
-                .Where(dc => dc.id_compra == id)
-                .ToListAsync();
+            var detalles = await (
+                from dc in _context.Detalle_compras
+                join r in _context.Repuestos on dc.id_repuesto equals r.id_repuesto into gj
+                from r in gj.DefaultIfEmpty()
+                where dc.id_compra == id
+                select new DetalleCompraItem
+                {
+                    codigo = r != null ? r.Codigo : "",
+                    repuesto = r != null ? r.Nombre : "(repuesto eliminado)",
+                    cantidad = dc.cantidad,
+                    costo_unitario = dc.costo_unitario,
+                    subtotal = dc.subtotal
+                }
+            ).ToListAsync();
 
             var modelo = new CompraDetalleViewModel
             {
@@ -74,19 +85,15 @@ namespace FLOMAR.Controllers
                 registrado_por = compra.UsuarioRel?.nombre_completo ?? "",
                 monto_total = compra.monto_total,
                 observaciones = compra.observaciones,
-                Detalles = detalles.Select(dc =>
+                Detalles = detalles.Select(dc => new DetalleCompraItem
                 {
-                    var repuesto = _context.Repuestos
-                        .FirstOrDefault(r => r.id_repuesto == dc.id_repuesto);
-
-                    return new DetalleCompraItem
-                    {
-                        codigo = repuesto?.Codigo ?? "",
-                        repuesto = repuesto?.Nombre ?? "",
-                        cantidad = dc.cantidad,
-                        costo_unitario = dc.costo_unitario,
-                        subtotal = dc.subtotal
-                    };
+                    repuesto = _context.Repuestos
+                        .Where(r => r.id_repuesto == dc.id_repuesto)
+                        .Select(r => r.Nombre)
+                        .FirstOrDefault() ?? "",
+                    cantidad = dc.cantidad,
+                    costo_unitario = dc.costo_unitario,
+                    subtotal = dc.subtotal
                 }).ToList()
             };
 
@@ -95,67 +102,23 @@ namespace FLOMAR.Controllers
 
 
         // =========================
-        // MOSTRAR FORMULARIO CREAR
+        // FORMULARIO CREAR (GET)
         // =========================
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            return View();
-        }
+            await CargarProveedores();
 
+            // Correlativo sugerido segun las compras del anio actual
+            var anio = DateTime.Now.Year;
+            var correlativo = await _context.Compras
+                .CountAsync(c => c.fecha_ingreso.Year == anio) + 1;
 
-        // =========================
-        // GUARDAR NUEVA COMPRA
-        // =========================
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CompraCreateViewModel modelo)
-        {
-            if (ModelState.IsValid)
+            var modelo = new CompraCreateFormViewModel
             {
-                // 1. Insertar cabecera
-                var compra = new Compra
-                {
-                    numero_compra = modelo.numero_compra,
-                    fecha_ingreso = modelo.fecha_ingreso,
-                    id_proveedor = modelo.id_proveedor,
-                    id_usuario = 1,
-                    monto_total = 0,
-                    observaciones = modelo.observaciones
-                };
-
-                _context.Add(compra);
-                await _context.SaveChangesAsync();
-
-                return RedirectToAction(nameof(Index));
-            }
-
-            return View(modelo);
-        }
-
-
-        // =========================
-        // MOSTRAR FORMULARIO EDITAR
-        // =========================
-        [HttpGet]
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var compra = await _context.Compras
-                .Include(c => c.ProveedorRel)
-                .FirstOrDefaultAsync(m => m.Id_compra == id);
-
-            if (compra == null) return NotFound();
-
-            var modelo = new AdministrarInventario
-            {
-                Id_compra = compra.Id_compra,
-                numero_compra = compra.numero_compra,
-                fecha_ingreso = compra.fecha_ingreso,
-                proveedor = compra.ProveedorRel?.nombre ?? "",
-                monto_total = compra.monto_total,
-                observaciones = compra.observaciones
+                numero_compra = $"CMP-{anio}-{correlativo:D3}",
+                fecha_ingreso = DateTime.Now,
+                Productos = await ObtenerProductosConCantidades(null)
             };
 
             return View(modelo);
@@ -163,68 +126,189 @@ namespace FLOMAR.Controllers
 
 
         // =========================
-        // GUARDAR CAMBIOS
+        // GUARDAR COMPRA (POST)
         // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, AdministrarInventario compra)
+        public async Task<IActionResult> Create(CompraCreateViewModel modelo)
         {
-            if (id != compra.Id_compra) return NotFound();
-
             if (ModelState.IsValid)
             {
-                var existente = await _context.Compras.FindAsync(id);
-                if (existente == null) return NotFound();
+                var compra = new Compra
+                {
+                    numero_compra = modelo.numero_compra,
+                    fecha_ingreso = modelo.fecha_ingreso,
+                    id_proveedor = modelo.id_proveedor,
+                    id_usuario = 1,
+                    monto_total = montoTotal,
+                    observaciones = modelo.observaciones ?? ""
+                };
 
-                existente.numero_compra = compra.numero_compra;
-                existente.fecha_ingreso = compra.fecha_ingreso;
-                existente.monto_total = compra.monto_total;
-                existente.observaciones = compra.observaciones;
-
-                _context.Update(existente);
+                _context.Compras.Add(compra);
                 await _context.SaveChangesAsync();
 
+                // 6. Crear detalles y aumentar stock
+                foreach (var (fila, repuesto) in itemsValidados)
+                {
+                    _context.Detalle_compras.Add(new Detalle_compra
+                    {
+                        id_compra = compra.Id_compra,
+                        id_repuesto = fila.id_repuesto,
+                        cantidad = fila.cantidad,
+                        costo_unitario = repuesto.costo_adquisicion,
+                        subtotal = fila.cantidad * repuesto.costo_adquisicion
+                    });
+
+                    repuesto.stock_actual += fila.cantidad;
+                    _context.Update(repuesto);
+                }
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                TempData["Exito"] = $"Compra {compra.numero_compra} registrada correctamente.";
                 return RedirectToAction(nameof(Index));
             }
-
-            return View(compra);
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                TempData["Error"] = "Error al guardar: " + ex.Message;
+                return RedirectToAction(nameof(Create));
+            }
         }
 
 
         // =========================
-        // DESACTIVAR (ELIMINAR)
+        // HELPERS PRIVADOS
+        // =========================
+        private async Task CargarProveedores()
+        {
+            ViewBag.Proveedores = await _context.Proveedores
+                .Select(p => new { p.Id_proveedor, p.nombre })
+                .ToListAsync();
+        }
+
+        // Recarga la lista de repuestos desde la BD (codigo, nombre y costo reales)
+        // conservando las cantidades que el usuario escribio en el formulario
+        private async Task<List<ProductoFilaViewModel>> ObtenerProductosConCantidades(
+            List<ProductoFilaViewModel>? posteados)
+        {
+            var repuestos = await _context.Repuestos
+                .Where(r => r.id_estado == 1)
+                .Select(r => new ProductoFilaViewModel
+                {
+                    id_repuesto = r.id_repuesto,
+                    codigo = r.Codigo,
+                    nombre = r.Nombre,
+                    costo_unitario = r.costo_adquisicion,
+                    cantidad = 0
+                })
+                .ToListAsync();
+
+            if (posteados != null)
+            {
+                foreach (var fila in repuestos)
+                {
+                    var posteada = posteados
+                        .FirstOrDefault(p => p.id_repuesto == fila.id_repuesto);
+
+                    if (posteada != null)
+                        fila.cantidad = posteada.cantidad;
+                }
+            }
+
+            return repuestos;
+        }
+
+
+        // =========================
+        // EDITAR (GET)
+        // =========================
+        [HttpGet]
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var compra = await _context.Compras.FirstOrDefaultAsync(m => m.Id_compra == id);
+
+            if (compra == null) return NotFound();
+
+            var modelo = new CompraEditViewModel
+            {
+                Id_compra = compra.Id_compra,
+                numero_compra = compra.numero_compra,
+                fecha_ingreso = compra.fecha_ingreso,
+                monto_total = compra.monto_total,
+                observaciones = compra.observaciones,
+                registrado_por = compra.UsuarioRel?.nombre_completo ?? "",
+                productos = await _context.Detalle_compras
+                    .CountAsync(dc => dc.id_compra == id)
+            };
+
+            ViewBag.Proveedores = await _context.Proveedores
+                .Select(p => new { p.Id_proveedor, p.nombre })
+                .ToListAsync();
+
+            return View(modelo);
+        }
+
+
+        // =========================
+        // EDITAR (POST)
         // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CambiarEstado(int? id)
+        public async Task<IActionResult> Edit(int id, CompraEditViewModel modelo)
+        {
+            if (id != modelo.Id_compra) return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                // Recargar datos de solo lectura y la lista de proveedores
+                var compraActual = await _context.Compras
+                    .Include(c => c.UsuarioRel)
+                    .FirstOrDefaultAsync(c => c.Id_compra == id);
+
+                if (compraActual == null) return NotFound();
+
+                modelo.registrado_por = compraActual.UsuarioRel?.nombre_completo ?? "";
+                modelo.productos = await _context.Detalle_compras
+                    .CountAsync(dc => dc.id_compra == id);
+
+                ViewBag.Proveedores = await _context.Proveedores
+                    .Select(p => new { p.Id_proveedor, p.nombre })
+                    .ToListAsync();
+
+                return View(modelo);
+            }
+
+            var existente = await _context.Compras.FindAsync(id);
+            if (existente == null) return NotFound();
+
+            existente.numero_compra = modelo.numero_compra;
+            existente.fecha_ingreso = modelo.fecha_ingreso;
+            existente.id_proveedor = modelo.id_proveedor;
+            existente.monto_total = modelo.monto_total;
+            existente.observaciones = modelo.observaciones ?? "";
+
+            _context.Update(existente);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        // =========================
+        // ACTIVAR / DESACTIVAR
+        // =========================
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Eliminar(int? id)
         {
             if (id == null) return NotFound();
 
             var compra = await _context.Compras.FindAsync(id);
             if (compra == null) return NotFound();
-
-            // Revertir stock de los productos
-            var detalles = await _context.Detalle_compras
-                .Where(dc => dc.id_compra == id)
-                .ToListAsync();
-
-            foreach (var detalle in detalles)
-            {
-                var repuesto = await _context.Repuestos.FindAsync(detalle.id_repuesto);
-                if (repuesto != null)
-                {
-                    repuesto.stock_actual -= detalle.cantidad;
-                    _context.Update(repuesto);
-                }
-            }
-
-            // Eliminar detalle
-            _context.Detalle_compras.RemoveRange(detalles);
-
-            // Eliminar cabecera
-            _context.Compras.Remove(compra);
-
-            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }

@@ -13,6 +13,8 @@ namespace FLOMAR.Data
         public DbSet<Detalle_compra> Detalle_compras { get; set; }
         public DbSet<Proveedor> Proveedores { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<MovimientoInventario> Movimientos { get; set; }
+        public DbSet<TipoMovimiento> TiposMovimiento { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,6 +22,9 @@ namespace FLOMAR.Data
 
             modelBuilder.Entity<Repuesto>().ToTable("REPUESTO");
             modelBuilder.Entity<Repuesto>().HasKey(r => r.id_repuesto);
+            modelBuilder.Entity<Repuesto>().Property(r => r.Codigo).HasColumnName("codigo");
+            modelBuilder.Entity<Repuesto>().Property(r => r.Nombre).HasColumnName("nombre");
+            modelBuilder.Entity<Repuesto>().Property(r => r.PrecioVenta).HasColumnName("precio_venta");
 
             modelBuilder.Entity<Compra>().ToTable("COMPRA");
             modelBuilder.Entity<Compra>().HasKey(c => c.Id_compra);
@@ -32,6 +37,14 @@ namespace FLOMAR.Data
 
             modelBuilder.Entity<Usuario>().ToTable("USUARIO");
             modelBuilder.Entity<Usuario>().HasKey(u => u.id_usuario);
+            modelBuilder.Entity<Usuario>().Property(u => u.Nombre_Usuario).HasColumnName("nombre_usuario");
+            modelBuilder.Entity<Usuario>().Property(u => u.Contraseña_hash).HasColumnName("contrasena_hash");
+
+            modelBuilder.Entity<MovimientoInventario>().ToTable("MOVIMIENTO_INVENTARIO");
+            modelBuilder.Entity<MovimientoInventario>().HasKey(m => m.id_movimiento);
+
+            modelBuilder.Entity<TipoMovimiento>().ToTable("TIPO_MOVIMIENTO");
+            modelBuilder.Entity<TipoMovimiento>().HasKey(t => t.id_tipo_movimiento);
         }
     }
 }

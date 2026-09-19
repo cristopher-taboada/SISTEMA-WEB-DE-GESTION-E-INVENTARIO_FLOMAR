@@ -1,4 +1,4 @@
-@model FLOMAR.Models.AdministrarInventario
+@model FLOMAR.Models.CompraEditViewModel
 
 @{
     ViewData["Title"] = "Editar Mercadería";
@@ -88,6 +88,11 @@
             border-color: #d4af37;
         }
 
+        .form-control-flomar[readonly] {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
     .validation-message {
         display: block;
         color: #ff6565;
@@ -171,6 +176,10 @@
                 <input type="hidden"
                        asp-for="Id_compra" />
 
+                <div asp-validation-summary="ModelOnly"
+                     class="validation-message">
+                </div>
+
 
                 <!-- NRO. COMPRA Y FECHA -->
                 <div class="form-row">
@@ -215,15 +224,27 @@
 
                     <div class="form-group">
 
-                        <label asp-for="proveedor">
+                        <label asp-for="id_proveedor">
                             Proveedor
                         </label>
 
-                        <input asp-for="proveedor"
-                               class="form-control-flomar"
-                               placeholder="Ej: Repuestos del Sur S.R.L." />
+                        <select asp-for="id_proveedor"
+                                class="form-control-flomar">
 
-                        <span asp-validation-for="proveedor"
+                            <option value="">
+                                -- Seleccione un proveedor --
+                            </option>
+
+                            @foreach (var p in (dynamic)ViewBag.Proveedores)
+                            {
+                                <option value="@p.Id_proveedor">
+                                    @p.nombre
+                                </option>
+                            }
+
+                        </select>
+
+                        <span asp-validation-for="id_proveedor"
                               class="validation-message">
                         </span>
 
@@ -237,11 +258,8 @@
 
                         <input asp-for="registrado_por"
                                class="form-control-flomar"
-                               placeholder="Ej: Carlos Flores Martinez" />
-
-                        <span asp-validation-for="registrado_por"
-                              class="validation-message">
-                        </span>
+                               readonly
+                               tabindex="-1" />
 
                     </div>
 
@@ -259,13 +277,9 @@
 
                         <input asp-for="productos"
                                type="number"
-                               min="0"
                                class="form-control-flomar"
-                               placeholder="Ej: 5" />
-
-                        <span asp-validation-for="productos"
-                              class="validation-message">
-                        </span>
+                               readonly
+                               tabindex="-1" />
 
                     </div>
 
@@ -287,6 +301,25 @@
                         </span>
 
                     </div>
+
+                </div>
+
+
+                <!-- OBSERVACIONES -->
+                <div class="form-group">
+
+                    <label asp-for="observaciones">
+                        Observaciones
+                    </label>
+
+                    <textarea asp-for="observaciones"
+                              rows="3"
+                              class="form-control-flomar"
+                              placeholder="Ej: Reposición semanal"></textarea>
+
+                    <span asp-validation-for="observaciones"
+                          class="validation-message">
+                    </span>
 
                 </div>
 

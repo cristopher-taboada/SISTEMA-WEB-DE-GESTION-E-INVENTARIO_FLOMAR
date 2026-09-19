@@ -1,7 +1,7 @@
-@model FLOMAR.Models.CompraCreateViewModel
+@model FLOMAR.Models.CompraCreateFormViewModel
 
 @{
-    ViewData["Title"] = "Nueva Compra";
+    ViewData["Title"] = "Nuevo Ingreso de Mercaderia";
 }
 
 <style>
@@ -13,7 +13,7 @@
     }
 
     .crear-container {
-        max-width: 850px;
+        max-width: 1000px;
         margin: 0 auto;
     }
 
@@ -41,6 +41,7 @@
         border: 1px solid #3b3b3b;
         border-radius: 10px;
         padding: 30px;
+        margin-bottom: 20px;
     }
 
     .crear-info {
@@ -99,6 +100,93 @@
         margin-top: 5px;
     }
 
+    .tabla-productos {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+        .tabla-productos thead {
+            background: #2a2a2a;
+        }
+
+        .tabla-productos th {
+            padding: 12px;
+            text-align: left;
+            color: #d4af37;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #3b3b3b;
+        }
+
+        .tabla-productos td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #2a2a2a;
+            color: #ccc;
+        }
+
+        .tabla-productos tbody tr:hover {
+            background: #252525;
+        }
+
+        .tabla-productos input {
+            width: 100%;
+            background: #181818;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 8px 10px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+            .tabla-productos input:focus {
+                border-color: #d4af37;
+            }
+
+        .tabla-productos .col-codigo {
+            color: #888;
+            font-weight: bold;
+        }
+
+        .tabla-productos .col-nombre {
+            color: #eee;
+        }
+
+        .tabla-productos .col-costo {
+            color: #d4af37;
+        }
+
+        .subtotal-cell {
+            color: #51cf66;
+            font-weight: bold;
+        }
+
+    .resumen {
+        background: #1a1a1a;
+        border-left: 4px solid #d4af37;
+        padding: 16px 20px;
+        border-radius: 4px;
+        margin-top: 20px;
+    }
+
+    .resumen-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 15px;
+    }
+
+    .resumen-total {
+        font-size: 20px;
+        font-weight: bold;
+        color: #d4af37;
+        border-top: 1px solid #3b3b3b;
+        padding-top: 10px;
+        margin-top: 10px;
+    }
+
     .form-actions {
         display: flex;
         gap: 10px;
@@ -134,6 +222,11 @@
             border-color: #d4af37;
         }
 
+    .validation-summary-errors {
+        color: #ff6565;
+        margin-bottom: 15px;
+    }
+
     @@media (max-width: 700px) {
         .form-row {
             grid-template-columns: 1fr;
@@ -143,127 +236,102 @@
 
 
 <div class="crear-page">
-
     <div class="crear-container">
 
         <div class="crear-header">
-            <h1>
-                Nueva <span>Compra</span>
-            </h1>
-
-            <p>
-                Registra un nuevo ingreso de mercadería en FLOMAR.
-            </p>
+            <h1>Nuevo Ingreso de <span>Mercaderia</span></h1>
+            <p>Registra un nuevo ingreso de mercaderia en FLOMAR.</p>
         </div>
-
 
         <div class="crear-card">
 
             <div class="crear-info">
-                Complete los datos de la <strong>nueva compra</strong>.
+                Ingrese la cantidad y costo unitario solo en los productos que desea comprar.
+                Los demas se omitiran automaticamente.
             </div>
 
+            @if (TempData["Error"] != null)
+            {
+                <div class="validation-summary-errors">@TempData["Error"]</div>
+            }
 
-            <form asp-controller="Compras"
-                  asp-action="Create"
-                  method="post">
+            <div asp-validation-summary="All" class="validation-summary-errors"></div>
 
-                <!-- NRO. COMPRA Y FECHA -->
+            <form asp-controller="Compras" asp-action="Create" method="post">
+
+                <!-- DATOS DEL INGRESO -->
                 <div class="form-row">
-
                     <div class="form-group">
-
-                        <label asp-for="numero_compra">
-                            Nro. Compra
-                        </label>
-
-                        <input asp-for="numero_compra"
-                               class="form-control-flomar"
-                               placeholder="Ej: CMP-2026-004" />
-
-                        <span asp-validation-for="numero_compra"
-                              class="validation-message">
-                        </span>
-
+                        <label asp-for="numero_compra">N° de Compra</label>
+                        <input asp-for="numero_compra" class="form-control-flomar" placeholder="Ej: CMP-2026-001" />
+                        <span asp-validation-for="numero_compra" class="validation-message"></span>
                     </div>
-
                     <div class="form-group">
-
-                        <label asp-for="fecha_ingreso">
-                            Fecha de Ingreso
-                        </label>
-
-                        <input asp-for="fecha_ingreso"
-                               type="datetime-local"
-                               class="form-control-flomar" />
-
-                        <span asp-validation-for="fecha_ingreso"
-                              class="validation-message">
-                        </span>
-
+                        <label asp-for="fecha_ingreso">Fecha de Ingreso</label>
+                        <input asp-for="fecha_ingreso" type="datetime-local" class="form-control-flomar" />
+                        <span asp-validation-for="fecha_ingreso" class="validation-message"></span>
                     </div>
-
                 </div>
 
-
-                <!-- PROVEEDOR -->
-                <div class="form-group">
-
-                    <label asp-for="id_proveedor">
-                        ID Proveedor
-                    </label>
-
-                    <input asp-for="id_proveedor"
-                           type="number"
-                           min="1"
-                           class="form-control-flomar"
-                           placeholder="Ej: 1" />
-
-                    <span asp-validation-for="id_proveedor"
-                          class="validation-message">
-                    </span>
-
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="id_proveedor">Proveedor</label>
+                        <select asp-for="id_proveedor" class="form-control-flomar">
+                            <option value="">-- Seleccione un proveedor --</option>
+                            @foreach (var p in (dynamic)ViewBag.Proveedores)
+                            {
+                                <option value="@p.Id_proveedor">@p.nombre</option>
+                            }
+                        </select>
+                        <span asp-validation-for="id_proveedor" class="validation-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="observaciones">Observaciones</label>
+                        <input asp-for="observaciones" class="form-control-flomar" placeholder="Ej: Reposicion semanal" />
+                        <span asp-validation-for="observaciones" class="validation-message"></span>
+                    </div>
                 </div>
 
+                <!-- TABLA DE PRODUCTOS -->
+                <h2 style="color:#d4af37; font-size:18px; margin:25px 0 10px 0;">Detalle de Productos</h2>
 
-                <!-- OBSERVACIONES -->
-                <div class="form-group">
-
-                    <label asp-for="observaciones">
-                        Observaciones
-                    </label>
-
-                    <input asp-for="observaciones"
-                           class="form-control-flomar"
-                           placeholder="Ej: Pedido urgente de frenos" />
-
-                    <span asp-validation-for="observaciones"
-                          class="validation-message">
-                    </span>
-
-                </div>
-
+                <table class="tabla-productos">
+                    <thead>
+                        <tr>
+                            <th style="width:12%">Codigo</th>
+                            <th style="width:30%">Repuesto</th>
+                            <th style="width:15%">Costo Unit. (Bs)</th>
+                            <th style="width:13%">Cantidad</th>
+                            <th style="width:15%">Subtotal (Bs)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Productos.Count; i++)
+                        {
+                            <tr>
+                                <td class="col-codigo">@Model.Productos[i].codigo</td>
+                                <td class="col-nombre">@Model.Productos[i].nombre</td>
+                                <td class="col-costo">Bs @Model.Productos[i].costo_unitario.ToString("0.00")</td>
+                                <td>
+                                    <input asp-for="Productos[i].cantidad" type="number" min="0" value="@Model.Productos[i].cantidad" />
+                                    <input type="hidden" asp-for="Productos[i].id_repuesto" />
+                                    <input type="hidden" asp-for="Productos[i].costo_unitario" />
+                                </td>
+                                <td class="subtotal-cell">
+                                    Bs @((Model.Productos[i].cantidad * Model.Productos[i].costo_unitario).ToString("0.00"))
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
 
                 <!-- BOTONES -->
                 <div class="form-actions">
-
-                    <button type="submit"
-                            class="btn-guardar">
-                        + Guardar Compra
-                    </button>
-
-                    <a asp-controller="Compras"
-                       asp-action="Index"
-                       class="btn-cancelar">
-                        Cancelar
-                    </a>
-
+                    <button type="submit" class="btn-guardar">Guardar Ingreso</button>
+                    <a asp-controller="Compras" asp-action="Index" class="btn-cancelar">Cancelar</a>
                 </div>
 
             </form>
-
         </div>
-
     </div>
-
 </div>

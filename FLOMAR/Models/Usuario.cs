@@ -10,6 +10,6 @@
         public int id_rol { get; set; }
         public int id_estado_usuario { get; set; }
         public DateTime fecha_creacion { get; set; }
-        public DateTime ultimo_acceso { get; set; }
+        public DateTime? ultimo_acceso { get; set; }
     }
 }

@@ -1,7 +1,7 @@
-﻿@model IEnumerable<FLOMAR.Models.AdministrarInventario>
+@model IEnumerable<FLOMAR.Models.MovimientoListaViewModel>
 
 @{
-    ViewData["Title"] = "Mercadería";
+    ViewData["Title"] = "Movimientos de Inventario";
 }
 
 <style>
@@ -59,7 +59,7 @@
     .compras-table {
         width: 100%;
         border-collapse: collapse;
-        min-width: 1000px;
+        min-width: 1100px;
     }
 
         .compras-table th {
@@ -85,24 +85,6 @@
         font-weight: bold;
     }
 
-    .precio {
-        white-space: nowrap;
-    }
-
-    .estado-activo {
-        color: #63d471;
-        font-weight: bold;
-    }
-
-    .estado-inactivo {
-        color: #ff6b6b;
-        font-weight: bold;
-    }
-
-    .fila-inactiva {
-        opacity: 0.55;
-    }
-
     .acciones {
         white-space: nowrap;
     }
@@ -124,22 +106,6 @@
             color: #111;
         }
 
-    .btn-editar {
-        display: inline-block;
-        background: #d4af37;
-        color: #111;
-        padding: 7px 12px;
-        border-radius: 5px;
-        text-decoration: none;
-        font-weight: bold;
-        margin-right: 5px;
-    }
-
-        .btn-editar:hover {
-            background: #e5c34b;
-            color: #111;
-        }
-
     .btn-desactivar {
         background: transparent;
         color: #ff6b6b;
@@ -155,20 +121,26 @@
             color: #111;
         }
 
-    .btn-activar {
-        background: transparent;
-        color: #63d471;
-        border: 1px solid #63d471;
-        padding: 6px 10px;
-        border-radius: 5px;
+    .badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
         font-weight: bold;
-        cursor: pointer;
     }
 
-        .btn-activar:hover {
-            background: #63d471;
-            color: #111;
-        }
+    .badge-suma {
+        background: rgba(40, 167, 69, 0.2);
+        color: #51cf66;
+    }
+
+    .badge-resta {
+        background: rgba(220, 53, 69, 0.2);
+        color: #ff6b6b;
+    }
+
+    .precio {
+        white-space: nowrap;
+    }
 
     .sin-compras {
         text-align: center;
@@ -204,19 +176,19 @@
 
         <div>
             <h1>
-                Administrar <span>Mercadería</span>
+                Administrar <span>Inventario</span>
             </h1>
 
             <p>
-                Ingresos de mercadería y compras a proveedores de FLOMAR.
+                Movimientos de ajustes, ingresos y mermas de mercaderia de FLOMAR.
             </p>
         </div>
 
-        <a asp-controller="Compras"
+        <a asp-controller="MovimientoInventario"
            asp-action="Create"
            class="btn-nuevo">
 
-            + Nueva Compra
+            + Nuevo Movimiento
 
         </a>
 
@@ -242,12 +214,14 @@
 
             <thead>
                 <tr>
-                    <th>Nro. Compra</th>
-                    <th>Fecha Ingreso</th>
-                    <th>Proveedor</th>
-                    <th>Productos</th>
-                    <th>Monto Total</th>
-                    <th>Registrado por</th>
+                    <th>Fecha</th>
+                    <th>Codigo</th>
+                    <th>Repuesto</th>
+                    <th>Tipo</th>
+                    <th>Cantidad</th>
+                    <th>Motivo</th>
+                    <th>Usuario</th>
+                    <th>Stock</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -256,70 +230,78 @@
 
                 @if (Model.Any())
                 {
-                    @foreach (var compra in Model)
+                    @foreach (var m in Model)
                     {
                         <tr>
 
-                            <!-- NRO. COMPRA -->
+                            <!-- FECHA -->
+                            <td>
+                                @m.fecha_movimiento.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+
+                            <!-- CODIGO -->
                             <td class="codigo-compra">
-                                @compra.numero_compra
+                                @m.codigo_repuesto
                             </td>
 
-                            <!-- FECHA INGRESO -->
+                            <!-- REPUESTO -->
                             <td>
-                                @compra.fecha_ingreso.ToString("dd/MM/yyyy HH:mm")
+                                <strong>@m.nombre_repuesto</strong>
                             </td>
 
-                            <!-- PROVEEDOR -->
+                            <!-- TIPO -->
                             <td>
-                                <strong>@compra.proveedor</strong>
+                                @if (m.signo == 1)
+                                {
+                                    <span class="badge badge-suma">@m.tipo_movimiento (+)</span>
+                                }
+                                else
+                                {
+                                    <span class="badge badge-resta">@m.tipo_movimiento (-)</span>
+                                }
                             </td>
 
-                            <!-- PRODUCTOS -->
+                            <!-- CANTIDAD -->
                             <td>
-                                @compra.productos
+                                @m.cantidad
                             </td>
 
-                            <!-- MONTO TOTAL -->
-                            <td class="precio">
-                                Bs @compra.monto_total.ToString("0.00")
-                            </td>
-
-                            <!-- REGISTRADO POR -->
+                            <!-- MOTIVO -->
                             <td>
-                                @compra.registrado_por
+                                @m.motivo
+                            </td>
+
+                            <!-- USUARIO -->
+                            <td>
+                                @m.usuario
+                            </td>
+
+                            <!-- STOCK -->
+                            <td class="precio" style="color:#d4af37; font-weight:bold;">
+                                @m.stock_resultante
                             </td>
 
                             <!-- ACCIONES -->
                             <td class="acciones">
 
-                                <a asp-controller="Compras"
+                                <a asp-controller="MovimientoInventario"
                                    asp-action="Details"
-                                   asp-route-id="@compra.Id_compra"
+                                   asp-route-id="@m.id_movimiento"
                                    class="btn-ver">
 
                                     Ver
 
                                 </a>
 
-                                <a asp-controller="Compras"
-                                   asp-action="Edit"
-                                   asp-route-id="@compra.Id_compra"
-                                   class="btn-editar">
-
-                                    Editar
-
-                                </a>
-
-                                <form asp-controller="Compras"
-                                      asp-action="Eliminar"
-                                      asp-route-id="@compra.Id_compra"
+                                <form asp-controller="MovimientoInventario"
+                                      asp-action="Delete"
+                                      asp-route-id="@m.id_movimiento"
                                       method="post"
                                       style="display:inline;">
 
                                     <button type="submit"
                                             class="btn-desactivar"
-                                            onclick="return confirm('¿Eliminar esta compra? Se revertirá el stock ingresado.');">
+                                            onclick="return confirm('Esta seguro? Se revertira el stock.')">
 
                                         Eliminar
 
@@ -335,10 +317,10 @@
                 else
                 {
                     <tr>
-                        <td colspan="7"
+                        <td colspan="9"
                             class="sin-compras">
 
-                            No existen compras registradas.
+                            No existen movimientos registrados.
 
                         </td>
                     </tr>
