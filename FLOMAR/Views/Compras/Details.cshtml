@@ -105,6 +105,11 @@
         white-space: nowrap;
     }
 
+    .codigo-compra {
+        color: #bbb;
+        font-weight: bold;
+    }
+
     .total-row td {
         border-top: 2px solid #d4af37;
         font-weight: bold;
@@ -215,6 +220,7 @@
 
                 <thead>
                     <tr>
+                        <th>Código</th>
                         <th>Repuesto</th>
                         <th>Cantidad</th>
                         <th>Costo Unitario</th>
@@ -227,6 +233,7 @@
                     @foreach (var item in Model.Detalles)
                     {
                         <tr>
+                            <td class="codigo-compra">@item.codigo</td>
                             <td><strong>@item.repuesto</strong></td>
                             <td>@item.cantidad</td>
                             <td class="precio">Bs @item.costo_unitario.ToString("0.00")</td>
@@ -235,7 +242,7 @@
                     }
 
                     <tr class="total-row">
-                        <td colspan="3" style="text-align: right;">TOTAL:</td>
+                        <td colspan="4" style="text-align: right;">TOTAL:</td>
                         <td class="precio">Bs @Model.monto_total.ToString("0.00")</td>
                     </tr>
 

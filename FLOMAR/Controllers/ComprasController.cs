@@ -74,15 +74,19 @@ namespace FLOMAR.Controllers
                 registrado_por = compra.UsuarioRel?.nombre_completo ?? "",
                 monto_total = compra.monto_total,
                 observaciones = compra.observaciones,
-                Detalles = detalles.Select(dc => new DetalleCompraItem
+                Detalles = detalles.Select(dc =>
                 {
-                    repuesto = _context.Repuestos
-                        .Where(r => r.id_repuesto == dc.id_repuesto)
-                        .Select(r => r.Nombre)
-                        .FirstOrDefault() ?? "",
-                    cantidad = dc.cantidad,
-                    costo_unitario = dc.costo_unitario,
-                    subtotal = dc.subtotal
+                    var repuesto = _context.Repuestos
+                        .FirstOrDefault(r => r.id_repuesto == dc.id_repuesto);
+
+                    return new DetalleCompraItem
+                    {
+                        codigo = repuesto?.Codigo ?? "",
+                        repuesto = repuesto?.Nombre ?? "",
+                        cantidad = dc.cantidad,
+                        costo_unitario = dc.costo_unitario,
+                        subtotal = dc.subtotal
+                    };
                 }).ToList()
             };
 
@@ -109,6 +113,7 @@ namespace FLOMAR.Controllers
         {
             if (ModelState.IsValid)
             {
+                // 1. Insertar cabecera
                 var compra = new Compra
                 {
                     numero_compra = modelo.numero_compra,
@@ -137,7 +142,9 @@ namespace FLOMAR.Controllers
         {
             if (id == null) return NotFound();
 
-            var compra = await _context.Compras.FirstOrDefaultAsync(m => m.Id_compra == id);
+            var compra = await _context.Compras
+                .Include(c => c.ProveedorRel)
+                .FirstOrDefaultAsync(m => m.Id_compra == id);
 
             if (compra == null) return NotFound();
 
@@ -146,6 +153,7 @@ namespace FLOMAR.Controllers
                 Id_compra = compra.Id_compra,
                 numero_compra = compra.numero_compra,
                 fecha_ingreso = compra.fecha_ingreso,
+                proveedor = compra.ProveedorRel?.nombre ?? "",
                 monto_total = compra.monto_total,
                 observaciones = compra.observaciones
             };
@@ -184,7 +192,7 @@ namespace FLOMAR.Controllers
 
 
         // =========================
-        // ACTIVAR / DESACTIVAR
+        // DESACTIVAR (ELIMINAR)
         // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -194,6 +202,29 @@ namespace FLOMAR.Controllers
 
             var compra = await _context.Compras.FindAsync(id);
             if (compra == null) return NotFound();
+
+            // Revertir stock de los productos
+            var detalles = await _context.Detalle_compras
+                .Where(dc => dc.id_compra == id)
+                .ToListAsync();
+
+            foreach (var detalle in detalles)
+            {
+                var repuesto = await _context.Repuestos.FindAsync(detalle.id_repuesto);
+                if (repuesto != null)
+                {
+                    repuesto.stock_actual -= detalle.cantidad;
+                    _context.Update(repuesto);
+                }
+            }
+
+            // Eliminar detalle
+            _context.Detalle_compras.RemoveRange(detalles);
+
+            // Eliminar cabecera
+            _context.Compras.Remove(compra);
+
+            await _context.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }

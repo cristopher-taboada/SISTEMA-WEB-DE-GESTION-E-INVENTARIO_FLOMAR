@@ -17,6 +17,7 @@ namespace FLOMAR.Models
 
     public class DetalleCompraItem
     {
+        public string codigo { get; set; } = string.Empty;
         public string repuesto { get; set; } = string.Empty;
         public int cantidad { get; set; }
         public decimal costo_unitario { get; set; }
