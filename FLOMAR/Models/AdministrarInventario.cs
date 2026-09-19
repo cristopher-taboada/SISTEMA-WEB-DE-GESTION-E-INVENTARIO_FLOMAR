@@ -9,6 +9,7 @@
         public int productos { get; set; }
         public decimal monto_total { get; set; }
         public string registrado_por { get; set; } = string.Empty;
+        public string observaciones { get; set; } = string.Empty;
         public bool Activo { get; set; } = true;
     }
 }
