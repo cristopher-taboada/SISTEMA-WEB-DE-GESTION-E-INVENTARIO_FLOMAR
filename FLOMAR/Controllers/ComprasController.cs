@@ -85,16 +85,7 @@ namespace FLOMAR.Controllers
                 registrado_por = compra.UsuarioRel?.nombre_completo ?? "",
                 monto_total = compra.monto_total,
                 observaciones = compra.observaciones,
-                Detalles = detalles.Select(dc => new DetalleCompraItem
-                {
-                    repuesto = _context.Repuestos
-                        .Where(r => r.id_repuesto == dc.id_repuesto)
-                        .Select(r => r.Nombre)
-                        .FirstOrDefault() ?? "",
-                    cantidad = dc.cantidad,
-                    costo_unitario = dc.costo_unitario,
-                    subtotal = dc.subtotal
-                }).ToList()
+                Detalles = detalles
             };
 
             return View(modelo);
@@ -130,10 +121,68 @@ namespace FLOMAR.Controllers
         // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CompraCreateViewModel modelo)
+        public async Task<IActionResult> Create(CompraCreateFormViewModel modelo)
         {
-            if (ModelState.IsValid)
+            var productosConCantidad = modelo.Productos
+                .Where(p => p.cantidad > 0)
+                .ToList();
+
+            // 1. Validacion del modelo (nro compra, fecha, proveedor, etc.)
+            if (!ModelState.IsValid)
             {
+                await CargarProveedores();
+                modelo.Productos = await ObtenerProductosConCantidades(modelo.Productos);
+                return View(modelo);
+            }
+
+            // 2. Debe haber al menos un producto con cantidad
+            if (productosConCantidad.Count == 0)
+            {
+                await CargarProveedores();
+                modelo.Productos = await ObtenerProductosConCantidades(modelo.Productos);
+                ModelState.AddModelError("", "Debe ingresar cantidad en al menos un producto.");
+                return View(modelo);
+            }
+
+            // 3. Numero de compra duplicado
+            bool numeroExiste = await _context.Compras
+                .AnyAsync(c => c.numero_compra == modelo.numero_compra);
+
+            if (numeroExiste)
+            {
+                await CargarProveedores();
+                modelo.Productos = await ObtenerProductosConCantidades(modelo.Productos);
+                ModelState.AddModelError("numero_compra", "Ya existe una compra registrada con ese numero.");
+                return View(modelo);
+            }
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                // 4. Verificar repuestos y calcular el monto con los costos REALES de la BD
+                //    (no se confia en los costos ocultos que vienen del formulario)
+                var itemsValidados = new List<(ProductoFilaViewModel fila, Repuesto repuesto)>();
+                decimal montoTotal = 0;
+
+                foreach (var item in productosConCantidad)
+                {
+                    var repuesto = await _context.Repuestos.FindAsync(item.id_repuesto);
+
+                    if (repuesto == null)
+                    {
+                        await transaction.RollbackAsync();
+                        await CargarProveedores();
+                        modelo.Productos = await ObtenerProductosConCantidades(modelo.Productos);
+                        ModelState.AddModelError("", $"El repuesto con ID {item.id_repuesto} ya no existe.");
+                        return View(modelo);
+                    }
+
+                    itemsValidados.Add((item, repuesto));
+                    montoTotal += item.cantidad * repuesto.costo_adquisicion;
+                }
+
+                // 5. Crear la compra
                 var compra = new Compra
                 {
                     numero_compra = modelo.numero_compra,
@@ -229,7 +278,10 @@ namespace FLOMAR.Controllers
         {
             if (id == null) return NotFound();
 
-            var compra = await _context.Compras.FirstOrDefaultAsync(m => m.Id_compra == id);
+            var compra = await _context.Compras
+                .Include(c => c.ProveedorRel)
+                .Include(c => c.UsuarioRel)
+                .FirstOrDefaultAsync(m => m.Id_compra == id);
 
             if (compra == null) return NotFound();
 
@@ -238,6 +290,7 @@ namespace FLOMAR.Controllers
                 Id_compra = compra.Id_compra,
                 numero_compra = compra.numero_compra,
                 fecha_ingreso = compra.fecha_ingreso,
+                id_proveedor = compra.id_proveedor,
                 monto_total = compra.monto_total,
                 observaciones = compra.observaciones,
                 registrado_por = compra.UsuarioRel?.nombre_completo ?? "",
@@ -299,7 +352,7 @@ namespace FLOMAR.Controllers
 
 
         // =========================
-        // ACTIVAR / DESACTIVAR
+        // ELIMINAR (con reversion de stock)
         // =========================
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -309,6 +362,45 @@ namespace FLOMAR.Controllers
 
             var compra = await _context.Compras.FindAsync(id);
             if (compra == null) return NotFound();
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var detalles = await _context.Detalle_compras
+                    .Where(dc => dc.id_compra == id)
+                    .ToListAsync();
+
+                // 1. Revertir el stock que ingreso con esta compra
+                foreach (var detalle in detalles)
+                {
+                    var repuesto = await _context.Repuestos.FindAsync(detalle.id_repuesto);
+                    if (repuesto != null)
+                    {
+                        repuesto.stock_actual -= detalle.cantidad;
+
+                        // El stock nunca puede quedar negativo
+                        if (repuesto.stock_actual < 0)
+                            repuesto.stock_actual = 0;
+
+                        _context.Update(repuesto);
+                    }
+                }
+
+                // 2. Eliminar primero los detalles (FK) y luego la compra
+                _context.Detalle_compras.RemoveRange(detalles);
+                _context.Compras.Remove(compra);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                TempData["Exito"] = $"Compra {compra.numero_compra} eliminada y stock revertido correctamente.";
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                TempData["Error"] = "Error al eliminar la compra: " + ex.Message;
+            }
 
             return RedirectToAction(nameof(Index));
         }
