@@ -1,45 +1,235 @@
-<!--
-    IMPORTANTE EQUIPO:
-    Revisar esta versión del Layout.
-    Después de actualizar desde master, verificar que este código esté actualizado.
--->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - FLOMAR</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
     <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            html, body {
+                min-height: 100vh;
+                font-family: 'Roboto', 'Segoe UI', Arial, sans-serif;
+            }
+
             body {
                 background-color: #1a1a1a;
                 color: #f0f0f0;
-                font-family: Arial;
+                display: flex;
+                flex-direction: column;
             }
 
             a {
                 color: #d4af37;
+                text-decoration: none;
+                transition: all 0.25s ease;
             }
 
-            h1, h2 {
+            h1, h2, h3, h4 {
+                font-family: 'Montserrat', sans-serif;
                 color: #d4af37;
             }
+
+            .navbar {
+                background-color: #222222;
+                border-bottom: 2px solid #d4af37;
+                padding: 0 30px;
+                height: 80px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+
+            .navbar-logo {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-family: 'Montserrat', sans-serif;
+                font-size: 24px;
+                font-weight: 800;
+                color: #d4af37;
+                letter-spacing: 1.5px;
+            }
+
+                .navbar-logo .logo-icon {
+                    width: 44px;
+                    height: 44px;
+                    background-color: #d4af37;
+                    color: #1a1a1a;
+                    border-radius: 10px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 20px;
+                    font-weight: 800;
+                }
+
+                .navbar-logo .logo-texto {
+                    display: flex;
+                    flex-direction: column;
+                    line-height: 1;
+                }
+
+                    .navbar-logo .logo-texto span {
+                        color: #888888;
+                        font-size: 10px;
+                        letter-spacing: 2px;
+                        text-transform: uppercase;
+                        margin-top: 4px;
+                    }
+
+            .navbar-menu {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                list-style: none;
+                background-color: #1a1a1a;
+                border: 1px solid #333333;
+                border-radius: 50px;
+                padding: 6px;
+            }
+
+                .navbar-menu a {
+                    color: #d0d0d0;
+                    padding: 10px 26px;
+                    border-radius: 50px;
+                    font-weight: 500;
+                    font-size: 14px;
+                    display: block;
+                }
+
+                    .navbar-menu a:hover {
+                        background-color: #2b2b2b;
+                        color: #d4af37;
+                    }
+
+                    .navbar-menu a.activo {
+                        background-color: #d4af37;
+                        color: #1a1a1a;
+                        font-weight: 700;
+                    }
+
+            .navbar-usuario {
+                display: flex;
+                align-items: center;
+                gap: 14px;
+            }
+
+                .navbar-usuario .avatar {
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 10px;
+                    background-color: #d4af37;
+                    color: #1a1a1a;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 800;
+                    font-size: 15px;
+                }
+
+            .btn-salir {
+                background-color: transparent;
+                color: #d4af37;
+                border: 1.5px solid #d4af37;
+                border-radius: 8px;
+                padding: 9px 16px;
+                font-weight: 600;
+                font-size: 13px;
+                cursor: pointer;
+            }
+
+                .btn-salir:hover {
+                    background-color: #d4af37;
+                    color: #1a1a1a;
+                }
+
+            .barra-info {
+                background-color: #1e1e1e;
+                border-bottom: 1px solid #333333;
+                padding: 12px 30px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-size: 13px;
+                color: #999999;
+            }
+
+                .barra-info strong {
+                    color: #d4af37;
+                }
+
+            .contenido-principal {
+                flex: 1;
+                padding: 35px;
+                max-width: 1600px;
+                width: 100%;
+                margin: 0 auto;
+            }
+
+            .footer {
+                background-color: #222222;
+                border-top: 1px solid #333333;
+                padding: 22px 30px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                color: #777777;
+                font-size: 13px;
+            }
+
+                .footer strong {
+                    color: #d4af37;
+                }
     </style>
 </head>
 <body>
 
+    <nav class="navbar">
+        <div class="navbar-logo">
+            <div class="logo-icon">F</div>
+            <div class="logo-texto">
+                FLOMAR
+                <span>Repuestos Automotrices</span>
+            </div>
+        </div>
 
+        <ul class="navbar-menu">
+            <li><a href="/">Inicio</a></li>
+            <li><a href="/Home/Admin">Admin</a></li>
+            <li><a href="/Home/Vendedor">Vendedor</a></li>
+            <li><a href="/Repuestos">Repuestos</a></li>
+        </ul>
 
+        <div class="navbar-usuario">
+            <div class="avatar">AD</div>
+            <button class="btn-salir">Salir</button>
+        </div>
+    </nav>
 
-    <h2>FLOMAR</h2>
+    <div class="barra-info">
+        <div>Estás en: <strong>@ViewData["Title"]</strong></div>
+        <div>● Sistema activo</div>
+    </div>
 
-    <a href="/">Inicio</a> |
-    <a href="/Home/Admin">Admin</a> |
-    <a href="/Home/Vendedor">Vendedor</a> |
-    <a href="/Repuestos">Repuestos</a>
+    <main class="contenido-principal">
+        @RenderBody()
+    </main>
 
-    <hr />
+    <footer class="footer">
+        <div>&copy; 2026 <strong>FLOMAR</strong> — Sistema Web de Ventas e Inventario</div>
+        <div>Quillacollo, Cochabamba · Versión 2.0</div>
+    </footer>
 
-
-    @RenderBody()
 </body>
 </html>
