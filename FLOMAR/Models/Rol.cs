@@ -9,5 +9,6 @@ namespace FLOMAR.Models
 
         public string nombre_rol { get; set; } = string.Empty;
         public string descripcion { get; set; } = string.Empty;
+
     }
 }

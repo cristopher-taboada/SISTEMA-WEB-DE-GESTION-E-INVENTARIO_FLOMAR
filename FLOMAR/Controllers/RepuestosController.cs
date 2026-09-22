@@ -1,38 +1,38 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using FLOMAR.Data;
 using FLOMAR.Models;
 
 namespace FLOMAR.Controllers
 {
     public class RepuestosController : Controller
     {
-        // LISTA TEMPORAL
-        // Después será reemplazada por MySQL
-        private static List<Repuesto> repuestos = new List<Repuesto>
+        private readonly FlomarContext _context;
+
+        public RepuestosController(FlomarContext context)
         {
-            new Repuesto
-            {
-                Id = 1,
-                Codigo = "REP-001",
-                Nombre = "Pastilla de freno"
-            },
-
-            new Repuesto
-            {
-                Id = 2,
-                Codigo = "REP-002",
-                Nombre = "Filtro de aceite"
-            }
-        };
+            _context = context;
+        }
 
 
-        // LISTAR REPUESTOS
-        public IActionResult Index()
+        // =========================================
+        // LISTAR REPUESTOS DESDE MYSQL
+        // =========================================
+
+        public async Task<IActionResult> Index()
         {
+            var repuestos = await _context.Repuestos
+                .OrderBy(r => r.Nombre)
+                .ToListAsync();
+
             return View(repuestos);
         }
 
 
-        // MOSTRAR FORMULARIO PARA CREAR
+        // =========================================
+        // MOSTRAR FORMULARIO CREAR
+        // =========================================
+
         [HttpGet]
         public IActionResult Create()
         {
@@ -40,36 +40,66 @@ namespace FLOMAR.Controllers
         }
 
 
-        // GUARDAR NUEVO REPUESTO
+        // =========================================
+        // GUARDAR REPUESTO EN MYSQL
+        // =========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Repuesto repuesto)
+        public async Task<IActionResult> Create(Repuesto repuesto)
         {
-            if (ModelState.IsValid)
+            // Comprobar código repetido
+            bool codigoExiste = await _context.Repuestos
+                .AnyAsync(r => r.Codigo == repuesto.Codigo);
+
+            if (codigoExiste)
             {
-                if (repuestos.Count > 0)
-                {
-                    repuesto.Id = repuestos.Max(r => r.Id) + 1;
-                }
-                else
-                {
-                    repuesto.Id = 1;
-                }
-
-                repuestos.Add(repuesto);
-
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(
+                    nameof(repuesto.Codigo),
+                    "Ya existe un repuesto con este código."
+                );
             }
 
-            return View(repuesto);
+
+            // El precio de venta no puede ser menor al costo
+            if (repuesto.PrecioVenta < repuesto.costo_adquisicion)
+            {
+                ModelState.AddModelError(
+                    nameof(repuesto.PrecioVenta),
+                    "El precio de venta no puede ser menor al costo de adquisición."
+                );
+            }
+
+
+            if (!ModelState.IsValid)
+            {
+                return View(repuesto);
+            }
+
+
+            // 1 = Activo
+            repuesto.id_estado = 1;
+
+
+            // INSERT
+            _context.Repuestos.Add(repuesto);
+
+            await _context.SaveChangesAsync();
+
+
+            return RedirectToAction(nameof(Index));
         }
 
 
-        // MOSTRAR FORMULARIO PARA EDITAR
+        // =========================================
+        // MOSTRAR FORMULARIO EDITAR
+        // =========================================
+
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var repuesto = repuestos.FirstOrDefault(r => r.Id == id);
+            var repuesto = await _context.Repuestos
+                .FirstOrDefaultAsync(r => r.id_repuesto == id);
 
             if (repuesto == null)
             {
@@ -80,42 +110,118 @@ namespace FLOMAR.Controllers
         }
 
 
-        // GUARDAR CAMBIOS DEL REPUESTO
+        // =========================================
+        // GUARDAR EDICIÓN EN MYSQL
+        // =========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Repuesto repuesto)
+        public async Task<IActionResult> Edit(Repuesto repuesto)
         {
-            if (ModelState.IsValid)
+            bool codigoExiste = await _context.Repuestos
+                .AnyAsync(r =>
+                    r.Codigo == repuesto.Codigo &&
+                    r.id_repuesto != repuesto.id_repuesto);
+
+            if (codigoExiste)
             {
-                var repuestoExistente =
-                    repuestos.FirstOrDefault(r => r.Id == repuesto.Id);
-
-                if (repuestoExistente == null)
-                {
-                    return NotFound();
-                }
-
-                repuestoExistente.Codigo = repuesto.Codigo;
-                repuestoExistente.Nombre = repuesto.Nombre;
-
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError(
+                    nameof(repuesto.Codigo),
+                    "Ya existe otro repuesto con este código."
+                );
             }
 
-            return View(repuesto);
+
+            if (repuesto.PrecioVenta < repuesto.costo_adquisicion)
+            {
+                ModelState.AddModelError(
+                    nameof(repuesto.PrecioVenta),
+                    "El precio de venta no puede ser menor al costo de adquisición."
+                );
+            }
+
+
+            if (!ModelState.IsValid)
+            {
+                return View(repuesto);
+            }
+
+
+            var repuestoExistente = await _context.Repuestos
+                .FirstOrDefaultAsync(
+                    r => r.id_repuesto == repuesto.id_repuesto);
+
+            if (repuestoExistente == null)
+            {
+                return NotFound();
+            }
+
+
+            repuestoExistente.Codigo =
+                repuesto.Codigo;
+
+            repuestoExistente.Nombre =
+                repuesto.Nombre;
+
+            repuestoExistente.id_categoria =
+                repuesto.id_categoria;
+
+            repuestoExistente.costo_adquisicion =
+                repuesto.costo_adquisicion;
+
+            repuestoExistente.PrecioVenta =
+                repuesto.PrecioVenta;
+
+            repuestoExistente.stock_actual =
+                repuesto.stock_actual;
+
+            repuestoExistente.stock_minimo =
+                repuesto.stock_minimo;
+
+
+            // UPDATE
+            await _context.SaveChangesAsync();
+
+
+            return RedirectToAction(nameof(Index));
         }
 
 
-        // DESACTIVAR REPUESTO
+        // =========================================
+        // ACTIVAR / DESACTIVAR
+        // =========================================
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Desactivar(int id)
+        public async Task<IActionResult> CambiarEstado(int id)
         {
-            var repuesto = repuestos.FirstOrDefault(r => r.Id == id);
+            var repuesto = await _context.Repuestos
+                .FirstOrDefaultAsync(
+                    r => r.id_repuesto == id);
 
-            if (repuesto != null)
+            if (repuesto == null)
             {
-                repuestos.Remove(repuesto);
+                return NotFound();
             }
+
+
+            // ESTADO_GENERAL
+            // 1 = Activo
+            // 2 = Inactivo
+
+            if (repuesto.id_estado == 1)
+            {
+                repuesto.id_estado = 2;
+            }
+            else
+            {
+                repuesto.id_estado = 1;
+            }
+
+
+            // UPDATE EN MYSQL
+            await _context.SaveChangesAsync();
+
 
             return RedirectToAction(nameof(Index));
         }

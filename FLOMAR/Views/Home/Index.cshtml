@@ -2,12 +2,179 @@
     ViewData["Title"] = "Inicio";
 }
 
-<h1>FLOMAR</h1>
+<style>
+    .dash-titulo {
+        font-size: 26px;
+        font-weight: bold;
+        color: #d4af37;
+        margin: 0 0 6px 0;
+    }
 
-<p>Sistema de Gestión de Ventas e Inventario</p>
+    .dash-sub {
+        color: #888888;
+        font-size: 14px;
+        margin: 0 0 25px 0;
+    }
 
-<h2>Menú</h2>
+    .dash-tarjetas {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
 
-<p><a href="/Home/Admin">Admin</a></p>
-<p><a href="/Home/Vendedor">Vendedor</a></p>
-<p><a href="/Repuestos">Repuestos</a></p>
+    .dash-card {
+        background-color: #2b2b2b;
+        border: 1px solid #444444;
+        border-left: 4px solid #d4af37;
+        border-radius: 8px;
+        padding: 18px;
+    }
+
+        .dash-card .titulo {
+            color: #999999;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .dash-card .valor {
+            color: #d4af37;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .dash-card .pie {
+            color: #777777;
+            font-size: 12px;
+        }
+
+    .dash-seccion {
+        background-color: #2b2b2b;
+        border: 1px solid #444444;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 18px;
+    }
+
+        .dash-seccion h3 {
+            color: #d4af37;
+            font-size: 15px;
+            margin: 0 0 15px 0;
+        }
+
+    .dash-tabla {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .dash-tabla th {
+            color: #d4af37;
+            text-align: left;
+            padding: 10px;
+            border-bottom: 1px solid #444444;
+            font-size: 13px;
+        }
+
+        .dash-tabla td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #383838;
+            color: #dddddd;
+            font-size: 14px;
+        }
+
+    .dash-vacio {
+        text-align: center;
+        color: #666666;
+        padding: 25px !important;
+    }
+
+    .dash-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+    }
+
+    @@media (max-width: 900px) {
+        .dash-grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<h1 class="dash-titulo">Dashboard</h1>
+<p class="dash-sub">Resumen general de FLOMAR</p>
+
+<div class="dash-tarjetas">
+
+    <div class="dash-card">
+        <div class="titulo">Repuestos</div>
+        <div class="valor">0</div>
+        <div class="pie">En catálogo</div>
+    </div>
+
+    <div class="dash-card">
+        <div class="titulo">Usuarios</div>
+        <div class="valor">3</div>
+        <div class="pie">Registrados</div>
+    </div>
+
+    <div class="dash-card">
+        <div class="titulo">Stock Bajo</div>
+        <div class="valor">0</div>
+        <div class="pie">Requieren reposición</div>
+    </div>
+
+    <div class="dash-card">
+        <div class="titulo">Ventas del Día</div>
+        <div class="valor">Bs 0</div>
+        <div class="pie">Sin ventas registradas</div>
+    </div>
+
+</div>
+
+<div class="dash-grid-2">
+
+    <div class="dash-seccion">
+        <h3>Últimos Repuestos</h3>
+
+        <table class="dash-tabla">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nombre</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3" class="dash-vacio">
+                        No hay repuestos registrados.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="dash-seccion">
+        <h3>Alertas de Stock</h3>
+
+        <table class="dash-tabla">
+            <thead>
+                <tr>
+                    <th>Repuesto</th>
+                    <th>Stock</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2" class="dash-vacio">
+                        Sin alertas por el momento.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
