@@ -1,0 +1,337 @@
+@model FLOMAR.Models.CompraCreateFormViewModel
+
+@{
+    ViewData["Title"] = "Nuevo Ingreso de Mercaderia";
+}
+
+<style>
+    .crear-page {
+        min-height: 100vh;
+        background: #181818;
+        padding: 35px;
+        color: white;
+    }
+
+    .crear-container {
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .crear-header {
+        margin-bottom: 25px;
+    }
+
+        .crear-header h1 {
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .crear-header h1 span {
+                color: #d4af37;
+            }
+
+        .crear-header p {
+            color: #aaa;
+            margin: 0;
+        }
+
+    .crear-card {
+        background: #202020;
+        border: 1px solid #3b3b3b;
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 20px;
+    }
+
+    .crear-info {
+        background: #292929;
+        border-left: 4px solid #d4af37;
+        padding: 13px 15px;
+        border-radius: 4px;
+        margin-bottom: 25px;
+        color: #bbb;
+    }
+
+        .crear-info strong {
+            color: #d4af37;
+        }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #eee;
+        }
+
+    .form-control-flomar {
+        width: 100%;
+        background: #181818;
+        color: white;
+        border: 1px solid #555;
+        border-radius: 6px;
+        padding: 12px 14px;
+        box-sizing: border-box;
+        outline: none;
+    }
+
+        .form-control-flomar:focus {
+            border-color: #d4af37;
+        }
+
+        .form-control-flomar::placeholder {
+            color: #777;
+        }
+
+    .validation-message {
+        display: block;
+        color: #ff6565;
+        font-size: 13px;
+        margin-top: 5px;
+    }
+
+    .tabla-productos {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+        .tabla-productos thead {
+            background: #2a2a2a;
+        }
+
+        .tabla-productos th {
+            padding: 12px;
+            text-align: left;
+            color: #d4af37;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            border-bottom: 2px solid #3b3b3b;
+        }
+
+        .tabla-productos td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #2a2a2a;
+            color: #ccc;
+        }
+
+        .tabla-productos tbody tr:hover {
+            background: #252525;
+        }
+
+        .tabla-productos input {
+            width: 100%;
+            background: #181818;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 8px 10px;
+            box-sizing: border-box;
+            outline: none;
+        }
+
+            .tabla-productos input:focus {
+                border-color: #d4af37;
+            }
+
+        .tabla-productos .col-codigo {
+            color: #888;
+            font-weight: bold;
+        }
+
+        .tabla-productos .col-nombre {
+            color: #eee;
+        }
+
+        .tabla-productos .col-costo {
+            color: #d4af37;
+        }
+
+        .subtotal-cell {
+            color: #51cf66;
+            font-weight: bold;
+        }
+
+    .resumen {
+        background: #1a1a1a;
+        border-left: 4px solid #d4af37;
+        padding: 16px 20px;
+        border-radius: 4px;
+        margin-top: 20px;
+    }
+
+    .resumen-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 15px;
+    }
+
+    .resumen-total {
+        font-size: 20px;
+        font-weight: bold;
+        color: #d4af37;
+        border-top: 1px solid #3b3b3b;
+        padding-top: 10px;
+        margin-top: 10px;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .btn-guardar {
+        background: #d4af37;
+        color: #111;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .btn-guardar:hover {
+            background: #e5c34b;
+        }
+
+    .btn-cancelar {
+        background: transparent;
+        color: #ddd;
+        border: 1px solid #555;
+        padding: 11px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .btn-cancelar:hover {
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+    .validation-summary-errors {
+        color: #ff6565;
+        margin-bottom: 15px;
+    }
+
+    @@media (max-width: 700px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<div class="crear-page">
+    <div class="crear-container">
+
+        <div class="crear-header">
+            <h1>Nuevo Ingreso de <span>Mercaderia</span></h1>
+            <p>Registra un nuevo ingreso de mercaderia en FLOMAR.</p>
+        </div>
+
+        <div class="crear-card">
+
+            <div class="crear-info">
+                Ingrese la cantidad y costo unitario solo en los productos que desea comprar.
+                Los demas se omitiran automaticamente.
+            </div>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="validation-summary-errors">@TempData["Error"]</div>
+            }
+
+            <div asp-validation-summary="All" class="validation-summary-errors"></div>
+
+            <form asp-controller="Compras" asp-action="Create" method="post">
+
+                <!-- DATOS DEL INGRESO -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="numero_compra">N° de Compra</label>
+                        <input asp-for="numero_compra" class="form-control-flomar" placeholder="Ej: CMP-2026-001" />
+                        <span asp-validation-for="numero_compra" class="validation-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="fecha_ingreso">Fecha de Ingreso</label>
+                        <input asp-for="fecha_ingreso" type="datetime-local" class="form-control-flomar" />
+                        <span asp-validation-for="fecha_ingreso" class="validation-message"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="id_proveedor">Proveedor</label>
+                        <select asp-for="id_proveedor" class="form-control-flomar">
+                            <option value="">-- Seleccione un proveedor --</option>
+                            @foreach (var p in (dynamic)ViewBag.Proveedores)
+                            {
+                                <option value="@p.Id_proveedor">@p.nombre</option>
+                            }
+                        </select>
+                        <span asp-validation-for="id_proveedor" class="validation-message"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="observaciones">Observaciones</label>
+                        <input asp-for="observaciones" class="form-control-flomar" placeholder="Ej: Reposicion semanal" />
+                        <span asp-validation-for="observaciones" class="validation-message"></span>
+                    </div>
+                </div>
+
+                <!-- TABLA DE PRODUCTOS -->
+                <h2 style="color:#d4af37; font-size:18px; margin:25px 0 10px 0;">Detalle de Productos</h2>
+
+                <table class="tabla-productos">
+                    <thead>
+                        <tr>
+                            <th style="width:12%">Codigo</th>
+                            <th style="width:30%">Repuesto</th>
+                            <th style="width:15%">Costo Unit. (Bs)</th>
+                            <th style="width:13%">Cantidad</th>
+                            <th style="width:15%">Subtotal (Bs)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (int i = 0; i < Model.Productos.Count; i++)
+                        {
+                            <tr>
+                                <td class="col-codigo">@Model.Productos[i].codigo</td>
+                                <td class="col-nombre">@Model.Productos[i].nombre</td>
+                                <td class="col-costo">Bs @Model.Productos[i].costo_unitario.ToString("0.00")</td>
+                                <td>
+                                    <input asp-for="Productos[i].cantidad" type="number" min="0" value="@Model.Productos[i].cantidad" />
+                                    <input type="hidden" asp-for="Productos[i].id_repuesto" />
+                                    <input type="hidden" asp-for="Productos[i].costo_unitario" />
+                                </td>
+                                <td class="subtotal-cell">
+                                    Bs @((Model.Productos[i].cantidad * Model.Productos[i].costo_unitario).ToString("0.00"))
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+                <!-- BOTONES -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-guardar">Guardar Ingreso</button>
+                    <a asp-controller="Compras" asp-action="Index" class="btn-cancelar">Cancelar</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
