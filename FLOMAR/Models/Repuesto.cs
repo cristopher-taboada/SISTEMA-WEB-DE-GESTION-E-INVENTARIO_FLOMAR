@@ -6,51 +6,33 @@ namespace FLOMAR.Models
     [Table("REPUESTO")]
     public class Repuesto
     {
-        // =========================
-        // ID
-        // =========================
-
         [Key]
         [Column("id_repuesto")]
         public int id_repuesto { get; set; }
 
+        // Propiedad pública PascalCase para enlazar en las vistas (asp-for="Id")
         [NotMapped]
-        public int Id => id_repuesto;
-
-
-        // =========================
-        // CÓDIGO
-        // =========================
+        public int Id
+        {
+            get => id_repuesto;
+            set => id_repuesto = value;
+        }
 
         [Required(ErrorMessage = "El código es obligatorio")]
-        [StringLength(30, ErrorMessage = "El código no puede superar los 30 caracteres")]
+        [StringLength(30)]
         [Column("codigo")]
-        [Display(Name = "Código")]
         public string Codigo { get; set; } = string.Empty;
 
-
-        // =========================
-        // NOMBRE
-        // =========================
-
         [Required(ErrorMessage = "El nombre es obligatorio")]
-        [StringLength(120, ErrorMessage = "El nombre no puede superar los 120 caracteres")]
+        [StringLength(120)]
         [Column("nombre")]
-        [Display(Name = "Nombre")]
         public string Nombre { get; set; } = string.Empty;
-
-
-        // =========================
-        // CATEGORÍA
-        // =========================
 
         [Range(1, int.MaxValue, ErrorMessage = "Seleccione una categoría")]
         [Column("id_categoria")]
-        [Display(Name = "Categoría")]
         public int id_categoria { get; set; }
 
         [NotMapped]
-        [Display(Name = "Categoría")]
         public string Categoria
         {
             get
@@ -67,67 +49,47 @@ namespace FLOMAR.Models
             }
         }
 
-
-        // =========================
-        // COSTO
-        // =========================
-
         [Range(0, 999999, ErrorMessage = "El costo no puede ser negativo")]
         [Column("costo_adquisicion", TypeName = "decimal(10,2)")]
-        [Display(Name = "Costo")]
         public decimal costo_adquisicion { get; set; }
 
+        // Propiedad pública PascalCase para enlazar en las vistas (asp-for="Costo")
         [NotMapped]
-        [Display(Name = "Costo")]
-        public decimal Costo => costo_adquisicion;
+        public decimal Costo
+        {
+            get => costo_adquisicion;
+            set => costo_adquisicion = value;
+        }
 
-
-        // =========================
-        // PRECIO DE VENTA
-        // =========================
-
-        [Range(0, 999999, ErrorMessage = "El precio de venta no puede ser negativo")]
+        [Range(0, 999999, ErrorMessage = "El precio no puede ser negativo")]
         [Column("precio_venta", TypeName = "decimal(10,2)")]
-        [Display(Name = "Precio de Venta")]
         public decimal PrecioVenta { get; set; }
-
-
-        // =========================
-        // STOCK ACTUAL
-        // =========================
 
         [Range(0, 999999, ErrorMessage = "El stock no puede ser negativo")]
         [Column("stock_actual")]
-        [Display(Name = "Stock Actual")]
         public int stock_actual { get; set; }
 
+        // Propiedad pública PascalCase para enlazar en las vistas (asp-for="Stock")
         [NotMapped]
-        [Display(Name = "Stock Actual")]
-        public int Stock => stock_actual;
-
-
-        // =========================
-        // STOCK MÍNIMO
-        // =========================
+        public int Stock
+        {
+            get => stock_actual;
+            set => stock_actual = value;
+        }
 
         [Range(0, 999999, ErrorMessage = "El stock mínimo no puede ser negativo")]
         [Column("stock_minimo")]
-        [Display(Name = "Stock Mínimo")]
         public int stock_minimo { get; set; }
 
+        // Propiedad pública PascalCase para enlazar en las vistas (asp-for="StockMinimo")
         [NotMapped]
-        [Display(Name = "Stock Mínimo")]
-        public int StockMinimo => stock_minimo;
-
-
-        // =========================
-        // ESTADO
-        // =========================
+        public int StockMinimo
+        {
+            get => stock_minimo;
+            set => stock_minimo = value;
+        }
 
         [Column("id_estado")]
         public int id_estado { get; set; } = 1;
-
-        [NotMapped]
-        public bool Activo => id_estado == 1;
     }
 }
