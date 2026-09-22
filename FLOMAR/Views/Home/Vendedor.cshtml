@@ -5,112 +5,411 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <title>Vendedor - FLOMAR</title>
+    <meta charset="utf-8" />
+    <title>Punto de Venta - FLOMAR</title>
     <style>
+            /* FONDO GENERAL Y TIPOGRAFÍA */
             body {
-                background: #1a1a1a;
-                color: #fff;
-                font-family: Arial, sans-serif;
                 margin: 0;
-                padding: 25px;
+                background-color: #1a1a1a;
+                color: #ffffff;
+                font-family: Arial, sans-serif;
             }
 
-            .btn {
-                background: #d4af37;
-                color: #111;
-                border: none;
-                padding: 10px 15px;
-                cursor: pointer;
+            /* ENCABEZADO */
+            header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 30px;
+                background-color: #1c1c1c;
+                border-bottom: 1px solid #333;
+            }
+
+            .header-logo {
+                color: #d4af37;
+                font-size: 20px;
                 font-weight: bold;
-                border-radius: 5px;
             }
 
-                .btn:hover {
-                    background: #e6c65c;
+            .header-user {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                font-size: 14px;
+                color: #ccc;
+            }
+
+            .btn-cerrar {
+                background: transparent;
+                color: #d4af37;
+                border: 1px solid #d4af37;
+                padding: 8px 15px;
+                border-radius: 4px;
+                cursor: pointer;
+                text-decoration: none;
+            }
+
+                .btn-cerrar:hover {
+                    background: #d4af37;
+                    color: #1a1a1a;
                 }
 
-            .panel {
-                background: #222;
-                padding: 20px;
-                border-radius: 8px;
-                border: 1px solid #444;
+            /* CONTENEDOR PRINCIPAL */
+            .container {
+                padding: 20px 30px;
             }
 
-            .layout {
-                display: grid;
-                grid-template-columns: 1fr 300px;
+            .page-title {
+                font-size: 24px;
+                margin-bottom: 25px;
+                margin-top: 0;
+                font-weight: bold;
+            }
+
+                .page-title span {
+                    color: #d4af37;
+                }
+
+            .main-layout {
+                display: flex;
                 gap: 20px;
+                align-items: flex-start;
             }
 
-            .grid-productos {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-                gap: 15px;
-                margin-top: 15px;
+            /* PANELES (IZQUIERDA Y DERECHA) */
+            .left-panel {
+                flex: 1;
+                background-color: #242424;
+                border-radius: 6px;
+                padding: 25px;
+                border: 1px solid #333;
             }
 
-            .card {
-                background: #2b2b2b;
-                padding: 15px;
-                border-radius: 5px;
+            .right-panel {
+                width: 340px;
+                background-color: #242424;
+                border-radius: 6px;
+                padding: 25px;
+                border: 1px solid #333;
+                display: flex;
+                flex-direction: column;
+            }
+
+            /* BUSCADOR */
+            .search-bar {
+                display: flex;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+                .search-bar input {
+                    flex: 1;
+                    padding: 12px 15px;
+                    background-color: #1a1a1a;
+                    border: 1px solid #333;
+                    border-radius: 4px;
+                    color: #fff;
+                    font-size: 14px;
+                }
+
+                    .search-bar input:focus {
+                        outline: none;
+                        border-color: #d4af37;
+                    }
+
+            .btn-buscar {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                border: none;
+                padding: 0 30px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+                .btn-buscar:hover {
+                    background-color: #d4af37;
+                }
+
+            /* CATEGORÍAS */
+            .categories {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 25px;
+            }
+
+            .cat-btn {
+                background-color: transparent;
                 border: 1px solid #444;
+                color: #aaa;
+                padding: 7px 18px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 13px;
             }
 
-            input {
-                padding: 10px;
-                width: 70%;
-                background: #111;
-                color: #fff;
-                border: 1px solid #555;
-                border-radius: 5px;
+                .cat-btn.active {
+                    background-color: #e4c554;
+                    color: #1a1a1a;
+                    border-color: #e4c554;
+                    font-weight: bold;
+                }
+
+            /* GRILLA DE PRODUCTOS */
+            .products-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 15px;
             }
+
+            .product-card {
+                background-color: #2b2b2b;
+                border: 1px solid #3a3a3a;
+                border-radius: 6px;
+                padding: 18px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .product-title {
+                color: #e4c554;
+                margin: 0 0 10px 0;
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .product-info {
+                color: #ccc;
+                font-size: 13px;
+                margin: 4px 0;
+            }
+
+            .product-stock {
+                color: #4caf50;
+                font-size: 13px;
+                margin: 4px 0 15px 0;
+            }
+
+            .btn-agregar {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                border: none;
+                padding: 10px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+                width: 100%;
+                margin-top: auto;
+            }
+
+                .btn-agregar:hover {
+                    background-color: #d4af37;
+                }
+
+            /* ESTILOS DEL CARRITO LATERAL */
+            .carrito-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+            }
+
+            .carrito-title {
+                color: #e4c554;
+                font-size: 18px;
+                margin: 0;
+                font-weight: bold;
+            }
+
+            .carrito-badge {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                font-weight: bold;
+                border-radius: 50%;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px;
+            }
+
+            .cart-item {
+                display: flex;
+                justify-content: space-between;
+                border-bottom: 1px solid #333;
+                padding-bottom: 15px;
+                margin-bottom: 15px;
+            }
+
+            .cart-item-name {
+                font-weight: bold;
+                font-size: 14px;
+                margin-bottom: 5px;
+                color: #fff;
+            }
+
+            .cart-item-qty {
+                color: #888;
+                font-size: 12px;
+            }
+
+            .cart-item-price {
+                color: #e4c554;
+                font-weight: bold;
+                font-size: 14px;
+            }
+
+            .carrito-summary {
+                border-top: 1px solid #444;
+                padding-top: 15px;
+                margin-top: 20px;
+            }
+
+            .summary-row {
+                display: flex;
+                justify-content: space-between;
+                font-size: 14px;
+                color: #aaa;
+                margin-bottom: 12px;
+            }
+
+            .summary-total {
+                display: flex;
+                justify-content: space-between;
+                font-size: 20px;
+                font-weight: bold;
+                color: #fff;
+                margin-bottom: 20px;
+            }
+
+                .summary-total span:last-child {
+                    color: #e4c554;
+                }
+
+            .btn-confirmar {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                border: none;
+                padding: 14px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+                width: 100%;
+                font-size: 15px;
+            }
+
+                .btn-confirmar:hover {
+                    background-color: #d4af37;
+                }
     </style>
 </head>
 <body>
+    <header>
+        <div class="header-logo">FLOMAR</div>
+        <div class="header-user">
+            <span>Vendedor</span>
+            <a href="/Login/Index" class="btn-cerrar">Cerrar sesión</a>
+        </div>
+    </header>
 
-    <div style="display: flex; justify-content: space-between; margin-bottom: 20px; align-items: center;">
-        <h2 style="color: #d4af37; margin: 0;">Punto de Venta FLOMAR</h2>
-        <a href="/Login/Index" class="btn" style="background: transparent; color: #d4af37; border: 1px solid #d4af37; text-decoration: none;">Salir</a>
-    </div>
+    <div class="container">
+        <h1 class="page-title">Punto de venta <span>FLOMAR</span></h1>
 
-    <div class="layout">
-        <!-- CATÁLOGO Y BUSCADOR -->
-        <div class="panel">
-            <form asp-controller="Home" asp-action="Vendedor" method="get" style="margin-bottom: 20px;">
-                <input type="text" name="textoBusqueda" placeholder="Buscar repuesto por nombre o código..." autocomplete="off" />
-                <button type="submit" class="btn">Buscar</button>
-            </form>
+        <div class="main-layout">
 
-            <div class="grid-productos">
-                @if (Model != null && Model.Any())
-                {
-                    foreach (var repuesto in Model)
+            <!-- PANEL IZQUIERDO: BUSCADOR Y CATÁLOGO -->
+            <div class="left-panel">
+                <form class="search-bar" asp-controller="Home" asp-action="Vendedor" method="get">
+                    <input type="text" name="textoBusqueda" placeholder="Buscar repuesto por nombre o código..." autocomplete="off">
+                    <button type="submit" class="btn-buscar">Buscar</button>
+                </form>
+
+                <div class="categories">
+                    <button class="cat-btn active">Todos</button>
+                    <button class="cat-btn">Frenos</button>
+                    <button class="cat-btn">Filtros</button>
+                    <button class="cat-btn">Aros</button>
+                </div>
+
+                <div class="products-grid">
+                    @if (Model != null && Model.Any())
                     {
-                        <div class="card">
-                            <h3 style="color:#d4af37; margin:0 0 5px 0;">@repuesto.Nombre</h3>
-                            <p style="margin:2px 0; color:#aaa; font-size:14px;">Cód: @repuesto.Codigo</p>
-                            <p style="margin:5px 0; font-size:16px;">Bs. @repuesto.PrecioVenta</p>
-                            <button class="btn" style="width:100%; margin-top:10px;">+ Agregar</button>
-                        </div>
-                    }
-                }
-                else
-                {
-                    <p style="color: gray;">No se encontraron repuestos.</p>
-                }
-            </div>
-        </div>
+                        foreach (var repuesto in Model)
+                        {
+                            <div class="product-card">
+                                <h3 class="product-title">@repuesto.Nombre</h3>
+                                <p class="product-info">Código: @repuesto.Codigo</p>
+                                <p class="product-info">Bs. @repuesto.PrecioVenta</p>
 
-        <!-- CARRITO BÁSICO -->
-        <div class="panel">
-            <h3 style="color: #d4af37; margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 10px;">Carrito (0)</h3>
-            <p style="color: #999; font-size: 14px; text-align: center; margin: 30px 0;">Vacío</p>
-            <div style="border-top: 1px solid #444; padding-top: 15px; margin-top: 30px;">
-                <h3 style="display: flex; justify-content: space-between; margin-bottom: 15px;">TOTAL: <span style="color:#d4af37;">Bs. 0</span></h3>
-                <button class="btn" style="width: 100%;">Confirmar Venta</button>
+                                <!-- NOTA: El stock está puesto fijo en 15 visualmente porque en el paso anterior
+                                     descubrimos que la propiedad Stock de tu modelo es de solo lectura (CS0200). -->
+                                <p class="product-stock">Stock: 15</p>
+
+                                <button class="btn-agregar">+ Agregar</button>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p style="color: #888; grid-column: 1 / -1; text-align: center; padding: 30px;">
+                            No se encontraron repuestos con ese criterio de búsqueda.
+                        </p>
+                    }
+                </div>
             </div>
+
+            <!-- PANEL DERECHO: CARRITO (Diseño fiel a la imagen) -->
+            <div class="right-panel">
+                <div class="carrito-header">
+                    <h2 class="carrito-title">Carrito</h2>
+                    <div class="carrito-badge">3</div>
+                </div>
+
+                <div style="flex: 1;">
+                    <div class="cart-item">
+                        <div>
+                            <div class="cart-item-name">Aro Enkei</div>
+                            <div class="cart-item-qty">Cantidad: 1</div>
+                        </div>
+                        <div class="cart-item-price">Bs. 850</div>
+                    </div>
+                    <div class="cart-item">
+                        <div>
+                            <div class="cart-item-name">Disco de Freno</div>
+                            <div class="cart-item-qty">Cantidad: 2</div>
+                        </div>
+                        <div class="cart-item-price">Bs. 640</div>
+                    </div>
+                    <div class="cart-item">
+                        <div>
+                            <div class="cart-item-name">Filtro de Aceite</div>
+                            <div class="cart-item-qty">Cantidad: 1</div>
+                        </div>
+                        <div class="cart-item-price">Bs. 75</div>
+                    </div>
+                </div>
+
+                <div class="carrito-summary">
+                    <div class="summary-row">
+                        <span>Productos</span>
+                        <span>4</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>Bs. 1.565</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>TOTAL</span>
+                        <span>Bs. 1.565</span>
+                    </div>
+                    <button class="btn-confirmar">Confirmar venta</button>
+                </div>
+            </div>
+
         </div>
     </div>
-
 </body>
 </html>
