@@ -23,7 +23,7 @@ namespace FLOMAR.Controllers
         public IActionResult Entrar(string usuario_input, string password_input)
         {
            
-            var usuario = _context.usuario.FirstOrDefault(u => u.nombre_usuario == usuario_input && u.contrasena_hash == password_input);
+            var usuario = _context.Usuarios.FirstOrDefault(u => u.Nombre_Usuario == usuario_input && u.Contraseña_hash == password_input);
 
             if (usuario != null)
             {

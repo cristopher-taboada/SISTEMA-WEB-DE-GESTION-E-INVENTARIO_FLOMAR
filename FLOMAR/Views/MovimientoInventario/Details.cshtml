@@ -1,0 +1,221 @@
+@model FLOMAR.Models.MovimientoDetalleViewModel
+
+@{
+    ViewData["Title"] = "Detalle del Movimiento";
+}
+
+<style>
+    .detalle-page {
+        min-height: 100vh;
+        background: #181818;
+        padding: 35px;
+        color: white;
+    }
+
+    .detalle-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .detalle-header {
+        margin-bottom: 25px;
+    }
+
+        .detalle-header h1 {
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+            .detalle-header h1 span {
+                color: #d4af37;
+            }
+
+        .detalle-header p {
+            color: #aaa;
+            margin: 0;
+        }
+
+    .card {
+        background: #202020;
+        border: 1px solid #3b3b3b;
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 20px;
+    }
+
+    .card-title {
+        color: #d4af37;
+        font-size: 18px;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #3b3b3b;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .info-item {
+        margin-bottom: 15px;
+    }
+
+        .info-item label {
+            display: block;
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .info-item .valor {
+            color: #eee;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+            .info-item .valor.gold {
+                color: #d4af37;
+            }
+
+            .info-item .valor.verde {
+                color: #51cf66;
+            }
+
+            .info-item .valor.rojo {
+                color: #ff6b6b;
+            }
+
+    .badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    .badge-suma {
+        background: rgba(40, 167, 69, 0.2);
+        color: #51cf66;
+    }
+
+    .badge-resta {
+        background: rgba(220, 53, 69, 0.2);
+        color: #ff6b6b;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .btn-volver {
+        background: transparent;
+        color: #ddd;
+        border: 1px solid #555;
+        padding: 11px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .btn-volver:hover {
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    @@media (max-width: 700px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+
+<div class="detalle-page">
+    <div class="detalle-container">
+
+        <div class="detalle-header">
+            <h1>Movimiento <span>#@Model.id_movimiento</span></h1>
+            <p>Detalle completo del movimiento de inventario.</p>
+        </div>
+
+        <!-- DATOS DEL MOVIMIENTO -->
+        <div class="card">
+            <h2 class="card-title">Datos del Movimiento</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Fecha</label>
+                    <div class="valor">@Model.fecha_movimiento.ToString("dd/MM/yyyy HH:mm")</div>
+                </div>
+                <div class="info-item">
+                    <label>Usuario</label>
+                    <div class="valor">@Model.usuario</div>
+                </div>
+                <div class="info-item">
+                    <label>Tipo de Movimiento</label>
+                    <div class="valor">
+                        @if (Model.signo == 1)
+                        {
+                            <span class="badge badge-suma">@Model.tipo_movimiento (+)</span>
+                        }
+                        else
+                        {
+                            <span class="badge badge-resta">@Model.tipo_movimiento (-)</span>
+                        }
+                    </div>
+                </div>
+                <div class="info-item">
+                    <label>Cantidad</label>
+                    <div class="valor gold">@Model.cantidad</div>
+                </div>
+                <div class="info-item full-width">
+                    <label>Motivo</label>
+                    <div class="valor">@Model.motivo</div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.observaciones))
+                {
+                    <div class="info-item full-width">
+                        <label>Observaciones</label>
+                        <div class="valor">@Model.observaciones</div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- DATOS DEL REPUESTO -->
+        <div class="card">
+            <h2 class="card-title">Repuesto Afectado</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Codigo</label>
+                    <div class="valor" style="color:#888;">@Model.codigo_repuesto</div>
+                </div>
+                <div class="info-item">
+                    <label>Nombre</label>
+                    <div class="valor">@Model.nombre_repuesto</div>
+                </div>
+                <div class="info-item">
+                    <label>Stock Actual (post-movimiento)</label>
+                    <div class="valor verde">@Model.stock_actual</div>
+                </div>
+                <div class="info-item">
+                    <label>Stock Minimo</label>
+                    <div class="valor">@Model.stock_minimo</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTONES -->
+        <div class="form-actions">
+            <a asp-action="Index" class="btn-volver">Volver al Listado</a>
+        </div>
+
+    </div>
+</div>
