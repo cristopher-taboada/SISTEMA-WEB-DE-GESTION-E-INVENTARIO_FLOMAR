@@ -8,319 +8,319 @@
     <meta charset="utf-8" />
     <title>Punto de Venta - FLOMAR</title>
     <style>
-        body {
-            margin: 0;
-            background-color: #1a1a1a;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
-        }
+            body {
+                margin: 0;
+                background-color: #1a1a1a;
+                color: #ffffff;
+                font-family: Arial, sans-serif;
+            }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 30px;
-            background-color: #1c1c1c;
-            border-bottom: 1px solid #333;
-        }
+            header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 30px;
+                background-color: #1c1c1c;
+                border-bottom: 1px solid #333;
+            }
 
-        .header-logo {
-            color: #d4af37;
-            font-size: 20px;
-            font-weight: bold;
-        }
+            .header-logo {
+                color: #d4af37;
+                font-size: 20px;
+                font-weight: bold;
+            }
 
-        .header-user {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            font-size: 14px;
-            color: #ccc;
-        }
+            .header-user {
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                font-size: 14px;
+                color: #ccc;
+            }
 
-        .btn-cerrar {
-            background: transparent;
-            color: #d4af37;
-            border: 1px solid #d4af37;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-        }
+            .btn-cerrar {
+                background: transparent;
+                color: #d4af37;
+                border: 1px solid #d4af37;
+                padding: 8px 15px;
+                border-radius: 4px;
+                cursor: pointer;
+                text-decoration: none;
+            }
 
-        .btn-cerrar:hover {
-            background: #d4af37;
-            color: #1a1a1a;
-        }
+                .btn-cerrar:hover {
+                    background: #d4af37;
+                    color: #1a1a1a;
+                }
 
-        .container {
-            padding: 20px 30px;
-        }
+            .container {
+                padding: 20px 30px;
+            }
 
-        .page-title {
-            font-size: 24px;
-            margin-bottom: 25px;
-            margin-top: 0;
-            font-weight: bold;
-        }
+            .page-title {
+                font-size: 24px;
+                margin-bottom: 25px;
+                margin-top: 0;
+                font-weight: bold;
+            }
 
-        .page-title span {
-            color: #d4af37;
-        }
+                .page-title span {
+                    color: #d4af37;
+                }
 
-        .main-layout {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
+            .main-layout {
+                display: flex;
+                gap: 20px;
+                align-items: flex-start;
+            }
 
-        .left-panel {
-            flex: 1;
-            background-color: #242424;
-            border-radius: 6px;
-            padding: 25px;
-            border: 1px solid #333;
-        }
+            .left-panel {
+                flex: 1;
+                background-color: #242424;
+                border-radius: 6px;
+                padding: 25px;
+                border: 1px solid #333;
+            }
 
-        .right-panel {
-            width: 340px;
-            background-color: #242424;
-            border-radius: 6px;
-            padding: 25px;
-            border: 1px solid #333;
-            display: flex;
-            flex-direction: column;
-        }
+            .right-panel {
+                width: 340px;
+                background-color: #242424;
+                border-radius: 6px;
+                padding: 25px;
+                border: 1px solid #333;
+                display: flex;
+                flex-direction: column;
+            }
 
-        .search-bar {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
+            .search-bar {
+                display: flex;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
 
-        .search-bar input {
-            flex: 1;
-            padding: 12px 15px;
-            background-color: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 4px;
-            color: #fff;
-            font-size: 14px;
-        }
+                .search-bar input {
+                    flex: 1;
+                    padding: 12px 15px;
+                    background-color: #1a1a1a;
+                    border: 1px solid #333;
+                    border-radius: 4px;
+                    color: #fff;
+                    font-size: 14px;
+                }
 
-        .search-bar input:focus {
-            outline: none;
-            border-color: #d4af37;
-        }
+                    .search-bar input:focus {
+                        outline: none;
+                        border-color: #d4af37;
+                    }
 
-        .btn-buscar {
-            background-color: #e4c554;
-            color: #1a1a1a;
-            border: none;
-            padding: 0 30px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 14px;
-        }
+            .btn-buscar {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                border: none;
+                padding: 0 30px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+                font-size: 14px;
+            }
 
-        .btn-buscar:hover {
-            background-color: #d4af37;
-        }
+                .btn-buscar:hover {
+                    background-color: #d4af37;
+                }
 
-        .categories {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
+            .categories {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 25px;
+            }
 
-        .cat-btn {
-            background-color: transparent;
-            border: 1px solid #444;
-            color: #aaa;
-            padding: 7px 18px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 13px;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-            line-height: 20px;
-        }
+            .cat-btn {
+                background-color: transparent;
+                border: 1px solid #444;
+                color: #aaa;
+                padding: 7px 18px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 13px;
+                text-decoration: none;
+                display: inline-block;
+                text-align: center;
+                line-height: 20px;
+            }
 
-        .cat-btn.active {
-            background-color: #e4c554;
-            color: #1a1a1a;
-            border-color: #e4c554;
-            font-weight: bold;
-        }
+                .cat-btn.active {
+                    background-color: #e4c554;
+                    color: #1a1a1a;
+                    border-color: #e4c554;
+                    font-weight: bold;
+                }
 
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-        }
+            .products-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 15px;
+            }
 
-        .product-card {
-            background-color: #2b2b2b;
-            border: 1px solid #3a3a3a;
-            border-radius: 6px;
-            padding: 18px;
-            display: flex;
-            flex-direction: column;
-        }
+            .product-card {
+                background-color: #2b2b2b;
+                border: 1px solid #3a3a3a;
+                border-radius: 6px;
+                padding: 18px;
+                display: flex;
+                flex-direction: column;
+            }
 
-        .product-title {
-            color: #e4c554;
-            margin: 0 0 10px 0;
-            font-size: 16px;
-            font-weight: bold;
-        }
+            .product-title {
+                color: #e4c554;
+                margin: 0 0 10px 0;
+                font-size: 16px;
+                font-weight: bold;
+            }
 
-        .product-info {
-            color: #ccc;
-            font-size: 13px;
-            margin: 4px 0;
-        }
+            .product-info {
+                color: #ccc;
+                font-size: 13px;
+                margin: 4px 0;
+            }
 
-        .product-stock {
-            color: #4caf50;
-            font-size: 13px;
-            margin: 4px 0 15px 0;
-        }
+            .product-stock {
+                color: #4caf50;
+                font-size: 13px;
+                margin: 4px 0 15px 0;
+            }
 
-        .btn-agregar {
-            background-color: #e4c554;
-            color: #1a1a1a;
-            border: none;
-            padding: 10px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            margin-top: auto;
-        }
+            .btn-agregar {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                border: none;
+                padding: 10px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+                width: 100%;
+                margin-top: auto;
+            }
 
-        .btn-agregar:hover {
-            background-color: #d4af37;
-        }
+                .btn-agregar:hover {
+                    background-color: #d4af37;
+                }
 
-        .carrito-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
+            .carrito-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 25px;
+            }
 
-        .carrito-title {
-            color: #e4c554;
-            font-size: 18px;
-            margin: 0;
-            font-weight: bold;
-        }
+            .carrito-title {
+                color: #e4c554;
+                font-size: 18px;
+                margin: 0;
+                font-weight: bold;
+            }
 
-        .carrito-badge {
-            background-color: #e4c554;
-            color: #1a1a1a;
-            font-weight: bold;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-        }
+            .carrito-badge {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                font-weight: bold;
+                border-radius: 50%;
+                width: 24px;
+                height: 24px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 13px;
+            }
 
-        #lista-carrito {
-            flex: 1;
-            max-height: 300px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-        }
+            #lista-carrito {
+                flex: 1;
+                max-height: 300px;
+                overflow-y: auto;
+                margin-bottom: 15px;
+            }
 
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
+            .cart-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #333;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
+            }
 
-        .cart-item-name {
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 3px;
-            color: #fff;
-        }
+            .cart-item-name {
+                font-weight: bold;
+                font-size: 14px;
+                margin-bottom: 3px;
+                color: #fff;
+            }
 
-        .cart-item-qty {
-            color: #888;
-            font-size: 12px;
-        }
+            .cart-item-qty {
+                color: #888;
+                font-size: 12px;
+            }
 
-        .cart-item-price {
-            color: #e4c554;
-            font-weight: bold;
-            font-size: 14px;
-        }
+            .cart-item-price {
+                color: #e4c554;
+                font-weight: bold;
+                font-size: 14px;
+            }
 
-        .btn-quitar {
-            background: transparent;
-            color: #ff5252;
-            border: none;
-            cursor: pointer;
-            font-size: 12px;
-            padding: 0;
-            margin-top: 4px;
-        }
+            .btn-quitar {
+                background: transparent;
+                color: #ff5252;
+                border: none;
+                cursor: pointer;
+                font-size: 12px;
+                padding: 0;
+                margin-top: 4px;
+            }
 
-        .btn-quitar:hover {
-            text-decoration: underline;
-        }
+                .btn-quitar:hover {
+                    text-decoration: underline;
+                }
 
-        .carrito-summary {
-            border-top: 1px solid #444;
-            padding-top: 15px;
-        }
+            .carrito-summary {
+                border-top: 1px solid #444;
+                padding-top: 15px;
+            }
 
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 8px;
-        }
+            .summary-row {
+                display: flex;
+                justify-content: space-between;
+                font-size: 14px;
+                color: #aaa;
+                margin-bottom: 8px;
+            }
 
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            font-size: 18px;
-            font-weight: bold;
-            color: #fff;
-            margin-bottom: 15px;
-        }
+            .summary-total {
+                display: flex;
+                justify-content: space-between;
+                font-size: 18px;
+                font-weight: bold;
+                color: #fff;
+                margin-bottom: 15px;
+            }
 
-        .summary-total span:last-child {
-            color: #d4af37;
-        }
+                .summary-total span:last-child {
+                    color: #d4af37;
+                }
 
-        .btn-confirmar {
-            background-color: #e4c554;
-            color: #1a1a1a;
-            border: none;
-            padding: 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            font-size: 14px;
-        }
+            .btn-confirmar {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                border: none;
+                padding: 12px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+                width: 100%;
+                font-size: 14px;
+            }
 
-        .btn-confirmar:hover {
-            background-color: #d4af37;
-        }
+                .btn-confirmar:hover {
+                    background-color: #d4af37;
+                }
     </style>
 </head>
 <body>
@@ -350,6 +350,7 @@
                 </div>
 
                 <div class="products-grid">
+                    <!-- (Listado Dinámico desde MySQL) brayan FM -->
                     @if (Model != null && Model.Any())
                     {
                         foreach (var repuesto in Model)
@@ -376,6 +377,7 @@
                 </div>
             </div>
 
+            <!-- PANEL DERECHO CON IVA -->
             <div class="right-panel">
                 <div class="carrito-header">
                     <h2 class="carrito-title">Carrito</h2>
@@ -412,73 +414,57 @@
     </div>
 
     <script>
-        let carrito = [];
+            let carrito = [];
 
-        function agregarAlCarrito(nombre, precio) {
-            let item = carrito.find(p => p.nombre === nombre);
-            if (item) {
-                item.cantidad++;
-            } else {
-                carrito.push({ nombre: nombre, precio: precio, cantidad: 1 });
-            }
-            actualizarCarrito();
-        }
+            const agregarAlCarrito = (nombre, precio) => {
+                let item = carrito.find(p => p.nombre === nombre);
+                item ? item.cantidad++ : carrito.push({ nombre, precio, cantidad: 1 });
+                actualizarCarrito();
+            };
 
-        function eliminarDelCarrito(nombre) {
-            carrito = carrito.filter(p => p.nombre !== nombre);
-            actualizarCarrito();
-        }
+            const eliminarDelCarrito = nombre => {
+                carrito = carrito.filter(p => p.nombre !== nombre);
+                actualizarCarrito();
+            };
 
-        function actualizarCarrito() {
-            const lista = document.getElementById('lista-carrito');
-            const badge = document.getElementById('badge-contador');
-            const totalProd = document.getElementById('total-productos');
-            const subtotalMonto = document.getElementById('subtotal-monto');
-            const ivaMonto = document.getElementById('iva-monto');
-            const totalMonto = document.getElementById('total-monto');
+            const actualizarCarrito = () => {
+                const lista = document.getElementById('lista-carrito');
 
-            lista.innerHTML = '';
+                if (!carrito.length) {
+                    lista.innerHTML = '<p id="carrito-vacio" style="color:#888;font-size:13px;text-align:center;margin-top:20px;">Aún no hay productos.</p>';
+                    document.getElementById('badge-contador').innerText = document.getElementById('total-productos').innerText = '0';
+                    document.getElementById('subtotal-monto').innerText = document.getElementById('iva-monto').innerText = document.getElementById('total-monto').innerText = '0.00';
+                    return;
+                }
 
-            if (carrito.length === 0) {
-                lista.innerHTML = '<p id="carrito-vacio" style="color: #888; font-size: 13px; text-align: center; margin-top: 20px;">Aún no hay productos en el carrito.</p>';
-                badge.innerText = '0';
-                totalProd.innerText = '0';
-                subtotalMonto.innerText = '0.00';
-                ivaMonto.innerText = '0.00';
-                totalMonto.innerText = '0.00';
-                return;
-            }
+                lista.innerHTML = carrito.map(p => `<div class="cart-item"><div><div class="cart-item-name">${p.nombre}</div><div class="cart-item-qty">Cantidad: ${p.cantidad} (Bs. ${p.precio} c/u)</div><button type="button" class="btn-quitar" onclick="eliminarDelCarrito('${p.nombre}')">Eliminar</button></div><div class="cart-item-price">Bs. ${p.precio * p.cantidad}</div></div>`).join('');
 
-            let totalItemsCount = 0;
-            let sumaSubtotal = 0;
+                let totalItems = carrito.reduce((acc, p) => acc + p.cantidad, 0);
+                let subtotal = carrito.reduce((acc, p) => acc + (p.precio * p.cantidad), 0);
 
-            carrito.forEach(prod => {
-                totalItemsCount += prod.cantidad;
-                let subtotalProd = prod.precio * prod.cantidad;
-                sumaSubtotal += subtotalProd;
 
-                let div = document.createElement('div');
-                div.className = 'cart-item';
-                div.innerHTML = `
-                    <div>
-                        <div class="cart-item-name">${prod.nombre}</div>
-                        <div class="cart-item-qty">Cantidad: ${prod.cantidad} (Bs. ${prod.precio} c/u)</div>
-                        <button type="button" class="btn-quitar" onclick="eliminarDelCarrito('${prod.nombre}')">Eliminar</button>
-                    </div>
-                    <div class="cart-item-price">Bs. ${subtotalProd}</div>
-                `;
-                lista.appendChild(div);
-            });
 
-            let ivaCalculado = sumaSubtotal * 0.13;
-            let sumaTotalFinal = sumaSubtotal + ivaCalculado;
 
-            badge.innerText = totalItemsCount;
-            totalProd.innerText = totalItemsCount;
-            subtotalMonto.innerText = sumaSubtotal.toFixed(2);
-            ivaMonto.innerText = ivaCalculado.toFixed(2);
-            totalMonto.innerText = sumaTotalFinal.toFixed(2);
-        }
+
+
+
+
+
+
+
+
+
+
+
+                let ivaCalculado = subtotal * 0.13;
+                let totalFinal = subtotal + ivaCalculado;
+
+                document.getElementById('badge-contador').innerText = document.getElementById('total-productos').innerText = totalItems;
+                document.getElementById('subtotal-monto').innerText = subtotal.toFixed(2);
+                document.getElementById('iva-monto').innerText = ivaCalculado.toFixed(2);
+                document.getElementById('total-monto').innerText = totalFinal.toFixed(2);
+               
+            };
     </script>
 </body>
 </html>
