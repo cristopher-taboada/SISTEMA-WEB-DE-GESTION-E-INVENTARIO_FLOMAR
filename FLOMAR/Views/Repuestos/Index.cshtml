@@ -10,13 +10,31 @@
         color: #f5f5f5;
     }
 
+    /* ==============================
+           ENCABEZADO
+        ============================== */
+
+    .encabezado-repuestos {
+        margin-bottom: 25px;
+    }
+
     .repuestos-titulo {
         color: #f4c430;
         font-weight: bold;
-        margin-bottom: 5px;
+        margin: 0 0 5px 0;
+    }
+
+    .repuestos-subtitulo {
+        color: #f5f5f5;
+        margin: 0 0 20px 0;
+    }
+
+    .contenedor-boton-nuevo {
+        margin-top: 10px;
     }
 
     .btn-nuevo {
+        display: inline-block;
         background-color: #f4c430;
         color: #111;
         border: none;
@@ -31,6 +49,11 @@
             color: #111;
         }
 
+
+    /* ==============================
+           TABLA
+        ============================== */
+
     .tabla-repuestos {
         width: 100%;
         margin-top: 25px;
@@ -44,6 +67,7 @@
             color: #f4c430;
             padding: 12px;
             border-bottom: 2px solid #f4c430;
+            white-space: nowrap;
         }
 
         .tabla-repuestos td {
@@ -56,6 +80,11 @@
             background-color: #292929;
         }
 
+
+    /* ==============================
+           STOCK
+        ============================== */
+
     .stock-normal {
         color: #59d879;
         font-weight: bold;
@@ -65,6 +94,16 @@
         color: #ff5252;
         font-weight: bold;
     }
+
+    .stock-agotado {
+        color: #ff5252;
+        font-weight: bold;
+    }
+
+
+    /* ==============================
+           ESTADOS
+        ============================== */
 
     .estado-activo {
         color: #59d879;
@@ -76,7 +115,13 @@
         font-weight: bold;
     }
 
+
+    /* ==============================
+           BOTONES
+        ============================== */
+
     .btn-editar {
+        display: inline-block;
         background-color: #f4c430;
         color: #111;
         border: none;
@@ -87,6 +132,11 @@
         margin-right: 5px;
     }
 
+        .btn-editar:hover {
+            background-color: #d9aa00;
+            color: #111;
+        }
+
     .btn-estado {
         background-color: #444;
         color: white;
@@ -96,42 +146,71 @@
         cursor: pointer;
     }
 
-    .btn-editar:hover {
-        background-color: #d9aa00;
-        color: #111;
+        .btn-estado:hover {
+            background-color: #555;
+        }
+
+
+    /* ==============================
+           RESPONSIVE
+        ============================== */
+
+    @@media (max-width: 768px) {
+
+        .repuestos-container {
+            padding: 20px 10px;
+        }
+
+        .tabla-repuestos {
+            font-size: 14px;
+        }
+
+            .tabla-repuestos th,
+            .tabla-repuestos td {
+                padding: 8px;
+            }
     }
 
-    .btn-estado:hover {
-        background-color: #555;
-    }
 </style>
+
 
 <div class="repuestos-container">
 
-    <div class="d-flex justify-content-between align-items-center">
+    <!-- ENCABEZADO -->
+
+    <div class="encabezado-repuestos">
 
         <div>
             <h2 class="repuestos-titulo">
                 Repuestos
             </h2>
 
-            <p>
+            <p class="repuestos-subtitulo">
                 Gestión de repuestos e inventario
             </p>
         </div>
 
-        <a asp-action="Create"
-           class="btn-nuevo">
-            + Nuevo Repuesto
-        </a>
+
+        <div class="contenedor-boton-nuevo">
+
+            <a asp-action="Create"
+               class="btn-nuevo">
+                + Nuevo Repuesto
+            </a>
+
+        </div>
 
     </div>
+
+
+    <!-- TABLA -->
 
     <div class="table-responsive">
 
         <table class="tabla-repuestos">
 
             <thead>
+
                 <tr>
                     <th>Código</th>
                     <th>Nombre</th>
@@ -144,7 +223,9 @@
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
+
             </thead>
+
 
             <tbody>
 
@@ -152,30 +233,85 @@
                 {
                     <tr>
 
-                        <td>@repuesto.Codigo</td>
+                        <!-- CÓDIGO -->
 
-                        <td>@repuesto.Nombre</td>
+                        <td>
+                            @repuesto.Codigo
+                        </td>
 
-                        <td>@repuesto.Categoria</td>
+
+                        <!-- NOMBRE -->
+
+                        <td>
+                            @repuesto.Nombre
+                        </td>
+
+
+                        <!-- CATEGORÍA -->
+
+                        <td>
+                            @repuesto.Categoria
+                        </td>
+
+
+                        <!-- COSTO -->
 
                         <td>
                             Bs @repuesto.costo_adquisicion.ToString("N2")
                         </td>
 
+
+                        <!-- PRECIO -->
+
                         <td>
                             Bs @repuesto.PrecioVenta.ToString("N2")
                         </td>
 
+
+                        <!-- STOCK ACTUAL -->
+
                         <td>
-                            @repuesto.stock_actual
+
+                            @if (repuesto.stock_actual == 0)
+                            {
+                                <span class="stock-agotado">
+                                    @repuesto.stock_actual
+                                </span>
+                            }
+                            else if (repuesto.stock_actual <= repuesto.stock_minimo)
+                            {
+                                <span class="stock-bajo">
+                                    @repuesto.stock_actual
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="stock-normal">
+                                    @repuesto.stock_actual
+                                </span>
+                            }
+
                         </td>
+
+
+                        <!-- STOCK MÍNIMO -->
 
                         <td>
                             @repuesto.stock_minimo
                         </td>
 
+
+                        <!-- VALIDACIÓN DE STOCK -->
+
                         <td>
-                            @if (repuesto.stock_actual <= repuesto.stock_minimo)
+
+                            @if (repuesto.stock_actual == 0)
+                            {
+                                <span class="stock-agotado">
+                                    ⚠ AGOTADO
+                                </span>
+                            }
+                            else if (repuesto.stock_actual <= repuesto.stock_minimo)
                             {
                                 <span class="stock-bajo">
                                     ⚠ Stock bajo
@@ -187,9 +323,14 @@
                                     Stock normal
                                 </span>
                             }
+
                         </td>
 
+
+                        <!-- ESTADO -->
+
                         <td>
+
                             @if (repuesto.id_estado == 1)
                             {
                                 <span class="estado-activo">
@@ -202,7 +343,11 @@
                                     Inactivo
                                 </span>
                             }
+
                         </td>
+
+
+                        <!-- ACCIONES -->
 
                         <td>
 
@@ -212,6 +357,7 @@
                                 Editar
                             </a>
 
+
                             <form asp-action="CambiarEstado"
                                   method="post"
                                   style="display:inline;">
@@ -219,6 +365,7 @@
                                 <input type="hidden"
                                        name="id"
                                        value="@repuesto.id_repuesto" />
+
 
                                 <button type="submit"
                                         class="btn-estado">
