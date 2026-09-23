@@ -337,10 +337,23 @@
 
         <div class="main-layout">
 
-          
+            <!-- PANEL IZQUIERDO: BUSCADOR Y CATÁLOGO DE LA BASE DE DATOS -->
             <div class="left-panel">
+
+                <!-- BRAYAN FLORES: BUSCADOR CON AUTOCOMPLETADO (HU03) -->
                 <form class="search-bar" asp-controller="Home" asp-action="Vendedor" method="get">
-                    <input type="text" name="textoBusqueda" value="@Context.Request.Query["textoBusqueda"]" placeholder="Buscar repuesto por nombre o código..." autocomplete="off">
+                    <input type="text" name="textoBusqueda" list="lista-repuestos" value="@Context.Request.Query["textoBusqueda"]" placeholder="Buscar repuesto por nombre o código..." autocomplete="off">
+
+                    <datalist id="lista-repuestos">
+                        @if (Model != null)
+                        {
+                            foreach (var repuesto in Model)
+                            {
+                                <option value="@repuesto.Nombre"></option>
+                            }
+                        }
+                    </datalist>
+
                     <button type="submit" class="btn-buscar">Buscar</button>
                 </form>
 
@@ -352,7 +365,7 @@
                 </div>
 
                 <div class="products-grid">
-                  
+                    <!--        (Listado Dinámico desde MySQL para que se puedan ver los productos)           -->
                     @if (Model != null && Model.Any())
                     {
                         foreach (var repuesto in Model)
@@ -380,7 +393,7 @@
                 </div>
             </div>
 
-        
+            <!-- IVA EN EL CARRITO -->
             <div class="right-panel">
                 <div class="carrito-header">
                     <h2 class="carrito-title">Carrito</h2>
@@ -418,7 +431,7 @@
         </div>
     </div>
 
-    <!-- desde aqui ya es javascrip revisar   -->
+    <!--  Recalcula automáticamente el subtotal el impuesto del 13% y el total a pagar en tiempo real  -->
     <script>
             let carrito = [];
 
@@ -478,7 +491,10 @@
                     lista.appendChild(div);
                 });
 
-           
+               
+                // ====================================================================
+                // BRAYAN FLORES: CÁLCULO E IMPRESIÓN DEL IVA (13%) Y TOTAL FINAL
+                // ====================================================================
                 let ivaCalculado = sumaSubtotal * 0.13;
                 let sumaTotalFinal = sumaSubtotal + ivaCalculado;
 
@@ -487,7 +503,7 @@
                 subtotalMonto.innerText = sumaSubtotal.toFixed(2);
                 ivaMonto.innerText = ivaCalculado.toFixed(2);
                 totalMonto.innerText = sumaTotalFinal.toFixed(2);
-           
+                // ====================================================================
             }
     </script>
 
