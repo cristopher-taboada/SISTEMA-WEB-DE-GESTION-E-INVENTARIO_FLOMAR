@@ -34,5 +34,6 @@ namespace FlomarAPI.Controllers
                 })
                 .ToListAsync();
         }
+
     }
 }
