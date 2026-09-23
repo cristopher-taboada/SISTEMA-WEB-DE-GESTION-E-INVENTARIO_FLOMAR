@@ -1,26 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using FLOMAR.Data;
+using Microsoft.AspNetCore.Mvc;
+using System.Net;
+using System.Net.Http.Json;
 using FLOMAR.Models;
+using FLOMAR.Services;
 
 namespace FLOMAR.Controllers
 {
     public class RepuestosController : Controller
     {
-        private readonly FlomarContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public RepuestosController(FlomarContext context)
+        public RepuestosController(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
 
         // LISTAR
         public async Task<IActionResult> Index()
         {
-            var repuestos = await _context.Repuestos
-                .OrderBy(r => r.Nombre)
-                .ToListAsync();
+            var client = _httpClientFactory.CreateClient("FlomarAPI");
+
+            var repuestos = await client
+                .GetFromJsonAsync<List<Repuesto>>("api/repuestos");
 
             return View(repuestos);
         }
@@ -34,46 +36,30 @@ namespace FLOMAR.Controllers
         }
 
 
-        // CREAR
+        // CREAR (la validacion de negocio la hace la API)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Repuesto repuesto)
         {
-            bool codigoExiste = await _context.Repuestos
-                .AnyAsync(r => r.Codigo == repuesto.Codigo);
-
-            if (codigoExiste)
-            {
-                ModelState.AddModelError(
-                    nameof(repuesto.Codigo),
-                    "Ya existe un repuesto con este código."
-                );
-            }
-
-
-            // Validación del precio
-            if (repuesto.PrecioVenta < repuesto.costo_adquisicion)
-            {
-                ModelState.AddModelError(
-                    nameof(repuesto.PrecioVenta),
-                    "El precio de venta no puede ser menor al costo."
-                );
-            }
-
-
             if (!ModelState.IsValid)
             {
                 return View(repuesto);
             }
 
+            var client = _httpClientFactory.CreateClient("FlomarAPI");
 
-            repuesto.id_estado = 1;
+            var response = await client.PostAsJsonAsync("api/repuestos", repuesto);
 
-            _context.Repuestos.Add(repuesto);
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
 
-            await _context.SaveChangesAsync();
+            // La API devuelve el mensaje y el campo que fallo
+            var (mensaje, campo) = await ApiHelper.LeerRespuestaAsync(response);
+            ModelState.AddModelError(campo, mensaje);
 
-            return RedirectToAction(nameof(Index));
+            return View(repuesto);
         }
 
 
@@ -81,85 +67,50 @@ namespace FLOMAR.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var repuesto = await _context.Repuestos
-                .FirstOrDefaultAsync(
-                    r => r.id_repuesto == id
-                );
+            var client = _httpClientFactory.CreateClient("FlomarAPI");
 
-            if (repuesto == null)
+            var response = await client.GetAsync($"api/repuestos/{id}");
+
+            if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
+
+            var repuesto = await response.Content.ReadFromJsonAsync<Repuesto>();
 
             return View(repuesto);
         }
 
 
-        // GUARDAR EDICIÓN
+        // GUARDAR EDICION
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Repuesto repuesto)
         {
-            // Validar código repetido
-            bool codigoExiste = await _context.Repuestos
-                .AnyAsync(r =>
-                    r.Codigo == repuesto.Codigo &&
-                    r.id_repuesto != repuesto.id_repuesto
-                );
-
-            if (codigoExiste)
-            {
-                ModelState.AddModelError(
-                    nameof(repuesto.Codigo),
-                    "Ya existe otro repuesto con este código."
-                );
-            }
-
-
-            // Validar precio
-            if (repuesto.PrecioVenta < repuesto.costo_adquisicion)
-            {
-                ModelState.AddModelError(
-                    nameof(repuesto.PrecioVenta),
-                    "El precio de venta no puede ser menor al costo."
-                );
-            }
-
-
             if (!ModelState.IsValid)
             {
                 return View(repuesto);
             }
 
+            var client = _httpClientFactory.CreateClient("FlomarAPI");
 
-            // Buscar el repuesto original
-            var actual = await _context.Repuestos
-                .FirstOrDefaultAsync(
-                    r => r.id_repuesto == repuesto.id_repuesto
-                );
+            var response = await client.PutAsJsonAsync(
+                $"api/repuestos/{repuesto.id_repuesto}", repuesto);
 
+            if (response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(Index));
+            }
 
-            if (actual == null)
+            if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
 
+            var (mensaje, campo) = await ApiHelper.LeerRespuestaAsync(response);
+            ModelState.AddModelError(campo, mensaje);
 
-            // Actualizar datos
-            actual.Codigo = repuesto.Codigo;
-            actual.Nombre = repuesto.Nombre;
-            actual.id_categoria = repuesto.id_categoria;
-            actual.costo_adquisicion = repuesto.costo_adquisicion;
-            actual.PrecioVenta = repuesto.PrecioVenta;
-            actual.stock_actual = repuesto.stock_actual;
-            actual.stock_minimo = repuesto.stock_minimo;
-
-
-            // Guardar en MySQL
-            await _context.SaveChangesAsync();
-
-
-            return RedirectToAction(nameof(Index));
+            return View(repuesto);
         }
 
 
@@ -168,24 +119,15 @@ namespace FLOMAR.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CambiarEstado(int id)
         {
-            var repuesto = await _context.Repuestos
-                .FirstOrDefaultAsync(
-                    r => r.id_repuesto == id
-                );
+            var client = _httpClientFactory.CreateClient("FlomarAPI");
 
+            var response = await client.PostAsync(
+                $"api/repuestos/{id}/cambiar-estado", null);
 
-            if (repuesto == null)
+            if (response.StatusCode == HttpStatusCode.NotFound)
             {
                 return NotFound();
             }
-
-
-            repuesto.id_estado =
-                repuesto.id_estado == 1 ? 2 : 1;
-
-
-            await _context.SaveChangesAsync();
-
 
             return RedirectToAction(nameof(Index));
         }

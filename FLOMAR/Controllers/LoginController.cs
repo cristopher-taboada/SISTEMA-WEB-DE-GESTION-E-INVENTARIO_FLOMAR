@@ -1,17 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using FLOMAR.Data;
-using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Json;
+using FLOMAR.Models;
 
 namespace FLOMAR.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly FlomarContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
         public static int RolActual = 0;
 
-        public LoginController(FlomarContext context)
+        public LoginController(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
         public IActionResult Index()
@@ -20,14 +20,22 @@ namespace FLOMAR.Controllers
         }
 
         [HttpPost]
-        public IActionResult Entrar(string usuario_input, string password_input)
+        public async Task<IActionResult> Entrar(string usuario_input, string password_input)
         {
-           
-            var usuario = _context.Usuarios.FirstOrDefault(u => u.Nombre_Usuario == usuario_input && u.Contraseña_hash == password_input);
+            var client = _httpClientFactory.CreateClient("FlomarAPI");
 
-            if (usuario != null)
+            // La API valida las credenciales contra la base de datos
+            var response = await client.PostAsJsonAsync("api/auth/login", new
             {
-                RolActual = usuario.id_rol;
+                usuario = usuario_input,
+                password = password_input
+            });
+
+            if (response.IsSuccessStatusCode)
+            {
+                var sesion = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+                RolActual = sesion!.id_rol;
 
                 if (RolActual == 1) return RedirectToAction("Admin", "Home");
                 else return RedirectToAction("Vendedor", "Home");

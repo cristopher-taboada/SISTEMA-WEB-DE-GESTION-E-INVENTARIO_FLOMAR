@@ -1,13 +1,14 @@
-using Microsoft.EntityFrameworkCore;
-using FLOMAR.Data;
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<FlomarContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")));
+// El MVC ya NO se conecta a la base de datos: consume la FlomarAPI por HTTP.
+// La URL base se configura en appsettings.json -> "ApiBaseUrl"
+builder.Services.AddHttpClient("FlomarAPI", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);
+});
 
 var app = builder.Build();
 

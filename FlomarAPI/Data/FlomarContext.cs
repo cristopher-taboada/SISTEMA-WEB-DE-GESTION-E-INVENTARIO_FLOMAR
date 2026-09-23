@@ -1,8 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MySql.EntityFrameworkCore;
-using FLOMAR.Models;
+using Microsoft.EntityFrameworkCore;
+using FlomarAPI.Models;
 
-namespace FLOMAR.Data
+namespace FlomarAPI.Data
 {
     public class FlomarContext : DbContext
     {

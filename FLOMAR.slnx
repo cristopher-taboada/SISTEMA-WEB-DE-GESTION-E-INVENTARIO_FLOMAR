@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="FLOMAR/FLOMAR.csproj" />
+  <Project Path="FlomarAPI/FlomarAPI.csproj" Id="6c6d6e56-2e1d-4287-b19d-0aef498c5e1e" />
 </Solution>

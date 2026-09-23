@@ -1,28 +1,19 @@
 using FLOMAR.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore; // <-- Importante para usar ToListAsync y Where
-using FLOMAR.Data; // <-- Importante para conectar con tu FlomarContext
+using System.Net.Http.Json;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Linq;
 
 namespace FLOMAR.Controllers
 {
     public class HomeController : Controller
     {
-        // ----------------------------------------------------
-        // AGREGUE ESTO: BRAYAN FLORES (Inyección del Contexto de la BD)
-        // ----------------------------------------------------
-        // Explicación para estudiar: Declaramos la variable privada '_context' 
-        // y modificamos el constructor de la clase para recibir la conexión a la base de datos 
-        // mediante inyección de dependencias, permitiendo consultar las tablas de MySQL.
-        private readonly FlomarContext _context;
+        // El MVC ya no usa FlomarContext: los datos se piden a la FlomarAPI por HTTP
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public HomeController(FlomarContext context)
+        public HomeController(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
+            _httpClientFactory = httpClientFactory;
         }
-        // HASTA AQUI: BRAYAN FLORES (Inyección de dependencias)
 
         public IActionResult Index()
         {
@@ -41,28 +32,21 @@ namespace FLOMAR.Controllers
             return View();
         }
 
-       
-
-
         public async Task<IActionResult> Vendedor(string textoBusqueda)
         {
             if (LoginController.RolActual != 2) return RedirectToAction("Index", "Login");
 
-            var query = _context.Repuestos.AsQueryable();
+            var client = _httpClientFactory.CreateClient("FlomarAPI");
 
-            if (!string.IsNullOrEmpty(textoBusqueda))
-            {
-                query = query.Where(r => r.Nombre.Contains(textoBusqueda) || r.Codigo.Contains(textoBusqueda));
-            }
+            // La busqueda por nombre o codigo la hace la API
+            var url = string.IsNullOrEmpty(textoBusqueda)
+                ? "api/repuestos"
+                : $"api/repuestos?textoBusqueda={Uri.EscapeDataString(textoBusqueda)}";
 
-            var listaRepuestos = await query.ToListAsync();
+            var listaRepuestos = await client.GetFromJsonAsync<List<Repuesto>>(url);
 
             return View(listaRepuestos);
         }
-       
-
-
-
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
