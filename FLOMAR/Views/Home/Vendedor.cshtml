@@ -352,11 +352,7 @@
                 </div>
 
                 <div class="products-grid">
-                    <!-- ====================================================
-                         AGREGUE ESTO: BRAYAN FLORES (Listado Dinámico desde MySQL)
-                         Explicación para estudiar: Recorre la lista de repuestos del modelo
-                         proveniente de la base de datos y dibuja las tarjetas de producto.
-                         ==================================================== -->
+                    <!--       (Listado Dinámico desde MySQL para que se peuda ver los productis) brayan FM               -->
                     @if (Model != null && Model.Any())
                     {
                         foreach (var repuesto in Model)
@@ -380,11 +376,11 @@
                             No se encontraron repuestos registrados en la base de datos con ese criterio.
                         </p>
                     }
-                    <!-- HASTA AQUI: BRAYAN FLORES (Fin del catálogo dinámico) -->
+            
                 </div>
             </div>
 
-            <!-- PANEL DERECHO: CARRITO INTERACTIVO CON IVA -->
+            <!-- IVA EN EL CARRITO brayan FM-->
             <div class="right-panel">
                 <div class="carrito-header">
                     <h2 class="carrito-title">Carrito</h2>
@@ -397,11 +393,7 @@
                     </p>
                 </div>
 
-                <!-- ====================================================
-                     AGREGUE ESTO: BRAYAN FLORES (Resumen de Totales e IVA 13%)
-                     Explicación para estudiar: Bloque visual que muestra los montos
-                     calculados incluyendo el subtotal, el 13% de IVA y el total final.
-                     ==================================================== -->
+                <!-- brayan FM -->
                 <div class="carrito-summary">
                     <div class="summary-row">
                         <span>Productos</span>
@@ -421,17 +413,13 @@
                     </div>
                     <button class="btn-confirmar">Confirmar venta</button>
                 </div>
-                <!-- HASTA AQUI: BRAYAN FLORES (Fin de la sección de resumen) -->
+             
             </div>
 
         </div>
     </div>
 
-    <!-- ====================================================
-         AGREGUE ESTO: BRAYAN FLORES (Lógica JS del Carrito y Cálculo de IVA)
-         Explicación para estudiar: Maneja el estado local del carrito y recalcula
-         automáticamente el subtotal, el impuesto del 13% y el total a pagar en tiempo real.
-         ==================================================== -->
+    <!--  brayan FM   recalcula automáticamente el subtotal el impuesto del 13% y el total a pagar en tiempo real  -->
     <script>
             let carrito = [];
 
@@ -491,7 +479,7 @@
                     lista.appendChild(div);
                 });
 
-                // Cálculo del IVA (13%) y Total Final en el cliente
+              
                 let ivaCalculado = sumaSubtotal * 0.13;
                 let sumaTotalFinal = sumaSubtotal + ivaCalculado;
 
@@ -502,6 +490,6 @@
                 totalMonto.innerText = sumaTotalFinal.toFixed(2);
             }
     </script>
-    <!-- HASTA AQUI: BRAYAN FLORES (Fin de la lógica del carrito con IVA) -->
+
 </body>
 </html>
