@@ -337,7 +337,7 @@
 
         <div class="main-layout">
 
-            <!-- PANEL IZQUIERDO: BUSCADOR Y CATÁLOGO DE LA BASE DE DATOS -->
+          
             <div class="left-panel">
                 <form class="search-bar" asp-controller="Home" asp-action="Vendedor" method="get">
                     <input type="text" name="textoBusqueda" value="@Context.Request.Query["textoBusqueda"]" placeholder="Buscar repuesto por nombre o código..." autocomplete="off">
@@ -352,7 +352,7 @@
                 </div>
 
                 <div class="products-grid">
-                    <!--       (Listado Dinámico desde MySQL para que se peuda ver los productis) brayan FM               -->
+                  
                     @if (Model != null && Model.Any())
                     {
                         foreach (var repuesto in Model)
@@ -376,11 +376,11 @@
                             No se encontraron repuestos registrados en la base de datos con ese criterio.
                         </p>
                     }
-            
+
                 </div>
             </div>
 
-            <!-- IVA EN EL CARRITO brayan FM-->
+        
             <div class="right-panel">
                 <div class="carrito-header">
                     <h2 class="carrito-title">Carrito</h2>
@@ -393,7 +393,6 @@
                     </p>
                 </div>
 
-                <!-- brayan FM -->
                 <div class="carrito-summary">
                     <div class="summary-row">
                         <span>Productos</span>
@@ -413,13 +412,13 @@
                     </div>
                     <button class="btn-confirmar">Confirmar venta</button>
                 </div>
-             
+
             </div>
 
         </div>
     </div>
 
-    <!--  brayan FM   recalcula automáticamente el subtotal el impuesto del 13% y el total a pagar en tiempo real  -->
+    <!-- desde aqui ya es javascrip revisar   -->
     <script>
             let carrito = [];
 
@@ -479,7 +478,7 @@
                     lista.appendChild(div);
                 });
 
-              
+           
                 let ivaCalculado = sumaSubtotal * 0.13;
                 let sumaTotalFinal = sumaSubtotal + ivaCalculado;
 
@@ -488,6 +487,7 @@
                 subtotalMonto.innerText = sumaSubtotal.toFixed(2);
                 ivaMonto.innerText = ivaCalculado.toFixed(2);
                 totalMonto.innerText = sumaTotalFinal.toFixed(2);
+           
             }
     </script>
 
