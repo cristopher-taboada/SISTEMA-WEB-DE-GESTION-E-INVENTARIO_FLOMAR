@@ -1,789 +1,489 @@
-﻿
+﻿@model IEnumerable<FLOMAR.Models.Repuesto>
 @{
     Layout = null;
-    ViewData["Title"] = "Vendedor - FLOMAR";
 }
-
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="utf-8" />
-
-    <title>FLOMAR - Panel de Vendedor</title>
-
+    <title>Punto de Venta - FLOMAR</title>
     <style>
-
-            * {
-                box-sizing: border-box;
-            }
-
-            html,
             body {
                 margin: 0;
-                padding: 0;
-                width: 100%;
-                height: 100%;
-            }
-
-            body {
                 background-color: #1a1a1a;
-                color: white;
+                color: #ffffff;
                 font-family: Arial, sans-serif;
             }
 
+            header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 30px;
+                background-color: #1c1c1c;
+                border-bottom: 1px solid #333;
+            }
 
-            /* ENCABEZADO */
+            .header-logo {
+                color: #d4af37;
+                font-size: 20px;
+                font-weight: bold;
+            }
 
-            .encabezado {
-                height: 65px;
-                background-color: #222222;
+            .header-user {
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
-                padding: 0 30px;
-                border-bottom: 1px solid #444444;
+                gap: 20px;
+                font-size: 14px;
+                color: #ccc;
             }
 
-
-            .logo {
-                color: #d4af37;
-                font-size: 25px;
-                font-weight: bold;
-            }
-
-
-            .usuario {
-                color: #cccccc;
-                margin-right: 20px;
-            }
-
-
-            .cerrar {
-                background-color: transparent;
+            .btn-cerrar {
+                background: transparent;
                 color: #d4af37;
                 border: 1px solid #d4af37;
-                border-radius: 5px;
                 padding: 8px 15px;
+                border-radius: 4px;
                 cursor: pointer;
+                text-decoration: none;
             }
 
-
-                .cerrar:hover {
-                    background-color: #d4af37;
+                .btn-cerrar:hover {
+                    background: #d4af37;
                     color: #1a1a1a;
                 }
 
-
-
-            /* CONTENIDO */
-
-            .contenido {
-                height: calc(100vh - 65px);
-                padding: 25px 30px;
+            .container {
+                padding: 20px 30px;
             }
 
-
-            .titulo {
-                margin: 0 0 20px 0;
-                color: white;
+            .page-title {
                 font-size: 24px;
+                margin-bottom: 25px;
+                margin-top: 0;
+                font-weight: bold;
             }
 
-
-                .titulo span {
+                .page-title span {
                     color: #d4af37;
                 }
 
-
-
-            /* ZONA PRINCIPAL */
-
-            .zona {
-                height: calc(100% - 55px);
-                display: grid;
-                grid-template-columns: 1fr 380px;
+            .main-layout {
+                display: flex;
                 gap: 20px;
+                align-items: flex-start;
             }
 
-
-
-            /* PRODUCTOS */
-
-            .productos {
-                background-color: #222222;
-                border: 1px solid #444444;
-                border-radius: 8px;
-                padding: 20px;
-                overflow: hidden;
+            .left-panel {
+                flex: 1;
+                background-color: #242424;
+                border-radius: 6px;
+                padding: 25px;
+                border: 1px solid #333;
             }
 
-
-
-            /* BUSQUEDA */
-
-            .busqueda {
-                display: flex;
-                gap: 10px;
-                margin-bottom: 20px;
-            }
-
-
-                .busqueda input {
-                    flex: 1;
-                    background-color: #1a1a1a;
-                    border: 1px solid #555555;
-                    border-radius: 5px;
-                    padding: 13px;
-                    color: white;
-                    font-size: 15px;
-                }
-
-
-                    .busqueda input:focus {
-                        outline: none;
-                        border-color: #d4af37;
-                    }
-
-
-            .buscar {
-                background-color: #d4af37;
-                border: none;
-                border-radius: 5px;
-                padding: 0 20px;
-                font-weight: bold;
-                cursor: pointer;
-            }
-
-
-
-            /* CATEGORIAS */
-
-            .categorias {
-                display: flex;
-                gap: 8px;
-                margin-bottom: 18px;
-            }
-
-
-            .categoria {
-                background-color: #2b2b2b;
-                color: #cccccc;
-                border: 1px solid #444444;
-                border-radius: 5px;
-                padding: 7px 13px;
-                cursor: pointer;
-            }
-
-
-                .categoria.activa {
-                    background-color: #d4af37;
-                    color: #1a1a1a;
-                    font-weight: bold;
-                }
-
-
-
-            /* LISTA DE PRODUCTOS */
-
-            .lista-productos {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap: 10px;
-                padding-left: 10%;
-                padding-right: 10%;
-            }
-
-
-
-            /* TARJETAS */
-
-            .producto {
-                background-color: #2b2b2b;
-                border: 1px solid #444444;
-                border-radius: 7px;
-                padding: 15px;
-            }
-
-
-                .producto:hover {
-                    border-color: #d4af37;
-                }
-
-
-                .producto h3 {
-                    color: #d4af37;
-                    font-size: 16px;
-                    margin: 0 0 8px 0;
-                }
-
-
-                .producto p {
-                    color: #bbbbbb;
-                    font-size: 13px;
-                    margin: 5px 0;
-                }
-
-
-            .stock {
-                color: #70c070 !important;
-                font-weight: bold;
-            }
-
-
-            .agregar {
-                width: 100%;
-                margin-top: 10px;
-                background-color: #d4af37;
-                color: #1a1a1a;
-                border: none;
-                border-radius: 5px;
-                padding: 8px;
-                font-weight: bold;
-                cursor: pointer;
-            }
-
-
-                .agregar:hover {
-                    background-color: #e6c65c;
-                }
-
-
-
-            /* CARRITO */
-
-            .carrito {
-                background-color: #222222;
-                border: 1px solid #444444;
-                border-radius: 8px;
-                padding: 20px;
+            .right-panel {
+                width: 340px;
+                background-color: #242424;
+                border-radius: 6px;
+                padding: 25px;
+                border: 1px solid #333;
                 display: flex;
                 flex-direction: column;
             }
 
+            .search-bar {
+                display: flex;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
 
-            .carrito-titulo {
+                .search-bar input {
+                    flex: 1;
+                    padding: 12px 15px;
+                    background-color: #1a1a1a;
+                    border: 1px solid #333;
+                    border-radius: 4px;
+                    color: #fff;
+                    font-size: 14px;
+                }
+
+                    .search-bar input:focus {
+                        outline: none;
+                        border-color: #d4af37;
+                    }
+
+            .btn-buscar {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                border: none;
+                padding: 0 30px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+                font-size: 14px;
+            }
+
+                .btn-buscar:hover {
+                    background-color: #d4af37;
+                }
+
+            .categories {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 25px;
+            }
+
+            .cat-btn {
+                background-color: transparent;
+                border: 1px solid #444;
+                color: #aaa;
+                padding: 7px 18px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 13px;
+            }
+
+                .cat-btn.active {
+                    background-color: #e4c554;
+                    color: #1a1a1a;
+                    border-color: #e4c554;
+                    font-weight: bold;
+                }
+
+            .products-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+                gap: 15px;
+            }
+
+            .product-card {
+                background-color: #2b2b2b;
+                border: 1px solid #3a3a3a;
+                border-radius: 6px;
+                padding: 18px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .product-title {
+                color: #e4c554;
+                margin: 0 0 10px 0;
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .product-info {
+                color: #ccc;
+                font-size: 13px;
+                margin: 4px 0;
+            }
+
+            .product-stock {
+                color: #4caf50;
+                font-size: 13px;
+                margin: 4px 0 15px 0;
+            }
+
+            .btn-agregar {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                border: none;
+                padding: 10px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+                width: 100%;
+                margin-top: auto;
+            }
+
+                .btn-agregar:hover {
+                    background-color: #d4af37;
+                }
+
+            .carrito-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                border-bottom: 1px solid #444444;
-                padding-bottom: 15px;
-                margin-bottom: 15px;
+                margin-bottom: 25px;
             }
 
+            .carrito-title {
+                color: #e4c554;
+                font-size: 18px;
+                margin: 0;
+                font-weight: bold;
+            }
 
-                .carrito-titulo h2 {
-                    color: #d4af37;
-                    margin: 0;
-                    font-size: 20px;
-                }
-
-
-            .cantidad {
-                background-color: #d4af37;
+            .carrito-badge {
+                background-color: #e4c554;
                 color: #1a1a1a;
+                font-weight: bold;
                 border-radius: 50%;
-                width: 25px;
-                height: 25px;
+                width: 24px;
+                height: 24px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-weight: bold;
+                font-size: 13px;
             }
 
-
-
-            /* ITEMS DEL CARRITO */
-
-            .items {
+            #lista-carrito {
                 flex: 1;
-                overflow: auto;
+                max-height: 300px;
+                overflow-y: auto;
+                margin-bottom: 15px;
             }
 
-
-            .item {
-                background-color: #2b2b2b;
-                border-radius: 6px;
-                padding: 12px;
-                margin-bottom: 10px;
+            .cart-item {
                 display: flex;
                 justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #333;
+                padding-bottom: 10px;
+                margin-bottom: 10px;
             }
 
-
-            .item-nombre {
+            .cart-item-name {
                 font-weight: bold;
+                font-size: 14px;
+                margin-bottom: 3px;
+                color: #fff;
             }
 
-
-            .item-info {
-                color: #999999;
+            .cart-item-qty {
+                color: #888;
                 font-size: 12px;
-                margin-top: 5px;
             }
 
-
-            .item-precio {
-                color: #d4af37;
+            .cart-item-price {
+                color: #e4c554;
                 font-weight: bold;
+                font-size: 14px;
             }
 
+            .btn-quitar {
+                background: transparent;
+                color: #ff5252;
+                border: none;
+                cursor: pointer;
+                font-size: 12px;
+                padding: 0;
+                margin-top: 4px;
+            }
 
+                .btn-quitar:hover {
+                    text-decoration: underline;
+                }
 
-            /* RESUMEN */
-
-            .resumen {
-                border-top: 1px solid #444444;
+            .carrito-summary {
+                border-top: 1px solid #444;
                 padding-top: 15px;
-                margin-top: 10px;
             }
 
-
-            .fila {
+            .summary-row {
                 display: flex;
                 justify-content: space-between;
-                margin-bottom: 10px;
-                color: #cccccc;
+                font-size: 14px;
+                color: #aaa;
+                margin-bottom: 8px;
             }
 
-
-            .total {
+            .summary-total {
                 display: flex;
                 justify-content: space-between;
-                font-size: 22px;
+                font-size: 18px;
                 font-weight: bold;
-                margin-top: 15px;
+                color: #fff;
+                margin-bottom: 15px;
             }
 
-
-                .total span:last-child {
+                .summary-total span:last-child {
                     color: #d4af37;
                 }
 
-
-            .confirmar {
-                width: 100%;
-                background-color: #d4af37;
+            .btn-confirmar {
+                background-color: #e4c554;
                 color: #1a1a1a;
                 border: none;
-                border-radius: 5px;
-                padding: 13px;
-                margin-top: 15px;
-                font-size: 16px;
+                padding: 12px;
+                border-radius: 4px;
                 font-weight: bold;
                 cursor: pointer;
+                width: 100%;
+                font-size: 14px;
             }
 
-
-                .confirmar:hover {
-                    background-color: #e6c65c;
+                .btn-confirmar:hover {
+                    background-color: #d4af37;
                 }
-
     </style>
-
 </head>
-
-
 <body>
-
-
-    <!-- ENCABEZADO -->
-
-    <header class="encabezado">
-
-        <div class="logo">
-            FLOMAR
+    <header>
+        <div class="header-logo">FLOMAR</div>
+        <div class="header-user">
+            <span>Vendedor</span>
+            <a href="/Login/Index" class="btn-cerrar">Cerrar sesión</a>
         </div>
-
-
-        <div>
-
-            <span class="usuario">
-                Vendedor
-            </span>
-
-            <button class="cerrar">
-                Cerrar sesión
-            </button>
-
-        </div>
-
     </header>
 
+    <div class="container">
+        <h1 class="page-title">Punto de venta <span>FLOMAR</span></h1>
 
+        <div class="main-layout">
 
-    <!-- CONTENIDO -->
+            <!-- PANEL IZQUIERDO: BUSCADOR Y CATÁLOGO DE LA BASE DE DATOS -->
+            <div class="left-panel">
+                <form class="search-bar" asp-controller="Home" asp-action="Vendedor" method="get">
+                    <input type="text" name="textoBusqueda" placeholder="Buscar repuesto por nombre o código..." autocomplete="off">
+                    <button type="submit" class="btn-buscar">Buscar</button>
+                </form>
 
-    <main class="contenido">
-
-        <h1 class="titulo">
-            Punto de venta <span>FLOMAR</span>
-        </h1>
-
-
-
-        <div class="zona">
-
-
-            <!-- PRODUCTOS -->
-
-            <section class="productos">
-
-
-                <div class="busqueda">
-
-                    <input type="text"
-                           placeholder="Buscar repuesto por nombre o código..." />
-
-                    <button class="buscar">
-                        Buscar
-                    </button>
-
+                <div class="categories">
+                    <button class="cat-btn active">Todos</button>
+                    <button class="cat-btn">Frenos</button>
+                    <button class="cat-btn">Filtros</button>
+                    <button class="cat-btn">Aros</button>
                 </div>
 
+                <div class="products-grid">
+                    <!-- ====================================================
+                         AGREGUE ESTO: BRAYAN FLORES (Listado Dinámico desde MySQL)
+                         Explicación para estudiar: Aquí Razor recorre la lista de repuestos
+                         que le pasa el HomeController. Pinta cada tarjeta con los datos reales
+                         y conecta el botón con la función JavaScript para agregarlo al carrito.
+                         ==================================================== -->
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var repuesto in Model)
+                        {
+                            <div class="product-card">
+                                <h3 class="product-title">@repuesto.Nombre</h3>
+                                <p class="product-info">Código: @repuesto.Codigo</p>
+                                <p class="product-info">Precio: Bs. <span class="precio-val">@repuesto.PrecioVenta</span></p>
+                                <p class="product-stock">Stock: 15</p>
 
+                                <button type="button" class="btn-agregar"
+                                        onclick="agregarAlCarrito('@repuesto.Nombre', @repuesto.PrecioVenta)">
+                                    + Agregar
+                                </button>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p style="color: #888; grid-column: 1 / -1; text-align: center; padding: 30px;">
+                            No se encontraron repuestos registrados en la base de datos con ese criterio.
+                        </p>
+                    }
+                    <!-- HASTA AQUI: BRAYAN FLORES (Fin del catálogo dinámico) -->
+                </div>
+            </div>
 
-                <!-- CATEGORIAS -->
-
-                <div class="categorias">
-
-                    <button class="categoria activa">
-                        Todos
-                    </button>
-
-                    <button class="categoria">
-                        Frenos
-                    </button>
-
-                    <button class="categoria">
-                        Filtros
-                    </button>
-
-                    <button class="categoria">
-                        Aros
-                    </button>
-
+            <!-- PANEL DERECHO: CARRITO INTERACTIVO -->
+            <div class="right-panel">
+                <div class="carrito-header">
+                    <h2 class="carrito-title">Carrito</h2>
+                    <div class="carrito-badge" id="badge-contador">0</div>
                 </div>
 
-
-
-                <!-- PRODUCTOS -->
-
-                <div class="lista-productos">
-
-
-                    <div class="producto">
-
-                        <h3>
-                            Aro Enkei
-                        </h3>
-
-                        <p>
-                            Código: AR-001
-                        </p>
-
-                        <p>
-                            Bs. 850
-                        </p>
-
-                        <p class="stock">
-                            Stock: 8
-                        </p>
-
-                        <button class="agregar">
-                            + Agregar
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="producto">
-
-                        <h3>
-                            Disco de Freno
-                        </h3>
-
-                        <p>
-                            Código: FR-002
-                        </p>
-
-                        <p>
-                            Bs. 320
-                        </p>
-
-                        <p class="stock">
-                            Stock: 15
-                        </p>
-
-                        <button class="agregar">
-                            + Agregar
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="producto">
-
-                        <h3>
-                            Filtro de Aceite
-                        </h3>
-
-                        <p>
-                            Código: FI-003
-                        </p>
-
-                        <p>
-                            Bs. 75
-                        </p>
-
-                        <p class="stock">
-                            Stock: 20
-                        </p>
-
-                        <button class="agregar">
-                            + Agregar
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="producto">
-
-                        <h3>
-                            Pastillas de Freno
-                        </h3>
-
-                        <p>
-                            Código: FR-004
-                        </p>
-
-                        <p>
-                            Bs. 180
-                        </p>
-
-                        <p class="stock">
-                            Stock: 12
-                        </p>
-
-                        <button class="agregar">
-                            + Agregar
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="producto">
-
-                        <h3>
-                            Filtro de Aire
-                        </h3>
-
-                        <p>
-                            Código: FI-005
-                        </p>
-
-                        <p>
-                            Bs. 110
-                        </p>
-
-                        <p class="stock">
-                            Stock: 7
-                        </p>
-
-                        <button class="agregar">
-                            + Agregar
-                        </button>
-
-                    </div>
-
-
-
-                    <div class="producto">
-
-                        <h3>
-                            Aro Deportivo
-                        </h3>
-
-                        <p>
-                            Código: AR-006
-                        </p>
-
-                        <p>
-                            Bs. 720
-                        </p>
-
-                        <p class="stock">
-                            Stock: 5
-                        </p>
-
-                        <button class="agregar">
-                            + Agregar
-                        </button>
-
-                    </div>
-
-
+                <div id="lista-carrito">
+                    <p id="carrito-vacio" style="color: #888; font-size: 13px; text-align: center; margin-top: 20px;">
+                        Aún no hay productos en el carrito.
+                    </p>
                 </div>
 
-
-            </section>
-
-
-
-            <!-- CARRITO -->
-
-            <aside class="carrito">
-
-
-                <div class="carrito-titulo">
-
-                    <h2>
-                        Carrito
-                    </h2>
-
-                    <div class="cantidad">
-                        3
+                <div class="carrito-summary">
+                    <div class="summary-row">
+                        <span>Productos</span>
+                        <span id="total-productos">0</span>
                     </div>
-
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>Bs. <span id="subtotal-monto">0.00</span></span>
+                    </div>
+                    <div class="summary-total">
+                        <span>TOTAL</span>
+                        <span>Bs. <span id="total-monto">0.00</span></span>
+                    </div>
+                    <button class="btn-confirmar">Confirmar venta</button>
                 </div>
-
-
-
-                <div class="items">
-
-
-                    <div class="item">
-
-                        <div>
-
-                            <div class="item-nombre">
-                                Aro Enkei
-                            </div>
-
-                            <div class="item-info">
-                                Cantidad: 1
-                            </div>
-
-                        </div>
-
-                        <div class="item-precio">
-                            Bs. 850
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="item">
-
-                        <div>
-
-                            <div class="item-nombre">
-                                Disco de Freno
-                            </div>
-
-                            <div class="item-info">
-                                Cantidad: 2
-                            </div>
-
-                        </div>
-
-                        <div class="item-precio">
-                            Bs. 640
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="item">
-
-                        <div>
-
-                            <div class="item-nombre">
-                                Filtro de Aceite
-                            </div>
-
-                            <div class="item-info">
-                                Cantidad: 1
-                            </div>
-
-                        </div>
-
-                        <div class="item-precio">
-                            Bs. 75
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-
-
-                <!-- RESUMEN -->
-
-                <div class="resumen">
-
-                    <div class="fila">
-
-                        <span>
-                            Productos
-                        </span>
-
-                        <span>
-                            4
-                        </span>
-
-                    </div>
-
-
-                    <div class="fila">
-
-                        <span>
-                            Subtotal
-                        </span>
-
-                        <span>
-                            Bs. 1.565
-                        </span>
-
-                    </div>
-
-
-                    <div class="total">
-
-                        <span>
-                            TOTAL
-                        </span>
-
-                        <span>
-                            Bs. 1.565
-                        </span>
-
-                    </div>
-
-
-                    <button class="confirmar">
-                        Confirmar venta
-                    </button>
-
-                </div>
-
-
-            </aside>
-
+            </div>
 
         </div>
+    </div>
 
-    </main>
+    <!-- ====================================================
+         AGREGUE ESTO: BRAYAN FLORES (Lógica Interactiva del Carrito con JS)
+         Explicación para estudiar: Gestiona las acciones del usuario en tiempo real.
+         - 'agregarAlCarrito': Añade el producto o incrementa su cantidad si ya existe.
+         - 'eliminarDelCarrito': Saca el producto seleccionado de la lista.
+         - 'actualizarCarrito': Recalcula cantidades, subtotales y redibuja el HTML lateral.
+         ==================================================== -->
+    <script>
+            let carrito = [];
 
+            function agregarAlCarrito(nombre, precio) {
+                let item = carrito.find(p => p.nombre === nombre);
+                if (item) {
+                    item.cantidad++;
+                } else {
+                    carrito.push({ nombre: nombre, precio: precio, cantidad: 1 });
+                }
+                actualizarCarrito();
+            }
 
+            function eliminarDelCarrito(nombre) {
+                carrito = carrito.filter(p => p.nombre !== nombre);
+                actualizarCarrito();
+            }
+
+            function actualizarCarrito() {
+                const lista = document.getElementById('lista-carrito');
+                const badge = document.getElementById('badge-contador');
+                const totalProd = document.getElementById('total-productos');
+                const subtotalMonto = document.getElementById('subtotal-monto');
+                const totalMonto = document.getElementById('total-monto');
+
+                lista.innerHTML = '';
+
+                if (carrito.length === 0) {
+                    lista.innerHTML = '<p id="carrito-vacio" style="color: #888; font-size: 13px; text-align: center; margin-top: 20px;">Aún no hay productos en el carrito.</p>';
+                    badge.innerText = '0';
+                    totalProd.innerText = '0';
+                    subtotalMonto.innerText = '0.00';
+                    totalMonto.innerText = '0.00';
+                    return;
+                }
+
+                let totalItemsCount = 0;
+                let sumaTotal = 0;
+
+                carrito.forEach(prod => {
+                    totalItemsCount += prod.cantidad;
+                    let subtotalProd = prod.precio * prod.cantidad;
+                    sumaTotal += subtotalProd;
+
+                    let div = document.createElement('div');
+                    div.className = 'cart-item';
+                    div.innerHTML = `
+                        <div>
+                            <div class="cart-item-name">${prod.nombre}</div>
+                            <div class="cart-item-qty">Cantidad: ${prod.cantidad} (Bs. ${prod.precio} c/u)</div>
+                            <button type="button" class="btn-quitar" onclick="eliminarDelCarrito('${prod.nombre}')">Eliminar</button>
+                        </div>
+                        <div class="cart-item-price">Bs. ${subtotalProd}</div>
+                    `;
+                    lista.appendChild(div);
+                });
+
+                badge.innerText = totalItemsCount;
+                totalProd.innerText = totalItemsCount;
+                subtotalMonto.innerText = sumaTotal.toFixed(2);
+                totalMonto.innerText = sumaTotal.toFixed(2);
+            }
+    </script>
+    <!-- HASTA AQUI: BRAYAN FLORES (Fin de la lógica interactiva del carrito) -->
 </body>
-
 </html>
