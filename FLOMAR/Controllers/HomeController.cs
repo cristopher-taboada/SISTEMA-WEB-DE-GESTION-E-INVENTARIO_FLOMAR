@@ -1,12 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using FLOMAR.Data;
 using FLOMAR.Models;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace FLOMAR.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly FlomarContext _context;
+
+        public HomeController(FlomarContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -18,27 +28,20 @@ namespace FLOMAR.Controllers
             return View();
         }
 
-        public IActionResult Vendedor(string textoBusqueda)
+        public async Task<IActionResult> Vendedor(string textoBusqueda)
         {
             if (LoginController.RolActual != 2) return RedirectToAction("Index", "Login");
 
-            var repuestosTemp = new List<Repuesto>
-            {
-                new Repuesto { Nombre = "Aro Enkei", Codigo = "AR-001", PrecioVenta = 850 },
-                new Repuesto { Nombre = "Disco de Freno", Codigo = "FR-002", PrecioVenta = 320 },
-                new Repuesto { Nombre = "Filtro de Aceite", Codigo = "FI-003", PrecioVenta = 75 },
-                new Repuesto { Nombre = "Pastillas de Freno", Codigo = "FR-004", PrecioVenta = 180 },
-                new Repuesto { Nombre = "Aro Deportivo", Codigo = "AR-006", PrecioVenta = 720 }
-            };
+            var query = _context.Repuestos.AsQueryable();
 
             if (!string.IsNullOrEmpty(textoBusqueda))
             {
-                repuestosTemp = repuestosTemp.Where(r =>
-                    r.Nombre.ToLower().Contains(textoBusqueda.ToLower()) ||
-                    r.Codigo.ToLower().Contains(textoBusqueda.ToLower())).ToList();
+                query = query.Where(r => r.Nombre.Contains(textoBusqueda) || r.Codigo.Contains(textoBusqueda));
             }
 
-            return View(repuestosTemp);
+            var listaRepuestos = await query.ToListAsync();
+
+            return View(listaRepuestos);
         }
     }
 }

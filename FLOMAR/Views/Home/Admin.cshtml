@@ -13,8 +13,7 @@
         margin: 0;
         padding: 0;
         width: 100%;
-        height: 100%;
-        overflow: hidden;
+        min-height: 100%;
     }
 
     body {
@@ -43,6 +42,7 @@
     }
 
     .cerrar-sesion {
+        display: inline-block;
         background-color: #d4af37;
         color: #1a1a1a;
         border: none;
@@ -50,17 +50,19 @@
         padding: 9px 18px;
         font-weight: bold;
         cursor: pointer;
+        text-decoration: none;
     }
 
-        .cerrar-sesion:hover {
-            background-color: #e6c65c;
-        }
+    .cerrar-sesion:hover {
+        background-color: #e6c65c;
+        color: #1a1a1a;
+    }
 
 
     /* CONTENIDO */
 
     .contenido {
-        height: calc(100vh - 70px);
+        min-height: calc(100vh - 70px);
         padding: 35px 20px;
         display: flex;
         flex-direction: column;
@@ -82,6 +84,7 @@
 
     .tarjetas {
         width: 900px;
+        max-width: 100%;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 18px;
@@ -100,11 +103,13 @@
         justify-content: center;
         align-items: center;
         text-align: center;
+        transition: 0.2s;
     }
 
-        .tarjeta:hover {
-            border-color: #d4af37;
-        }
+    .tarjeta:hover {
+        border-color: #d4af37;
+        transform: translateY(-2px);
+    }
 
 
     /* ICONO */
@@ -136,6 +141,7 @@
     /* BOTON */
 
     .boton {
+        display: inline-block;
         background-color: #d4af37;
         color: #1a1a1a;
         border: none;
@@ -143,11 +149,41 @@
         padding: 7px 18px;
         font-weight: bold;
         cursor: pointer;
+        text-decoration: none;
     }
 
-        .boton:hover {
-            background-color: #e6c65c;
+    .boton:hover {
+        background-color: #e6c65c;
+        color: #1a1a1a;
+    }
+
+
+    /* BOTON DESHABILITADO */
+
+    .boton-deshabilitado {
+        display: inline-block;
+        background-color: #555555;
+        color: #aaaaaa;
+        border-radius: 5px;
+        padding: 7px 18px;
+        font-weight: bold;
+        cursor: not-allowed;
+    }
+
+
+    /* RESPONSIVE */
+
+    @@media (max-width: 900px) {
+        .tarjetas {
+            grid-template-columns: repeat(2, 1fr);
         }
+    }
+
+    @@media (max-width: 600px) {
+        .tarjetas {
+            grid-template-columns: 1fr;
+        }
+    }
 
 </style>
 
@@ -160,9 +196,11 @@
         FLOMAR
     </div>
 
-    <button class="cerrar-sesion">
+    <a asp-controller="Login"
+       asp-action="Logout"
+       class="cerrar-sesion">
         Cerrar sesión
-    </button>
+    </a>
 
 </header>
 
@@ -195,9 +233,13 @@
                 Gestión de repuestos
             </p>
 
-            <button class="boton">
+            <a asp-controller="Repuestos"
+               asp-action="Index"
+               class="boton">
+
                 Repuestos
-            </button>
+
+            </a>
 
         </div>
 
@@ -218,9 +260,13 @@
                 Gestión de usuarios
             </p>
 
-            <button class="boton">
+            <a asp-controller="Usuarios"
+               asp-action="Index"
+               class="boton">
+
                 Usuarios
-            </button>
+
+            </a>
 
         </div>
 
@@ -241,9 +287,13 @@
                 Control del inventario
             </p>
 
-            <button class="boton">
+            <a asp-controller="MovimientoInventario"
+               asp-action="Index"
+               class="boton">
+
                 Inventario
-            </button>
+
+            </a>
 
         </div>
 
@@ -264,9 +314,13 @@
                 Gestión de ventas
             </p>
 
-            <button class="boton">
+            <a asp-controller="Home"
+               asp-action="Vendedor"
+               class="boton">
+
                 Ventas
-            </button>
+
+            </a>
 
         </div>
 
@@ -287,12 +341,34 @@
                 Reportes del sistema
             </p>
 
-            <button class="boton">
-                Reportes
-            </button>
+            <span class="boton-deshabilitado">
+                Próximamente
+            </span>
 
         </div>
 
+
+        <div class="tarjeta">
+
+            <div class="icono">
+                🚚
+            </div>
+
+            <h3>
+                Mercadería
+            </h3>
+
+            <p>
+                Ingreso y compra de mercadería
+            </p>
+
+            <a asp-controller="Compras"
+               asp-action="Index"
+               class="boton">
+                Mercadería
+            </a>
+
+        </div>
 
     </div>
 

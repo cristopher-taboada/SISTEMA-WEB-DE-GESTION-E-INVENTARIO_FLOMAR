@@ -139,6 +139,7 @@
                 }
 
             .btn-salir {
+                display: inline-block;
                 background-color: transparent;
                 color: #d4af37;
                 border: 1.5px solid #d4af37;
@@ -147,6 +148,7 @@
                 font-weight: 600;
                 font-size: 13px;
                 cursor: pointer;
+                text-decoration: none;
             }
 
                 .btn-salir:hover {
@@ -191,37 +193,131 @@
                 .footer strong {
                     color: #d4af37;
                 }
+
+            @@media (max-width: 900px) {
+                .navbar {
+                    height: auto;
+                    min-height: 80px;
+                    padding: 15px 20px;
+                    gap: 15px;
+                    flex-wrap: wrap;
+                }
+
+                .navbar-menu {
+                    order: 3;
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                    .navbar-menu a {
+                        padding: 9px 18px;
+                    }
+
+                .contenido-principal {
+                    padding: 20px;
+                }
+            }
+
+            @@media (max-width: 600px) {
+                .navbar-menu {
+                    flex-direction: column;
+                    border-radius: 15px;
+                }
+
+                    .navbar-menu li {
+                        width: 100%;
+                    }
+
+                    .navbar-menu a {
+                        text-align: center;
+                        width: 100%;
+                    }
+
+                .barra-info {
+                    flex-direction: column;
+                    gap: 5px;
+                    align-items: flex-start;
+                }
+
+                .footer {
+                    flex-direction: column;
+                    gap: 8px;
+                    text-align: center;
+                }
+            }
     </style>
 </head>
+
 <body>
 
     <nav class="navbar">
+
         <div class="navbar-logo">
-            <div class="logo-icon">F</div>
+
+            <div class="logo-icon">
+                F
+            </div>
+
             <div class="logo-texto">
                 FLOMAR
                 <span>Repuestos Automotrices</span>
             </div>
+
         </div>
 
         <ul class="navbar-menu">
-            <li><a href="/">Inicio</a></li>
-            <li><a href="/Home/Admin">Admin</a></li>
-            <li><a href="/Home/Vendedor">Vendedor</a></li>
-            <li><a href="/Repuestos">Repuestos</a></li>
-            <li><a href="/Compras">Mercadería</a></li>
-            <li><a href="/MovimientoInventario">Inventario</a></li>
+
+            <li>
+                <a asp-controller="Home"
+                   asp-action="Index">
+                    Inicio
+                </a>
+            </li>
+
+            <li>
+                <a asp-controller="Home"
+                   asp-action="Admin">
+                    Admin
+                </a>
+            </li>
+
+            <li>
+                <a asp-controller="Home"
+                   asp-action="Vendedor">
+                    Vendedor
+                </a>
+            </li>
+
         </ul>
 
         <div class="navbar-usuario">
-            <div class="avatar">AD</div>
-            <button class="btn-salir">Salir</button>
+
+            <div class="avatar">
+                AD
+            </div>
+
+            <button type="button"
+                    class="btn-salir">
+                Salir
+            </button>
+
         </div>
+
     </nav>
 
     <div class="barra-info">
-        <div>Estás en: <strong>@ViewData["Title"]</strong></div>
-        <div>● Sistema activo</div>
+
+        <div>
+            Estás en:
+            <strong>
+                @ViewData["Title"]
+            </strong>
+        </div>
+
+        <div>
+            ● Sistema activo
+        </div>
+
     </div>
 
     <main class="contenido-principal">
@@ -229,8 +325,17 @@
     </main>
 
     <footer class="footer">
-        <div>&copy; 2026 <strong>FLOMAR</strong> — Sistema Web de Ventas e Inventario</div>
-        <div>Quillacollo, Cochabamba · Versión 2.0</div>
+
+        <div>
+            &copy; 2026
+            <strong>FLOMAR</strong>
+            — Sistema Web de Ventas e Inventario
+        </div>
+
+        <div>
+            Quillacollo, Cochabamba · Versión 2.0
+        </div>
+
     </footer>
 
 </body>
