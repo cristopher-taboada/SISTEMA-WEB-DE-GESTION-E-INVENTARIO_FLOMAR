@@ -142,6 +142,10 @@
                 border-radius: 4px;
                 cursor: pointer;
                 font-size: 13px;
+                text-decoration: none;
+                display: inline-block;
+                text-align: center;
+                line-height: 20px;
             }
 
                 .cat-btn.active {
@@ -336,23 +340,22 @@
             <!-- PANEL IZQUIERDO: BUSCADOR Y CATÁLOGO DE LA BASE DE DATOS -->
             <div class="left-panel">
                 <form class="search-bar" asp-controller="Home" asp-action="Vendedor" method="get">
-                    <input type="text" name="textoBusqueda" placeholder="Buscar repuesto por nombre o código..." autocomplete="off">
+                    <input type="text" name="textoBusqueda" value="@Context.Request.Query["textoBusqueda"]" placeholder="Buscar repuesto por nombre o código..." autocomplete="off">
                     <button type="submit" class="btn-buscar">Buscar</button>
                 </form>
 
                 <div class="categories">
-                    <button class="cat-btn active">Todos</button>
-                    <button class="cat-btn">Frenos</button>
-                    <button class="cat-btn">Filtros</button>
-                    <button class="cat-btn">Aros</button>
+                    <a href="@Url.Action("Vendedor", "Home")" class="cat-btn active">Todos</a>
+                    <button type="button" class="cat-btn">Frenos</button>
+                    <button type="button" class="cat-btn">Filtros</button>
+                    <button type="button" class="cat-btn">Aros</button>
                 </div>
 
                 <div class="products-grid">
                     <!-- ====================================================
                          AGREGUE ESTO: BRAYAN FLORES (Listado Dinámico desde MySQL)
-                         Explicación para estudiar: Aquí Razor recorre la lista de repuestos
-                         que le pasa el HomeController. Pinta cada tarjeta con los datos reales
-                         y conecta el botón con la función JavaScript para agregarlo al carrito.
+                         Explicación para estudiar: Recorre la lista de repuestos del modelo
+                         proveniente de la base de datos y dibuja las tarjetas de producto.
                          ==================================================== -->
                     @if (Model != null && Model.Any())
                     {
@@ -381,7 +384,7 @@
                 </div>
             </div>
 
-            <!-- PANEL DERECHO: CARRITO INTERACTIVO -->
+            <!-- PANEL DERECHO: CARRITO INTERACTIVO CON IVA -->
             <div class="right-panel">
                 <div class="carrito-header">
                     <h2 class="carrito-title">Carrito</h2>
@@ -394,6 +397,11 @@
                     </p>
                 </div>
 
+                <!-- ====================================================
+                     AGREGUE ESTO: BRAYAN FLORES (Resumen de Totales e IVA 13%)
+                     Explicación para estudiar: Bloque visual que muestra los montos
+                     calculados incluyendo el subtotal, el 13% de IVA y el total final.
+                     ==================================================== -->
                 <div class="carrito-summary">
                     <div class="summary-row">
                         <span>Productos</span>
@@ -403,23 +411,26 @@
                         <span>Subtotal</span>
                         <span>Bs. <span id="subtotal-monto">0.00</span></span>
                     </div>
+                    <div class="summary-row">
+                        <span>IVA (13%)</span>
+                        <span>Bs. <span id="iva-monto">0.00</span></span>
+                    </div>
                     <div class="summary-total">
                         <span>TOTAL</span>
                         <span>Bs. <span id="total-monto">0.00</span></span>
                     </div>
                     <button class="btn-confirmar">Confirmar venta</button>
                 </div>
+                <!-- HASTA AQUI: BRAYAN FLORES (Fin de la sección de resumen) -->
             </div>
 
         </div>
     </div>
 
     <!-- ====================================================
-         AGREGUE ESTO: BRAYAN FLORES (Lógica Interactiva del Carrito con JS)
-         Explicación para estudiar: Gestiona las acciones del usuario en tiempo real.
-         - 'agregarAlCarrito': Añade el producto o incrementa su cantidad si ya existe.
-         - 'eliminarDelCarrito': Saca el producto seleccionado de la lista.
-         - 'actualizarCarrito': Recalcula cantidades, subtotales y redibuja el HTML lateral.
+         AGREGUE ESTO: BRAYAN FLORES (Lógica JS del Carrito y Cálculo de IVA)
+         Explicación para estudiar: Maneja el estado local del carrito y recalcula
+         automáticamente el subtotal, el impuesto del 13% y el total a pagar en tiempo real.
          ==================================================== -->
     <script>
             let carrito = [];
@@ -444,6 +455,7 @@
                 const badge = document.getElementById('badge-contador');
                 const totalProd = document.getElementById('total-productos');
                 const subtotalMonto = document.getElementById('subtotal-monto');
+                const ivaMonto = document.getElementById('iva-monto');
                 const totalMonto = document.getElementById('total-monto');
 
                 lista.innerHTML = '';
@@ -453,17 +465,18 @@
                     badge.innerText = '0';
                     totalProd.innerText = '0';
                     subtotalMonto.innerText = '0.00';
+                    ivaMonto.innerText = '0.00';
                     totalMonto.innerText = '0.00';
                     return;
                 }
 
                 let totalItemsCount = 0;
-                let sumaTotal = 0;
+                let sumaSubtotal = 0;
 
                 carrito.forEach(prod => {
                     totalItemsCount += prod.cantidad;
                     let subtotalProd = prod.precio * prod.cantidad;
-                    sumaTotal += subtotalProd;
+                    sumaSubtotal += subtotalProd;
 
                     let div = document.createElement('div');
                     div.className = 'cart-item';
@@ -478,12 +491,17 @@
                     lista.appendChild(div);
                 });
 
+                // Cálculo del IVA (13%) y Total Final en el cliente
+                let ivaCalculado = sumaSubtotal * 0.13;
+                let sumaTotalFinal = sumaSubtotal + ivaCalculado;
+
                 badge.innerText = totalItemsCount;
                 totalProd.innerText = totalItemsCount;
-                subtotalMonto.innerText = sumaTotal.toFixed(2);
-                totalMonto.innerText = sumaTotal.toFixed(2);
+                subtotalMonto.innerText = sumaSubtotal.toFixed(2);
+                ivaMonto.innerText = ivaCalculado.toFixed(2);
+                totalMonto.innerText = sumaTotalFinal.toFixed(2);
             }
     </script>
-    <!-- HASTA AQUI: BRAYAN FLORES (Fin de la lógica interactiva del carrito) -->
+    <!-- HASTA AQUI: BRAYAN FLORES (Fin de la lógica del carrito con IVA) -->
 </body>
 </html>
