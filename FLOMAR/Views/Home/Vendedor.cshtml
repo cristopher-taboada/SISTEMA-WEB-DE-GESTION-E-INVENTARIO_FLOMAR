@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FLOMAR.Models.Repuesto>
+@model IEnumerable<FLOMAR.Models.Repuesto>
 @{
     Layout = null;
 }
@@ -374,10 +374,10 @@
                                 <h3 class="product-title">@repuesto.Nombre</h3>
                                 <p class="product-info">Código: @repuesto.Codigo</p>
                                 <p class="product-info">Precio: Bs. <span class="precio-val">@repuesto.PrecioVenta</span></p>
-                                <p class="product-stock">Stock: 15</p>
+                                <p class="product-stock">Stock: @repuesto.Stock</p>
 
                                 <button type="button" class="btn-agregar"
-                                        onclick="agregarAlCarrito('@repuesto.Nombre', @repuesto.PrecioVenta)">
+                                        onclick="agregarAlCarrito(@repuesto.Id, '@repuesto.Nombre', @repuesto.PrecioVenta)">
                                     + Agregar
                                 </button>
                             </div>
@@ -423,7 +423,7 @@
                         <span>TOTAL</span>
                         <span>Bs. <span id="total-monto">0.00</span></span>
                     </div>
-                    <button class="btn-confirmar">Confirmar venta</button>
+                    <button type="button" class="btn-confirmar" onclick="confirmarVenta()">Confirmar venta</button>
                 </div>
 
             </div>
@@ -435,18 +435,18 @@
     <script>
             let carrito = [];
 
-            function agregarAlCarrito(nombre, precio) {
-                let item = carrito.find(p => p.nombre === nombre);
+            function agregarAlCarrito(id, nombre, precio) {
+                let item = carrito.find(p => p.id === id);
                 if (item) {
                     item.cantidad++;
                 } else {
-                    carrito.push({ nombre: nombre, precio: precio, cantidad: 1 });
+                    carrito.push({ id: id, nombre: nombre, precio: precio, cantidad: 1 });
                 }
                 actualizarCarrito();
             }
 
-            function eliminarDelCarrito(nombre) {
-                carrito = carrito.filter(p => p.nombre !== nombre);
+            function eliminarDelCarrito(id) {
+                carrito = carrito.filter(p => p.id !== id);
                 actualizarCarrito();
             }
 
@@ -484,7 +484,7 @@
                         <div>
                             <div class="cart-item-name">${prod.nombre}</div>
                             <div class="cart-item-qty">Cantidad: ${prod.cantidad} (Bs. ${prod.precio} c/u)</div>
-                            <button type="button" class="btn-quitar" onclick="eliminarDelCarrito('${prod.nombre}')">Eliminar</button>
+                            <button type="button" class="btn-quitar" onclick="eliminarDelCarrito(${prod.id})">Eliminar</button>
                         </div>
                         <div class="cart-item-price">Bs. ${subtotalProd}</div>
                     `;
@@ -504,6 +504,35 @@
                 ivaMonto.innerText = ivaCalculado.toFixed(2);
                 totalMonto.innerText = sumaTotalFinal.toFixed(2);
                 // ====================================================================
+            }
+
+            // Envia el carrito al servidor (MVC -> API), la API registra la
+            // venta y descuenta el stock. Luego redirige al comprobante.
+            async function confirmarVenta() {
+                if (carrito.length === 0) {
+                    alert('El carrito esta vacio.');
+                    return;
+                }
+                if (!confirm('Â¿Confirmar la venta?')) return;
+
+                const lineas = carrito.map(p => ({ id_repuesto: p.id, cantidad: p.cantidad }));
+
+                try {
+                    const resp = await fetch('/Ventas/Confirmar', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id_metodo_pago: 1, lineas: lineas })
+                    });
+                    const data = await resp.json();
+
+                    if (resp.ok && data.ok) {
+                        window.location.href = '/Ventas/Detalle/' + data.idVenta;
+                    } else {
+                        alert('No se pudo registrar la venta: ' + (data.mensaje || 'Error desconocido'));
+                    }
+                } catch (e) {
+                    alert('Error de conexion al registrar la venta.');
+                }
             }
     </script>
 

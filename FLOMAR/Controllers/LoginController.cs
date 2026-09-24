@@ -8,6 +8,7 @@ namespace FLOMAR.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
         public static int RolActual = 0;
+        public static int IdUsuarioActual = 0;
 
         public LoginController(IHttpClientFactory httpClientFactory)
         {
@@ -36,6 +37,7 @@ namespace FLOMAR.Controllers
                 var sesion = await response.Content.ReadFromJsonAsync<LoginResponse>();
 
                 RolActual = sesion!.id_rol;
+                IdUsuarioActual = sesion!.id_usuario;
 
                 if (RolActual == 1) return RedirectToAction("Admin", "Home");
                 else return RedirectToAction("Vendedor", "Home");

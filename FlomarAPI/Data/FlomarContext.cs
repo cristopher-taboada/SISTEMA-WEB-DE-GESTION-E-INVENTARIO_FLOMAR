@@ -14,6 +14,10 @@ namespace FlomarAPI.Data
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<MovimientoInventario> Movimientos { get; set; }
         public DbSet<TipoMovimiento> TiposMovimiento { get; set; }
+        public DbSet<Venta> Ventas { get; set; }
+        public DbSet<Detalle_venta> Detalle_ventas { get; set; }
+        public DbSet<Impuesto> Impuestos { get; set; }
+        public DbSet<MetodoPago> MetodosPago { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -44,6 +48,18 @@ namespace FlomarAPI.Data
 
             modelBuilder.Entity<TipoMovimiento>().ToTable("TIPO_MOVIMIENTO");
             modelBuilder.Entity<TipoMovimiento>().HasKey(t => t.id_tipo_movimiento);
+
+            modelBuilder.Entity<Venta>().ToTable("VENTA");
+            modelBuilder.Entity<Venta>().HasKey(v => v.id_venta);
+
+            modelBuilder.Entity<Detalle_venta>().ToTable("DETALLE_VENTA");
+            modelBuilder.Entity<Detalle_venta>().HasKey(d => d.id_detalle_venta);
+
+            modelBuilder.Entity<Impuesto>().ToTable("IMPUESTO");
+            modelBuilder.Entity<Impuesto>().HasKey(i => i.id_impuesto);
+
+            modelBuilder.Entity<MetodoPago>().ToTable("METODO_PAGO");
+            modelBuilder.Entity<MetodoPago>().HasKey(m => m.id_metodo_pago);
         }
     }
 }
