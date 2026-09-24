@@ -1,143 +1,264 @@
 @model FLOMAR.Models.VentaDetalleViewModel
+
 @{
-    Layout = null;
+    ViewData["Title"] = "Detalle de Venta";
 }
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Comprobante de Venta - FLOMAR</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Rajdhani', 'Segoe UI', sans-serif;
-            background-color: #1e1f22;
-            color: #e0e0e0;
-            min-height: 100vh;
+
+<style>
+    .detalle-page {
+        min-height: 100vh;
+        background: #181818;
+        padding: 35px;
+        color: white;
+    }
+
+    .detalle-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .detalle-header {
+        margin-bottom: 25px;
+    }
+
+        .detalle-header h1 {
+            margin: 0 0 8px 0;
+            font-size: 28px;
+            font-weight: bold;
         }
-        header {
-            background-color: #25262b;
-            padding: 14px 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 3px solid #ff5722;
+
+            .detalle-header h1 span {
+                color: #d4af37;
+            }
+
+        .detalle-header p {
+            color: #aaa;
+            margin: 0;
         }
-        .logo-flomar {
-            width: 40px; height: 40px;
-            background-color: #ff5722;
-            color: #fff;
-            font-weight: 700; font-size: 22px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 6px;
+
+    .detalle-card {
+        background: #202020;
+        border: 1px solid #3b3b3b;
+        border-radius: 10px;
+        padding: 30px;
+        margin-bottom: 25px;
+    }
+
+    .detalle-info {
+        background: #292929;
+        border-left: 4px solid #d4af37;
+        padding: 13px 15px;
+        border-radius: 4px;
+        margin-bottom: 25px;
+        color: #bbb;
+    }
+
+        .detalle-info strong {
+            color: #d4af37;
         }
-        header span { font-size: 20px; font-weight: 700; letter-spacing: 2px; }
-        .container { max-width: 700px; margin: 35px auto; padding: 0 20px; }
-        .exito {
-            background-color: #1d3320;
-            border: 1px solid #4caf50;
-            color: #7bd97b;
-            border-radius: 8px;
-            padding: 12px 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-        .card {
-            background-color: #2b2d31;
-            border: 1px solid #3f4147;
-            border-radius: 10px;
-            padding: 25px 30px;
-        }
-        .numero { color: #ff5722; font-size: 26px; font-weight: 700; }
-        .meta { color: #aaa; font-size: 14px; margin-top: 4px; }
-        .meta b { color: #e0e0e0; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th {
-            text-align: left;
-            color: #ff5722;
-            font-size: 12px;
+
+    .detalle-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .detalle-campo {
+        margin-bottom: 15px;
+    }
+
+        .detalle-campo label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #d4af37;
+            font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 8px 6px;
-            border-bottom: 2px solid #3f4147;
         }
-        td { padding: 10px 6px; border-bottom: 1px solid #3f4147; font-size: 15px; }
-        td.num, th.num { text-align: right; }
-        .totales { margin-top: 18px; text-align: right; }
-        .totales div { display: flex; justify-content: flex-end; gap: 40px; padding: 4px 6px; color: #aaa; }
-        .totales .total-final {
-            color: #fff; font-size: 22px; font-weight: 700;
-            border-top: 2px solid #ff5722; margin-top: 6px; padding-top: 10px;
+
+        .detalle-campo .valor {
+            color: #eee;
+            font-size: 15px;
         }
-        .acciones { margin-top: 25px; display: flex; gap: 12px; }
-        .btn-volver {
-            background-color: #ff5722;
-            color: #fff;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 16px;
-            padding: 12px 22px;
-            border-radius: 6px;
+
+    .detalle-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .detalle-table th {
+            color: #d4af37;
+            text-align: left;
+            padding: 12px 10px;
+            border-bottom: 2px solid #444;
+            font-size: 13px;
         }
-        .btn-volver:hover { background-color: #e64a19; }
-    </style>
-</head>
-<body>
 
-    <header>
-        <div class="logo-flomar">F</div>
-        <span>Comprobante de venta</span>
-    </header>
+        .detalle-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #333;
+            color: #eee;
+        }
 
-    <div class="container">
-        <div class="exito">&#10004; Venta registrada correctamente. El stock ya fue descontado del inventario.</div>
+    .precio {
+        white-space: nowrap;
+    }
 
-        <div class="card">
-            <div class="numero">@Model!.numero_transaccion</div>
-            <div class="meta">
-                <b>Fecha:</b> @Model.fecha_hora.ToString("dd/MM/yyyy HH:mm") &nbsp;|&nbsp;
-                <b>Vendedor:</b> @Model.vendedor &nbsp;|&nbsp;
-                <b>M&eacute;todo de pago:</b> @Model.metodo_pago &nbsp;|&nbsp;
-                <b>Comprobante:</b> @Model.tipo_comprobante
+    .codigo-venta {
+        color: #bbb;
+        font-weight: bold;
+    }
+
+    .subtotal-row td {
+        color: #bbb;
+    }
+
+    .total-row td {
+        border-top: 2px solid #d4af37;
+        font-weight: bold;
+        color: #d4af37;
+        font-size: 16px;
+    }
+
+    .btn-volver {
+        display: inline-block;
+        background: transparent;
+        color: #ddd;
+        border: 1px solid #555;
+        padding: 11px 24px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+        .btn-volver:hover {
+            color: #d4af37;
+            border-color: #d4af37;
+        }
+
+    .acciones-footer {
+        display: flex;
+        gap: 12px;
+    }
+</style>
+
+<div class="detalle-page">
+    <div class="detalle-container">
+
+        <!-- ENCABEZADO -->
+        <div class="detalle-header">
+            <h1>Detalle de <span>Venta</span></h1>
+            <p>Comprobante de la venta registrada y sus productos.</p>
+        </div>
+
+
+        <!-- DATOS DE LA VENTA -->
+        <div class="detalle-card">
+
+            <div class="detalle-info">
+                &#10004; Venta registrada correctamente: <strong>@Model!.numero_transaccion</strong> — el stock ya fue descontado del inventario.
             </div>
 
-            <table>
+            <div class="detalle-grid">
+
+                <div class="detalle-campo">
+                    <label>Nro. Transacción</label>
+                    <div class="valor">@Model.numero_transaccion</div>
+                </div>
+
+                <div class="detalle-campo">
+                    <label>Fecha y Hora</label>
+                    <div class="valor">@Model.fecha_hora.ToString("dd/MM/yyyy HH:mm")</div>
+                </div>
+
+                <div class="detalle-campo">
+                    <label>Vendedor</label>
+                    <div class="valor">@Model.vendedor</div>
+                </div>
+
+                <div class="detalle-campo">
+                    <label>Método de Pago</label>
+                    <div class="valor">@Model.metodo_pago</div>
+                </div>
+
+                <div class="detalle-campo">
+                    <label>Comprobante</label>
+                    <div class="valor">@Model.tipo_comprobante</div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DETALLE DE PRODUCTOS -->
+        <div class="detalle-card">
+
+            <h2 style="color: #d4af37; margin-bottom: 20px; font-size: 20px;">
+                Productos
+            </h2>
+
+            <table class="detalle-table">
+
                 <thead>
                     <tr>
-                        <th>C&oacute;digo</th>
+                        <th>Código</th>
                         <th>Repuesto</th>
-                        <th class="num">Cant.</th>
-                        <th class="num">P. Unit.</th>
-                        <th class="num">Subtotal</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
                     </tr>
                 </thead>
+
                 <tbody>
+
                     @foreach (var item in Model.detalles)
                     {
                         <tr>
-                            <td>@item.codigo</td>
-                            <td>@item.nombre</td>
-                            <td class="num">@item.cantidad</td>
-                            <td class="num">Bs. @item.precio_unitario.ToString("N2")</td>
-                            <td class="num">Bs. @item.subtotal.ToString("N2")</td>
+                            <td class="codigo-venta">@item.codigo</td>
+                            <td><strong>@item.nombre</strong></td>
+                            <td>@item.cantidad</td>
+                            <td class="precio">Bs @item.precio_unitario.ToString("0.00")</td>
+                            <td class="precio">Bs @item.subtotal.ToString("0.00")</td>
                         </tr>
                     }
+
+                    <tr class="subtotal-row">
+                        <td colspan="4" style="text-align: right;">SUBTOTAL:</td>
+                        <td class="precio">Bs @Model.subtotal.ToString("0.00")</td>
+                    </tr>
+
+                    <tr class="subtotal-row">
+                        <td colspan="4" style="text-align: right;">IVA (13%):</td>
+                        <td class="precio">Bs @Model.monto_impuesto.ToString("0.00")</td>
+                    </tr>
+
+                    <tr class="total-row">
+                        <td colspan="4" style="text-align: right;">TOTAL:</td>
+                        <td class="precio">Bs @Model.total_venta.ToString("0.00")</td>
+                    </tr>
+
                 </tbody>
+
             </table>
 
-            <div class="totales">
-                <div><span>Subtotal:</span><span>Bs. @Model.subtotal.ToString("N2")</span></div>
-                <div><span>IVA (13%):</span><span>Bs. @Model.monto_impuesto.ToString("N2")</span></div>
-                <div class="total-final"><span>TOTAL:</span><span>Bs. @Model.total_venta.ToString("N2")</span></div>
-            </div>
-
-            <div class="acciones">
-                <a class="btn-volver" href="@Url.Action("Vendedor", "Home")">&larr; Volver al punto de venta</a>
-            </div>
         </div>
-    </div>
 
-</body>
-</html>
+
+        <!-- BOTONES -->
+        <div class="acciones-footer">
+
+            <a asp-controller="Home"
+               asp-action="Vendedor"
+               class="btn-volver">
+
+                Volver
+
+            </a>
+
+        </div>
+
+    </div>
+</div>
+
