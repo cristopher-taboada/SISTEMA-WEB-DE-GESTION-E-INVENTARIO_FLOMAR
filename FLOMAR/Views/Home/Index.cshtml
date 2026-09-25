@@ -1,4 +1,6 @@
-﻿@{
+﻿@model FLOMAR.Models.DashboardViewModel
+
+@{
     ViewData["Title"] = "Inicio";
 }
 
@@ -90,6 +92,11 @@
         padding: 25px !important;
     }
 
+    .stock-bajo {
+        color: #ff6464;
+        font-weight: bold;
+    }
+
     .dash-grid-2 {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -110,26 +117,26 @@
 
     <div class="dash-card">
         <div class="titulo">Repuestos</div>
-        <div class="valor">0</div>
+        <div class="valor">@Model.TotalRepuestos</div>
         <div class="pie">En catálogo</div>
     </div>
 
     <div class="dash-card">
         <div class="titulo">Usuarios</div>
-        <div class="valor">3</div>
+        <div class="valor">@Model.TotalUsuarios</div>
         <div class="pie">Registrados</div>
     </div>
 
     <div class="dash-card">
         <div class="titulo">Stock Bajo</div>
-        <div class="valor">0</div>
+        <div class="valor">@Model.StockBajo</div>
         <div class="pie">Requieren reposición</div>
     </div>
 
     <div class="dash-card">
         <div class="titulo">Ventas del Día</div>
-        <div class="valor">Bs 0</div>
-        <div class="pie">Sin ventas registradas</div>
+        <div class="valor">Bs @Model.VentasHoy.ToString("0.00")</div>
+        <div class="pie">Total recaudado hoy</div>
     </div>
 
 </div>
@@ -148,11 +155,23 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td colspan="3" class="dash-vacio">
-                        No hay repuestos registrados.
-                    </td>
-                </tr>
+                @if (Model.UltimosRepuestos.Any())
+                {
+                    foreach (var r in Model.UltimosRepuestos)
+                    {
+                        <tr>
+                            <td>@r.Codigo</td>
+                            <td>@r.Nombre</td>
+                            <td>@r.stock_actual</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="dash-vacio">No hay repuestos registrados.</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>
@@ -168,11 +187,22 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td colspan="2" class="dash-vacio">
-                        Sin alertas por el momento.
-                    </td>
-                </tr>
+                @if (Model.AlertasStock.Any())
+                {
+                    foreach (var r in Model.AlertasStock)
+                    {
+                        <tr>
+                            <td>@r.Nombre</td>
+                            <td class="stock-bajo">@r.stock_actual</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="2" class="dash-vacio">Sin alertas por el momento.</td>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

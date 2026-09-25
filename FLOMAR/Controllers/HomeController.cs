@@ -1,23 +1,63 @@
+using FLOMAR.Data;
 using FLOMAR.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http.Json;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace FLOMAR.Controllers
 {
     public class HomeController : Controller
     {
-        // El MVC ya no usa FlomarContext: los datos se piden a la FlomarAPI por HTTP
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly FlomarContext _context;
 
-        public HomeController(IHttpClientFactory httpClientFactory)
+        public HomeController(FlomarContext context)
         {
-            _httpClientFactory = httpClientFactory;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            if (LoginController.RolActual == 0)
+                return RedirectToAction("Index", "Login");
+
+            var totalRepuestos = await _context.Repuestos
+                .CountAsync(r => r.id_estado == 1);
+
+            var totalUsuarios = await _context.Usuarios
+                .CountAsync(u => u.id_estado_usuario == 1);
+
+            var stockBajo = await _context.Repuestos
+                .CountAsync(r => r.id_estado == 1 && r.stock_actual <= r.stock_minimo);
+
+            var hoy = DateTime.Today;
+
+            var ventasHoy = await _context.Ventas
+                .Where(v => v.Fecha_hora.Date == hoy)
+                .SumAsync(v => (decimal?)v.total_venta) ?? 0;
+
+            var ultimosRepuestos = await _context.Repuestos
+                .Where(r => r.id_estado == 1)
+                .OrderByDescending(r => r.id_repuesto)
+                .Take(5)
+                .ToListAsync();
+
+            var alertasStock = await _context.Repuestos
+                .Where(r => r.id_estado == 1 && r.stock_actual <= r.stock_minimo)
+                .OrderBy(r => r.stock_actual)
+                .Take(5)
+                .ToListAsync();
+
+            var modelo = new DashboardViewModel
+            {
+                TotalRepuestos = totalRepuestos,
+                TotalUsuarios = totalUsuarios,
+                StockBajo = stockBajo,
+                VentasHoy = ventasHoy,
+                UltimosRepuestos = ultimosRepuestos,
+                AlertasStock = alertasStock
+            };
+
+            return View(modelo);
         }
 
         public IActionResult Privacy()
@@ -27,25 +67,18 @@ namespace FLOMAR.Controllers
 
         public IActionResult Admin()
         {
-            if (LoginController.RolActual != 1) return RedirectToAction("Index", "Login");
+            if (LoginController.RolActual != 1)
+                return RedirectToAction("Index", "Login");
 
             return View();
         }
 
-        public async Task<IActionResult> Vendedor(string textoBusqueda)
+        public IActionResult Vendedor()
         {
-            if (LoginController.RolActual != 2) return RedirectToAction("Index", "Login");
+            if (LoginController.RolActual != 2)
+                return RedirectToAction("Index", "Login");
 
-            var client = _httpClientFactory.CreateClient("FlomarAPI");
-
-            // La busqueda por nombre o codigo la hace la API
-            var url = string.IsNullOrEmpty(textoBusqueda)
-                ? "api/repuestos"
-                : $"api/repuestos?textoBusqueda={Uri.EscapeDataString(textoBusqueda)}";
-
-            var listaRepuestos = await client.GetFromJsonAsync<List<Repuesto>>(url);
-
-            return View(listaRepuestos);
+            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
