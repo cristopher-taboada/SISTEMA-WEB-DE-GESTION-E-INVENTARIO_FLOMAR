@@ -3,16 +3,20 @@ using FLOMAR.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Net.Http;
+using System.Net.Http.Json;
 
 namespace FLOMAR.Controllers
 {
     public class HomeController : Controller
     {
         private readonly FlomarContext _context;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public HomeController(FlomarContext context)
+        public HomeController(FlomarContext context, IHttpClientFactory httpClientFactory)
         {
             _context = context;
+            _httpClientFactory = httpClientFactory;
         }
 
         public async Task<IActionResult> Index()
