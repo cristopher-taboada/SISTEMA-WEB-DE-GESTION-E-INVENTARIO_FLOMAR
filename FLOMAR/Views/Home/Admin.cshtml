@@ -1,7 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Administrador - FLOMAR";
 }
-
 <style>
 
     * {
@@ -184,12 +183,9 @@
             grid-template-columns: 1fr;
         }
     }
-
 </style>
 
-
 <!-- ENCABEZADO -->
-
 <header class="encabezado">
 
     <div class="logo">
@@ -204,9 +200,7 @@
 
 </header>
 
-
 <!-- CONTENIDO -->
-
 <main class="contenido">
 
     <h1 class="titulo">
@@ -341,9 +335,13 @@
                 Reportes del sistema
             </p>
 
-            <span class="boton-deshabilitado">
-                Próximamente
-            </span>
+            <a asp-controller="Home"
+               asp-action="Reportes"
+               class="boton">
+
+                Reportes
+
+            </a>
 
         </div>
 

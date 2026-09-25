@@ -86,5 +86,29 @@ namespace FLOMAR.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
+
+
+
+
+        // aqi empieza el codigo de reportes
+        public async Task<IActionResult> Reportes()
+        {
+            if (LoginController.RolActual != 1) return RedirectToAction("Index", "Login");
+
+            var api = _httpClientFactory.CreateClient("FlomarAPI");
+
+            var ventas = await api.GetFromJsonAsync<List<Venta>>("api/ventas") ?? new List<Venta>();
+            var usuarios = await api.GetFromJsonAsync<List<Usuario>>("api/usuarios") ?? new List<Usuario>();
+            var compras = await api.GetFromJsonAsync<List<CompraReporteView>>("api/compras/reporte") ?? new List<CompraReporteView>();
+
+            ViewBag.Ventas = ventas.Where(v => v.id_metodo_pago == 1 && v.Fecha_hora.Date == DateTime.Today)
+                .Join(usuarios, v => v.Id_vendedor, u => u.id_usuario, (v, u) => new { u.nombre_completo, v.total_venta }).ToList();
+
+            ViewBag.Compras = compras;
+
+            return View();
+        }
     }
 }
