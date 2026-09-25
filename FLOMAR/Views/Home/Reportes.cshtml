@@ -1,0 +1,126 @@
+﻿@{
+    Layout = null; decimal c = 0, p = 0;
+}
+<style>
+    body {
+        background: #1a1a1a;
+        color: #fff;
+        font-family: sans-serif;
+        padding: 20px;
+        margin: 0;
+    }
+
+    .g {
+        color: #d4a742;
+        font-weight: bold;
+    }
+
+    td, th {
+        padding: 8px;
+        border-bottom: 1px solid #444;
+        text-align: left;
+    }
+
+ 
+    .top-navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #333;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+
+ 
+    .btn-volver {
+        color: #d4a742;
+        border: 1px solid #d4a742;
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+        .btn-volver:hover {
+            background: #d4a742;
+            color: #1a1a1a;
+        }
+</style>
+
+
+<div class="top-navbar">
+    <h3 class="g" style="margin: 0;">FLOMAR</h3>
+    <div style="display: flex; align-items: center; gap: 20px;">
+        <span style="color: #ddd; font-size: 14px;">Reportes</span>
+        <a href="/Home/Admin" class="btn-volver">Volver al panel</a>
+    </div>
+</div>
+
+<!-- Título principal y descripción -->
+<div style="margin-bottom: 30px;">
+    <h2 class="g" style="margin-bottom: 8px; margin-top: 0;">Reportes</h2>
+    <span style="color: #aaa; font-size: 14px;">Arqueo diario y registro de compras detallado del sistema FLOMAR.</span>
+</div>
+
+
+<div style="display:flex;gap:20px">
+
+  
+
+
+    <div style="background:#2b2b2b;padding:20px;flex:1;border-top:3px solid #d4a742">
+        <h3 class="g"> Arqueo Diario</h3>
+        <table width="100%" style="border-collapse:collapse">
+            <tr>
+                <th>Vendedor</th>
+                <th>Total (Bs)</th>
+            </tr>
+            @foreach (var v in ViewBag.Ventas)
+            {
+                c += v.total_venta;
+                <tr>
+                    <td>@v.nombre_completo</td>
+                    <td>@v.total_venta</td>
+                </tr>
+            }
+            <tr>
+                <td align="right" class="g">TOTAL CAJA:</td>
+                <td class="g">@c</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- Panel Registro de Compras -->
+    <div style="background:#2b2b2b;padding:20px;flex:2;border-top:3px solid #d4a742">
+        <h3 class="g"> Registro de Compras</h3>
+        <table width="100%" style="border-collapse:collapse">
+            <tr>
+                <th>Fecha</th>
+                <th>Nro</th>
+                <th>Proveedor</th>
+                <th>Repuesto</th>
+                <th>Cant.</th>
+                <th>Precio (Bs)</th>
+            </tr>
+            @foreach (var x in ViewBag.Compras)
+            {
+                decimal subtotal = x.cantidad * x.precio;
+                p += subtotal;
+
+                <tr>
+                    <td>@x.fecha.ToShortDateString()</td>
+                    <td>@x.nro</td>
+                    <td>@x.proveedor</td>
+                    <td>@x.repuesto</td>
+                    <td>@x.cantidad</td>
+                    <td>@x.precio</td>
+                </tr>
+            }
+            <tr>
+                <td colspan="5" align="right" class="g">TOTAL COMPRAS:</td>
+                <td class="g">@p</td>
+            </tr>
+        </table>
+    </div>
+
+</div>

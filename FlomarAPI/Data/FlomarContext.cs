@@ -44,6 +44,12 @@ namespace FlomarAPI.Data
 
             modelBuilder.Entity<TipoMovimiento>().ToTable("TIPO_MOVIMIENTO");
             modelBuilder.Entity<TipoMovimiento>().HasKey(t => t.id_tipo_movimiento);
+
+         
+            modelBuilder.Entity<Venta>().ToTable("VENTA");
         }
+
+        public DbSet<Venta> Ventas { get; set; }
+      
     }
 }
