@@ -2,10 +2,11 @@ namespace FLOMAR.Models
 {
     public class CompraReporteView
     {
-        public int Id_compra { get; set; }
-        public string numero_compra { get; set; } = string.Empty;
-        public DateTime fecha_ingreso { get; set; }
-        public decimal monto_total { get; set; }
+        public DateTime fecha { get; set; }
+        public string nro { get; set; } = string.Empty;
         public string proveedor { get; set; } = string.Empty;
+        public string repuesto { get; set; } = string.Empty;
+        public int cantidad { get; set; }
+        public decimal precio { get; set; }
     }
 }
