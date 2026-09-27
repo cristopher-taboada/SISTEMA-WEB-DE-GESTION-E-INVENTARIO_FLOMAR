@@ -79,7 +79,8 @@ namespace FLOMAR.Controllers
 
         public async Task<IActionResult> Vendedor(string textoBusqueda)
         {
-            if (LoginController.RolActual != 2)
+            // AQUÍ ESTÁ EL CAMBIO: Permite el acceso si el rol es 1 (Admin) o 2 (Vendedor)
+            if (LoginController.RolActual != 1 && LoginController.RolActual != 2)
                 return RedirectToAction("Index", "Login");
 
             var client = _httpClientFactory.CreateClient("FlomarAPI");

@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<FLOMAR.Models.Repuesto>
 @{
     Layout = null;
+    // Identificamos el rol actual para mostrarlo correctamente de forma dinámica
+    int rol = FLOMAR.Controllers.LoginController.RolActual;
+    string textoRol = (rol == 1) ? "Administrador" : "Vendedor";
+    string urlRetorno = (rol == 1) ? "/Home/Admin" : "/Home/Index";
 }
 <!DOCTYPE html>
 <html lang="es">
@@ -46,9 +50,28 @@
                 border-radius: 4px;
                 cursor: pointer;
                 text-decoration: none;
+                transition: all 0.25s ease;
             }
 
                 .btn-cerrar:hover {
+                    background: #d4af37;
+                    color: #1a1a1a;
+                }
+
+            .btn-volver {
+                background: transparent;
+                color: #d4af37;
+                border: 1px solid #d4af37;
+                padding: 8px 15px;
+                border-radius: 4px;
+                cursor: pointer;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: bold;
+                transition: all 0.25s ease;
+            }
+
+                .btn-volver:hover {
                     background: #d4af37;
                     color: #1a1a1a;
                 }
@@ -327,7 +350,9 @@
     <header>
         <div class="header-logo">FLOMAR</div>
         <div class="header-user">
-            <span>Vendedor</span>
+            <!-- MUESTRA DINÁMICAMENTE SI ES ADMINISTRADOR O VENDEDOR -->
+            <span style="color: #d4af37; font-weight: bold;">Rol: @textoRol</span>
+            <a href="@urlRetorno" class="btn-volver">Volver al panel</a>
             <a href="/Login/Index" class="btn-cerrar">Cerrar sesión</a>
         </div>
     </header>
@@ -339,8 +364,6 @@
 
             <!-- PANEL IZQUIERDO: BUSCADOR Y CATÁLOGO DE LA BASE DE DATOS -->
             <div class="left-panel">
-
-                <!-- BRAYAN FLORES: BUSCADOR CON AUTOCOMPLETADO (HU03) -->
                 <form class="search-bar" asp-controller="Home" asp-action="Vendedor" method="get">
                     <input type="text" name="textoBusqueda" list="lista-repuestos" value="@Context.Request.Query["textoBusqueda"]" placeholder="Buscar repuesto por nombre o código..." autocomplete="off">
 
@@ -365,7 +388,6 @@
                 </div>
 
                 <div class="products-grid">
-                    <!--        (Listado Dinámico desde MySQL para que se puedan ver los productos)           -->
                     @if (Model != null && Model.Any())
                     {
                         foreach (var repuesto in Model)
@@ -389,11 +411,10 @@
                             No se encontraron repuestos registrados en la base de datos con ese criterio.
                         </p>
                     }
-
                 </div>
             </div>
 
-            <!-- IVA EN EL CARRITO -->
+            <!-- CARRITO Y RESUMEN -->
             <div class="right-panel">
                 <div class="carrito-header">
                     <h2 class="carrito-title">Carrito</h2>
@@ -431,7 +452,6 @@
         </div>
     </div>
 
-    <!--  Recalcula automáticamente el subtotal el impuesto del 13% y el total a pagar en tiempo real  -->
     <script>
             let carrito = [];
 
@@ -491,10 +511,6 @@
                     lista.appendChild(div);
                 });
 
-               
-                // ====================================================================
-                // BRAYAN FLORES: CÁLCULO E IMPRESIÓN DEL IVA (13%) Y TOTAL FINAL
-                // ====================================================================
                 let ivaCalculado = sumaSubtotal * 0.13;
                 let sumaTotalFinal = sumaSubtotal + ivaCalculado;
 
@@ -503,9 +519,7 @@
                 subtotalMonto.innerText = sumaSubtotal.toFixed(2);
                 ivaMonto.innerText = ivaCalculado.toFixed(2);
                 totalMonto.innerText = sumaTotalFinal.toFixed(2);
-                // ====================================================================
             }
     </script>
-
 </body>
 </html>

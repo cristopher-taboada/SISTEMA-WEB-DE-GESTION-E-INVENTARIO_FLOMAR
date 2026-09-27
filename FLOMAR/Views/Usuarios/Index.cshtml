@@ -1,317 +1,228 @@
 ﻿@model IEnumerable<FLOMAR.Models.Usuario>
 
 @{
-    Layout = null;
-    ViewData["Title"] = "Usuarios - FLOMAR";
+    ViewData["Title"] = "Usuarios";
 }
 
-<!DOCTYPE html>
-<html lang="es">
+<style>
+    .usuarios-container {
+        padding: 30px;
+        color: #f5f5f5;
+    }
 
-<head>
+    /* ==============================
+           BARRA SUPERIOR 
+        ============================== */
+    .top-navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #333;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
 
-    <meta charset="utf-8" />
+    .top-navbar h3 {
+        color: #d4af37;
+        margin: 0;
+        font-weight: bold;
+    }
 
-    <title>FLOMAR - Usuarios</title>
+    .btn-volver {
+        color: #d4af37;
+        border: 1px solid #d4af37;
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: bold;
+        transition: all 0.25s ease;
+    }
 
-    <style>
+    .btn-volver:hover {
+        background: #d4af37;
+        color: #111;
+    }
 
-            * {
-                box-sizing: border-box;
-            }
+    /* ==============================
+           ENCABEZADO
+        ============================== */
+    .encabezado-usuarios {
+        margin-bottom: 25px;
+    }
 
-            html,
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-                min-height: 100%;
-            }
+    .usuarios-titulo {
+        color: #d4af37;
+        font-weight: bold;
+        margin: 0 0 5px 0;
+    }
 
-            body {
-                background-color: #1a1a1a;
-                color: white;
-                font-family: Arial, sans-serif;
-            }
+    .usuarios-subtitulo {
+        color: #f5f5f5;
+        margin: 0;
+    }
 
+    /* ==============================
+           CONTENEDOR TABLA
+        ============================== */
+    .tabla-contenedor {
+        background-color: #202020;
+        border: 1px solid #333;
+        border-radius: 10px;
+        padding: 25px;
+        overflow-x: auto;
+    }
 
-            /* ENCABEZADO */
+    .tabla-superior {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
 
-            .encabezado {
-                height: 65px;
-                background-color: #222222;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 0 30px;
-                border-bottom: 1px solid #444444;
-            }
+    .subtitulo {
+        color: white;
+        margin: 0;
+        font-size: 20px;
+    }
 
-            .logo {
-                color: #d4af37;
-                font-size: 25px;
-                font-weight: bold;
-            }
+    .contador {
+        background-color: #333;
+        color: #d4af37;
+        padding: 8px 14px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
 
-            .usuario {
-                color: #cccccc;
-                margin-right: 20px;
-            }
+    /* ==============================
+           TABLA
+        ============================== */
+    .tabla-usuarios {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-            .cerrar {
-                background-color: transparent;
-                color: #d4af37;
-                border: 1px solid #d4af37;
-                border-radius: 5px;
-                padding: 8px 15px;
-                cursor: pointer;
-                font-weight: bold;
-            }
+    .tabla-usuarios th {
+        color: #d4af37;
+        text-align: left;
+        padding: 12px;
+        border-bottom: 2px solid #d4af37;
+        background-color: #111;
+        font-size: 14px;
+    }
 
-                .cerrar:hover {
-                    background-color: #d4af37;
-                    color: #1a1a1a;
-                }
+    .tabla-usuarios td {
+        padding: 14px;
+        border-bottom: 1px solid #444;
+        color: #dddddd;
+    }
 
+    .tabla-usuarios tr:hover {
+        background-color: #292929;
+    }
 
-            /* CONTENIDO */
+    /* ESTADOS */
+    .estado {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: bold;
+    }
 
-            .contenido {
-                padding: 35px;
-            }
+    .activo {
+        background-color: rgba(40, 167, 69, 0.2);
+        color: #59d879;
+    }
 
-            .titulo {
-                color: #d4af37;
-                margin: 0 0 8px 0;
-                font-size: 28px;
-            }
+    .inactivo {
+        background-color: rgba(220, 53, 69, 0.2);
+        color: #ff5252;
+    }
 
-            .descripcion {
-                color: #bbbbbb;
-                margin-bottom: 25px;
-            }
+    .otro-estado {
+        background-color: #444;
+        color: #ddd;
+    }
 
+    .rol {
+        font-weight: bold;
+    }
 
-            /* CONTENEDOR TABLA */
+    .sin-usuarios {
+        text-align: center;
+        color: #aaa;
+        padding: 30px;
+    }
 
-            .tabla-contenedor {
-                background-color: #2b2b2b;
-                border: 1px solid #444444;
-                border-radius: 10px;
-                padding: 25px;
-                overflow-x: auto;
-            }
+    @@media (max-width: 768px) {
+        .usuarios-container {
+            padding: 20px 10px;
+        }
+        .top-navbar {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+    }
+</style>
 
+<div class="usuarios-container">
 
-            /* PARTE SUPERIOR */
-
-            .tabla-superior {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 20px;
-            }
-
-            .subtitulo {
-                color: white;
-                margin: 0;
-                font-size: 20px;
-            }
-
-            .contador {
-                background-color: #333333;
-                color: #d4af37;
-                padding: 8px 14px;
-                border-radius: 5px;
-                font-weight: bold;
-            }
-
-
-            /* TABLA */
-
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-
-            th {
-                color: #d4af37;
-                text-align: left;
-                padding: 14px;
-                border-bottom: 1px solid #555555;
-                font-size: 14px;
-            }
-
-            td {
-                padding: 14px;
-                border-bottom: 1px solid #444444;
-                color: #dddddd;
-            }
-
-            tr:hover {
-                background-color: #333333;
-            }
-
-
-            /* ESTADOS */
-
-            .estado {
-                display: inline-block;
-                padding: 5px 10px;
-                border-radius: 15px;
-                font-size: 12px;
-                font-weight: bold;
-            }
-
-            .activo {
-                background-color: #234d32;
-                color: #7ee29b;
-            }
-
-            .inactivo {
-                background-color: #4d2323;
-                color: #ff8a8a;
-            }
-
-            .otro-estado {
-                background-color: #444444;
-                color: #dddddd;
-            }
-
-
-            /* ROLES */
-
-            .rol {
-                font-weight: bold;
-            }
-
-
-            /* SIN USUARIOS */
-
-            .sin-usuarios {
-                text-align: center;
-                color: #aaaaaa;
-                padding: 30px;
-            }
-
-    </style>
-
-</head>
-
-
-<body>
-
+    <!-- BARRA SUPERIOR CON BOTON -->
+    <div class="top-navbar">
+        <h3>FLOMAR</h3>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <span style="color: #ddd; font-size: 14px;">Gestión de Usuarios</span>
+            <a href="/Home/Admin" class="btn-volver">Volver al panel</a>
+        </div>
+    </div>
 
     <!-- ENCABEZADO -->
-
-    <header class="encabezado">
-
-        <div class="logo">
-            FLOMAR
-        </div>
-
-        <div>
-
-            <span class="usuario">
-                Gestión de Usuarios
-            </span>
-
-            <a asp-controller="Home"
-               asp-action="Admin"
-               class="cerrar"
-               style="text-decoration:none;">
-                Volver al panel
-            </a>
-
-        </div>
-
-    </header>
-
-
-    <!-- CONTENIDO -->
-
-    <main class="contenido">
-
-
-        <h1 class="titulo">
+    <div class="encabezado-usuarios">
+        <h2 class="usuarios-titulo">
             Gestión de Usuarios
-        </h1>
-
-
-        <p class="descripcion">
+        </h2>
+        <p class="usuarios-subtitulo">
             Usuarios registrados actualmente en el sistema FLOMAR.
         </p>
+    </div>
 
+    <!-- CONTENEDOR TABLA -->
+    <div class="tabla-contenedor">
+        <div class="tabla-superior">
+            <h2 class="subtitulo">
+                Usuarios del sistema
+            </h2>
+            <span class="contador">
+                Total: @Model.Count()
+            </span>
+        </div>
 
-        <section class="tabla-contenedor">
-
-
-            <div class="tabla-superior">
-
-                <h2 class="subtitulo">
-                    Usuarios del sistema
-                </h2>
-
-                <span class="contador">
-                    Total: @Model.Count()
-                </span>
-
-            </div>
-
-
-            <table>
-
+        <div style="overflow-x: auto;">
+            <table class="tabla-usuarios">
                 <thead>
-
                     <tr>
-
                         <th>ID</th>
-
                         <th>Usuario</th>
-
                         <th>Nombre completo</th>
-
                         <th>Rol</th>
-
                         <th>Estado</th>
-
                         <th>Fecha creación</th>
-
                         <th>Último acceso</th>
-
                     </tr>
-
                 </thead>
-
-
                 <tbody>
-
                     @if (Model != null && Model.Any())
                     {
-
                         @foreach (var usuario in Model)
                         {
                             <tr>
-
+                                <td>@usuario.id_usuario</td>
+                                <td>@usuario.Nombre_Usuario</td>
+                                <td>@usuario.nombre_completo</td>
                                 <td>
-                                    @usuario.id_usuario
-                                </td>
-
-
-                                <td>
-                                    @usuario.Nombre_Usuario
-                                </td>
-
-
-                                <td>
-                                    @usuario.nombre_completo
-                                </td>
-
-
-                                <td>
-
                                     <span class="rol">
-
                                         @if (usuario.id_rol == 1)
                                         {
                                             <span>Administrador</span>
@@ -324,85 +235,47 @@
                                         {
                                             <span>Rol @usuario.id_rol</span>
                                         }
-
                                     </span>
-
                                 </td>
-
-
                                 <td>
-
                                     @if (usuario.id_estado_usuario == 1)
                                     {
-                                        <span class="estado activo">
-                                            Activo
-                                        </span>
+                                        <span class="estado activo">Activo</span>
                                     }
                                     else if (usuario.id_estado_usuario == 2)
                                     {
-                                        <span class="estado inactivo">
-                                            Inactivo
-                                        </span>
+                                        <span class="estado inactivo">Inactivo</span>
                                     }
                                     else
                                     {
-                                        <span class="estado otro-estado">
-                                            Estado @usuario.id_estado_usuario
-                                        </span>
+                                        <span class="estado otro-estado">Estado @usuario.id_estado_usuario</span>
                                     }
-
                                 </td>
-
-
+                                <td>@usuario.fecha_creacion.ToString("dd/MM/yyyy HH:mm")</td>
                                 <td>
-                                    @usuario.fecha_creacion.ToString("dd/MM/yyyy HH:mm")
-                                </td>
-
-
-                                <td>
-
                                     @if (usuario.ultimo_acceso.HasValue)
                                     {
                                         @usuario.ultimo_acceso.Value.ToString("dd/MM/yyyy HH:mm")
                                     }
                                     else
                                     {
-                                        <span>
-                                            Sin acceso registrado
-                                        </span>
+                                        <span>Sin acceso registrado</span>
                                     }
-
                                 </td>
-
                             </tr>
                         }
-
                     }
                     else
                     {
                         <tr>
-
-                            <td colspan="7"
-                                class="sin-usuarios">
-
+                            <td colspan="7" class="sin-usuarios">
                                 No existen usuarios registrados.
-
                             </td>
-
                         </tr>
                     }
-
                 </tbody>
-
             </table>
+        </div>
+    </div>
 
-
-        </section>
-
-
-    </main>
-
-
-</body>
-
-</html>
+</div>
