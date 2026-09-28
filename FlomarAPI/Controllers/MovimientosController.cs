@@ -66,6 +66,102 @@ namespace FlomarAPI.Controllers
             return movimientos;
         }
 
+        // =====================================================================
+        // ALERTA DE PRODUCTOS INMOVILIZADOS - GET: api/movimientos/sin-movimiento?meses=6
+        // Devuelve los repuestos que NO registran ningun movimiento de inventario
+        // (ingreso, salida, ajuste o merma) en los ultimos N meses.
+        // Los valores de N se pueden cambiar desde la vista; por defecto 6 meses.
+        // =====================================================================
+        [HttpGet("sin-movimiento")]
+        public async Task<ActionResult<List<RepuestoSinMovimientoDto>>> SinMovimiento([FromQuery] int meses = 6)
+        {
+            if (meses < 1) meses = 6;
+
+            var hoy = DateTime.Now;
+            var limite = hoy.AddMonths(-meses);
+
+            // Ultimo movimiento de cada repuesto en el kardex (una sola consulta)
+            var ultimosKardex = await _context.Movimientos
+                .GroupBy(m => m.id_repuesto)
+                .Select(g => new
+                {
+                    id_repuesto = g.Key,
+                    ultimo = g.Max(x => x.fecha_movimiento)
+                })
+                .ToListAsync();
+
+            // Ultima VENTA de cada repuesto. La venta descuenta stock pero no
+            // siempre deja fila en MOVIMIENTO_INVENTARIO, por eso tambien cuenta
+            // como movimiento del producto.
+            var ultimasVentas = await (
+                from dv in _context.Detalle_ventas
+                join v in _context.Ventas on dv.id_venta equals v.id_venta
+                group v.fecha_hora by dv.id_repuesto into g
+                select new
+                {
+                    id_repuesto = g.Key,
+                    ultimo = g.Max()
+                }
+            ).ToListAsync();
+
+            var repuestos = await _context.Repuestos
+                .Select(r => new
+                {
+                    r.id_repuesto,
+                    r.Codigo,
+                    r.Nombre,
+                    r.stock_actual,
+                    r.stock_minimo,
+                    r.costo_adquisicion
+                })
+                .ToListAsync();
+
+            var lista = repuestos
+                .Select(r =>
+                {
+                    var kardex = ultimosKardex
+                        .FirstOrDefault(u => u.id_repuesto == r.id_repuesto)?.ultimo;
+                    var venta = ultimasVentas
+                        .FirstOrDefault(u => u.id_repuesto == r.id_repuesto)?.ultimo;
+
+                    // El movimiento mas reciente entre kardex y ventas
+                    DateTime? ultimo = null;
+                    string origen = string.Empty;
+
+                    if (kardex.HasValue && venta.HasValue)
+                    {
+                        if (kardex.Value >= venta.Value) { ultimo = kardex; origen = "Kardex"; }
+                        else { ultimo = venta; origen = "Venta"; }
+                    }
+                    else if (kardex.HasValue) { ultimo = kardex; origen = "Kardex"; }
+                    else if (venta.HasValue) { ultimo = venta; origen = "Venta"; }
+
+                    return new RepuestoSinMovimientoDto
+                    {
+                        id_repuesto = r.id_repuesto,
+                        codigo = r.Codigo,
+                        nombre = r.Nombre,
+                        stock_actual = r.stock_actual,
+                        stock_minimo = r.stock_minimo,
+                        ultimo_movimiento = ultimo,
+                        origen_ultimo_movimiento = origen,
+                        dias_sin_movimiento = ultimo.HasValue
+                            ? (int)(hoy - ultimo.Value).TotalDays
+                            : (int?)null,
+                        valor_inmovilizado = r.costo_adquisicion * r.stock_actual
+                    };
+                })
+                // Solo los que nunca se movieron o cuyo ultimo movimiento
+                // es anterior al limite (hoy - N meses)
+                .Where(d => d.ultimo_movimiento == null || d.ultimo_movimiento < limite)
+                // Primero los que nunca tuvieron movimiento, luego los mas antiguos
+                .OrderBy(d => d.ultimo_movimiento.HasValue)
+                .ThenByDescending(d => d.dias_sin_movimiento ?? 0)
+                .ToList();
+
+            return lista;
+        }
+
         // VER DETALLE - GET: api/movimientos/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<MovimientoDetalleDto>> Obtener(int id)

@@ -55,4 +55,33 @@ namespace FLOMAR.Models
         public string observaciones { get; set; } = string.Empty;
         public string usuario { get; set; } = string.Empty;
     }
+
+
+    // ALERTA DE INMOVILIZADOS: repuesto que no se movio en los ultimos N meses
+    public class RepuestoSinMovimientoViewModel
+    {
+        public int id_repuesto { get; set; }
+        public string codigo { get; set; } = string.Empty;
+        public string nombre { get; set; } = string.Empty;
+        public int stock_actual { get; set; }
+        public int stock_minimo { get; set; }
+        public DateTime? ultimo_movimiento { get; set; }
+
+        // "Kardex" o "Venta": de donde vino el ultimo movimiento del repuesto
+        public string origen_ultimo_movimiento { get; set; } = string.Empty;
+
+        public int? dias_sin_movimiento { get; set; }
+        public decimal valor_inmovilizado { get; set; }
+    }
+
+    // Modelo de la vista Index del kardex: los movimientos + la alerta
+    public class MovimientoIndexViewModel
+    {
+        public List<MovimientoListaViewModel> Movimientos { get; set; } = new();
+
+        public List<RepuestoSinMovimientoViewModel> SinMovimiento { get; set; } = new();
+
+        // Meses configurados para la alerta (appsettings.json o ?meses=N)
+        public int MesesSinMovimiento { get; set; } = 6;
+    }
 }

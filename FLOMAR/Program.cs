@@ -1,14 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using MySql.EntityFrameworkCore;
-using FLOMAR.Data;
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddDbContext<FlomarContext>(options =>
-    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")!));
-
+// El MVC NO se conecta a MySQL: toda la informacion viene de la FlomarAPI.
 builder.Services.AddHttpClient("FlomarAPI", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["ApiBaseUrl"]!);

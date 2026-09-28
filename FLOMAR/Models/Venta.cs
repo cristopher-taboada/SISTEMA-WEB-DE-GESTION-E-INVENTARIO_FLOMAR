@@ -5,7 +5,7 @@
         public int id_venta { get; set; }
         public string numero_transaccion { get; set; } = string.Empty;
         public DateTime Fecha_hora { get; set; }
-        public int id_cliente { get; set; }
+        public int? id_cliente { get; set; }   // null = Cliente Mostrador
         public int Id_vendedor { get; set; }
         public int id_metodo_pago { get; set; }
         public int id_impuesto { get; set; }
