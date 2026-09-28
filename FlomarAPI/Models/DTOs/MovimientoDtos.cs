@@ -43,4 +43,24 @@ namespace FlomarAPI.Models.DTOs
         public string motivo { get; set; } = string.Empty;
         public string observaciones { get; set; } = string.Empty;
     }
+
+
+    // ALERTA DE INMOVILIZADOS: repuesto que no registra ningun movimiento
+    // de inventario (ingreso, salida, ajuste o merma) desde hace N meses
+    public class RepuestoSinMovimientoDto
+    {
+        public int id_repuesto { get; set; }
+        public string codigo { get; set; } = string.Empty;
+        public string nombre { get; set; } = string.Empty;
+        public int stock_actual { get; set; }
+        public int stock_minimo { get; set; }
+        public DateTime? ultimo_movimiento { get; set; }
+
+        // De donde vino el ultimo movimiento: "Kardex" (tabla MOVIMIENTO_INVENTARIO)
+        // o "Venta" (tabla DETALLE_VENTA). Vacio = nunca se movio.
+        public string origen_ultimo_movimiento { get; set; } = string.Empty;
+
+        public int? dias_sin_movimiento { get; set; }
+        public decimal valor_inmovilizado { get; set; }
+    }
 }
