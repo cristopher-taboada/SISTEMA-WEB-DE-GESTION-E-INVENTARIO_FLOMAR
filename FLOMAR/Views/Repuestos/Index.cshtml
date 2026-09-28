@@ -11,31 +11,63 @@
     }
 
     /* ==============================
+           BARRA SUPERIOR 
+        ============================== */
+    .top-navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #333;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+
+    .top-navbar h3 {
+        color: #d4af37;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .btn-volver {
+        color: #d4af37;
+        border: 1px solid #d4af37;
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: bold;
+        transition: all 0.25s ease;
+    }
+
+    .btn-volver:hover {
+        background: #d4af37;
+        color: #111;
+    }
+
+    /* ==============================
            ENCABEZADO
         ============================== */
-
     .encabezado-repuestos {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin-bottom: 25px;
     }
 
     .repuestos-titulo {
-        color: #f4c430;
+        color: #d4af37;
         font-weight: bold;
         margin: 0 0 5px 0;
     }
 
     .repuestos-subtitulo {
         color: #f5f5f5;
-        margin: 0 0 20px 0;
-    }
-
-    .contenedor-boton-nuevo {
-        margin-top: 10px;
+        margin: 0;
     }
 
     .btn-nuevo {
         display: inline-block;
-        background-color: #f4c430;
+        background-color: #d4af37;
         color: #111;
         border: none;
         font-weight: bold;
@@ -44,47 +76,43 @@
         text-decoration: none;
     }
 
-        .btn-nuevo:hover {
-            background-color: #d9aa00;
-            color: #111;
-        }
-
+    .btn-nuevo:hover {
+        background-color: #d9aa00;
+        color: #111;
+    }
 
     /* ==============================
            TABLA
         ============================== */
-
     .tabla-repuestos {
         width: 100%;
-        margin-top: 25px;
+        margin-top: 10px;
         border-collapse: collapse;
         background-color: #202020;
         color: white;
     }
 
-        .tabla-repuestos th {
-            background-color: #111;
-            color: #f4c430;
-            padding: 12px;
-            border-bottom: 2px solid #f4c430;
-            white-space: nowrap;
-        }
+    .tabla-repuestos th {
+        background-color: #111;
+        color: #d4af37;
+        padding: 12px;
+        border-bottom: 2px solid #d4af37;
+        white-space: nowrap;
+    }
 
-        .tabla-repuestos td {
-            padding: 12px;
-            border-bottom: 1px solid #444;
-            vertical-align: middle;
-        }
+    .tabla-repuestos td {
+        padding: 12px;
+        border-bottom: 1px solid #444;
+        vertical-align: middle;
+    }
 
-        .tabla-repuestos tr:hover {
-            background-color: #292929;
-        }
-
+    .tabla-repuestos tr:hover {
+        background-color: #292929;
+    }
 
     /* ==============================
            STOCK
         ============================== */
-
     .stock-normal {
         color: #59d879;
         font-weight: bold;
@@ -100,11 +128,9 @@
         font-weight: bold;
     }
 
-
     /* ==============================
            ESTADOS
         ============================== */
-
     .estado-activo {
         color: #59d879;
         font-weight: bold;
@@ -115,14 +141,12 @@
         font-weight: bold;
     }
 
-
     /* ==============================
            BOTONES
         ============================== */
-
     .btn-editar {
         display: inline-block;
-        background-color: #f4c430;
+        background-color: #d4af37;
         color: #111;
         border: none;
         padding: 6px 12px;
@@ -132,10 +156,10 @@
         margin-right: 5px;
     }
 
-        .btn-editar:hover {
-            background-color: #d9aa00;
-            color: #111;
-        }
+    .btn-editar:hover {
+        background-color: #d9aa00;
+        color: #111;
+    }
 
     .btn-estado {
         background-color: #444;
@@ -146,71 +170,68 @@
         cursor: pointer;
     }
 
-        .btn-estado:hover {
-            background-color: #555;
-        }
-
+    .btn-estado:hover {
+        background-color: #555;
+    }
 
     /* ==============================
            RESPONSIVE
         ============================== */
-
     @@media (max-width: 768px) {
-
         .repuestos-container {
             padding: 20px 10px;
+        }
+
+        .top-navbar, .encabezado-repuestos {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
         }
 
         .tabla-repuestos {
             font-size: 14px;
         }
 
-            .tabla-repuestos th,
-            .tabla-repuestos td {
-                padding: 8px;
-            }
+        .tabla-repuestos th,
+        .tabla-repuestos td {
+            padding: 8px;
+        }
     }
-
 </style>
-
 
 <div class="repuestos-container">
 
+    <!-- BARRA SUPERIOR CON BOTON -->
+    <div class="top-navbar">
+        <h3>FLOMAR</h3>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <span style="color: #ddd; font-size: 14px;">Gestión de Repuestos</span>
+            <a href="/Home/Admin" class="btn-volver">Volver al panel</a>
+        </div>
+    </div>
+
     <!-- ENCABEZADO -->
-
     <div class="encabezado-repuestos">
-
         <div>
             <h2 class="repuestos-titulo">
                 Repuestos
             </h2>
-
             <p class="repuestos-subtitulo">
                 Gestión de repuestos e inventario
             </p>
         </div>
 
-
         <div class="contenedor-boton-nuevo">
-
-            <a asp-action="Create"
-               class="btn-nuevo">
+            <a asp-action="Create" class="btn-nuevo">
                 + Nuevo Repuesto
             </a>
-
         </div>
-
     </div>
 
-
     <!-- TABLA -->
-
     <div class="table-responsive">
-
         <table class="tabla-repuestos">
-
             <thead>
-
                 <tr>
                     <th>Código</th>
                     <th>Nombre</th>
@@ -223,55 +244,38 @@
                     <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
-
             </thead>
-
-
             <tbody>
-
                 @foreach (var repuesto in Model)
                 {
                     <tr>
-
                         <!-- CÓDIGO -->
-
                         <td>
                             @repuesto.Codigo
                         </td>
 
-
                         <!-- NOMBRE -->
-
                         <td>
                             @repuesto.Nombre
                         </td>
 
-
                         <!-- CATEGORÍA -->
-
                         <td>
                             @repuesto.Categoria
                         </td>
 
-
                         <!-- COSTO -->
-
                         <td>
                             Bs @repuesto.costo_adquisicion.ToString("N2")
                         </td>
 
-
                         <!-- PRECIO -->
-
                         <td>
                             Bs @repuesto.PrecioVenta.ToString("N2")
                         </td>
 
-
                         <!-- STOCK ACTUAL -->
-
                         <td>
-
                             @if (repuesto.stock_actual == 0)
                             {
                                 <span class="stock-agotado">
@@ -290,21 +294,15 @@
                                     @repuesto.stock_actual
                                 </span>
                             }
-
                         </td>
 
-
                         <!-- STOCK MÍNIMO -->
-
                         <td>
                             @repuesto.stock_minimo
                         </td>
 
-
                         <!-- VALIDACIÓN DE STOCK -->
-
                         <td>
-
                             @if (repuesto.stock_actual == 0)
                             {
                                 <span class="stock-agotado">
@@ -323,14 +321,10 @@
                                     Stock normal
                                 </span>
                             }
-
                         </td>
 
-
                         <!-- ESTADO -->
-
                         <td>
-
                             @if (repuesto.id_estado == 1)
                             {
                                 <span class="estado-activo">
@@ -343,20 +337,15 @@
                                     Inactivo
                                 </span>
                             }
-
                         </td>
 
-
                         <!-- ACCIONES -->
-
                         <td>
-
                             <a asp-action="Edit"
                                asp-route-id="@repuesto.id_repuesto"
                                class="btn-editar">
                                 Editar
                             </a>
-
 
                             <form asp-action="CambiarEstado"
                                   method="post"
@@ -366,27 +355,18 @@
                                        name="id"
                                        value="@repuesto.id_repuesto" />
 
-
                                 <button type="submit"
                                         class="btn-estado">
-
                                     @(repuesto.id_estado == 1
                                         ? "Desactivar"
                                         : "Activar")
-
                                 </button>
-
                             </form>
-
                         </td>
-
                     </tr>
                 }
-
             </tbody>
-
         </table>
-
     </div>
 
 </div>

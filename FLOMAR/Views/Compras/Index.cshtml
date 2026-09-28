@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Mercadería";
 }
-
 <style>
     .compras-page {
         min-height: 100vh;
@@ -12,6 +11,51 @@
         color: white;
     }
 
+    /* ==============================
+           BARRA SUPERIOR (NUEVO)
+        ============================== */
+    .top-navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #333;
+        padding-bottom: 15px;
+        margin-bottom: 25px;
+    }
+
+    .top-navbar h3 {
+        color: #d4af37;
+        margin: 0;
+        font-weight: bold;
+    }
+
+    .btn-volver {
+        color: #d4af37;
+        border: 1px solid #d4af37;
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: bold;
+        transition: all 0.25s ease;
+    }
+
+    .btn-volver:hover {
+        background: #d4af37;
+        color: #111;
+    }
+
+    @@media (max-width: 768px) {
+        .top-navbar {
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+        }
+    }
+
+    /* ==============================
+           ESTILOS ORIGINALES
+        ============================== */
     .compras-header {
         display: flex;
         justify-content: space-between;
@@ -196,8 +240,16 @@
     }
 </style>
 
-
 <div class="compras-page">
+
+    <!-- BARRA SUPERIOR (NUEVO) -->
+    <div class="top-navbar">
+        <h3>FLOMAR</h3>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <span style="color: #ddd; font-size: 14px;">Mercadería</span>
+            <a href="/Home/Admin" class="btn-volver">Volver al panel</a>
+        </div>
+    </div>
 
     <!-- ENCABEZADO -->
     <div class="compras-header">

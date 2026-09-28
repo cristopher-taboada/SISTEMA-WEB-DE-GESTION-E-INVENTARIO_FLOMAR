@@ -17,6 +17,16 @@ namespace FlomarAPI.Controllers
             _context = context;
         }
 
+        // LISTAR VENTAS - GET: api/ventas
+        // Lo usa el resumen / arqueo de caja del panel de administracion
+        [HttpGet]
+        public async Task<ActionResult<List<Venta>>> Listar()
+        {
+            return await _context.Ventas
+                .OrderByDescending(v => v.fecha_hora)
+                .ToListAsync();
+        }
+
         // Arma el comprobante completo de una venta (usado por GET y POST)
         private async Task<VentaDetalleDto> ConstruirDetalle(Venta venta)
         {

@@ -1,136 +1,223 @@
 ﻿@{
     ViewData["Title"] = "Iniciar sesión";
-    Layout = null; 
+    Layout = null;
 }
-<style>
-    .login-pagina {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100vh;
-        background-color: #1a1a1a;
-        color: white;
-        font-family: Arial, sans-serif;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
 
-    .login-card {
-        width: 350px;
-        background-color: #2b2b2b;
-        padding: 35px;
-        border-radius: 10px;
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-    }
+<!DOCTYPE html>
+<html lang="es">
 
-    .logo {
-        text-align: center;
-        color: #d4af37;
-        font-size: 32px;
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
+<head>
 
-    .titulo {
-        text-align: center;
-        color: #d4af37;
-        margin-bottom: 20px; 
-    }
+    <meta charset="utf-8" />
 
-    /* aqui estoy agregando un estilo para el mensaje de error osea cunado no entre le de error creo que es bueno visualmente  */
-    .error-mensaje {
-        background-color: #ff4c4c;
-        color: white;
-        padding: 10px;
-        border-radius: 5px;
-        text-align: center;
-        margin-bottom: 20px;
-        font-weight: bold;
-    }
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
 
-    .campo {
-        margin-bottom: 20px;
-    }
+    <title>FLOMAR - Iniciar sesión</title>
 
-        .campo label {
-            display: block;
-            margin-bottom: 8px;
-            color: white;
-            font-weight: bold;
-        }
+    <style>
 
-        .campo input {
-            width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            border: 1px solid #555;
-            border-radius: 5px;
-            background-color: #1a1a1a;
-            color: white;
-            font-size: 15px;
-        }
-
-            .campo input:focus {
-                outline: none;
-                border-color: #d4af37;
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
             }
 
-    .boton {
-        width: 100%;
-        padding: 12px;
-        background-color: #d4af37;
-        color: #1a1a1a;
-        border: none;
-        border-radius: 5px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-    }
+            body {
+                font-family: Arial, sans-serif;
+                min-height: 100vh;
+                background-image: linear-gradient( rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.30) ), url('@Url.Content("~/images/login/fondo-login-flomar.png")');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
 
-        .boton:hover {
-            background-color: #e6c65c;
-        }
-</style>
+            .login {
+                width: 400px;
+                max-width: 90%;
+                background-color: rgba(20, 20, 20, 0.95);
+                padding: 40px;
+                border-radius: 12px;
+                border: 1px solid #d4af37;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.70);
+            }
 
-<div class="login-pagina">
-    <div class="login-card">
-        <div class="logo">
-            FLOMAR
-        </div>
-        <h2 class="titulo">
-            Iniciar sesión
-        </h2>
+            .logo {
+                display: block;
+                width: 220px;
+                max-width: 80%;
+                height: auto;
+                margin: 0 auto 25px auto;
+            }
 
-        
+            h1 {
+                color: white;
+                text-align: center;
+                font-size: 26px;
+                margin-bottom: 10px;
+            }
+
+            .descripcion {
+                color: #aaaaaa;
+                text-align: center;
+                font-size: 14px;
+                margin-bottom: 25px;
+            }
+
+            .error {
+                background-color: #4b1f1f;
+                color: #ffaaaa;
+                padding: 10px;
+                border-radius: 5px;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .campo {
+                margin-bottom: 20px;
+            }
+
+                .campo label {
+                    display: block;
+                    color: white;
+                    margin-bottom: 8px;
+                    font-size: 14px;
+                }
+
+                .campo input {
+                    width: 100%;
+                    height: 48px;
+                    background-color: #111111;
+                    border: 1px solid #555555;
+                    border-radius: 5px;
+                    padding: 0 15px;
+                    color: white;
+                    font-size: 14px;
+                }
+
+                    .campo input::placeholder {
+                        color: #777777;
+                    }
+
+                    .campo input:focus {
+                        outline: none;
+                        border-color: #d4af37;
+                    }
+
+            .boton {
+                width: 100%;
+                height: 50px;
+                background-color: #e5b92f;
+                color: #111111;
+                border: none;
+                border-radius: 5px;
+                font-size: 16px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+                .boton:hover {
+                    background-color: #f4c83e;
+                }
+
+            .pie {
+                margin-top: 25px;
+                text-align: center;
+                color: #888888;
+                font-size: 12px;
+            }
+
+            @@media (max-width: 500px) {
+
+                body {
+                    padding: 20px;
+                }
+
+                .login {
+                    width: 100%;
+                    padding: 30px 25px;
+                }
+
+                .logo {
+                    width: 190px;
+                }
+            }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="login">
+
+        <img src="@Url.Content("~/images/login/logo-flomar.png")"
+             class="logo"
+             alt="FLOMAR" />
+
+        <h1>Iniciar sesión</h1>
+
+        <p class="descripcion">
+            Ingresa tus credenciales para acceder al sistema
+        </p>
+
         @if (ViewBag.Error != null)
         {
-            <div class="error-mensaje">
+            <div class="error">
                 @ViewBag.Error
             </div>
         }
 
-        
-        <form asp-controller="Login" asp-action="Entrar" method="post">
+        <form asp-controller="Login"
+              asp-action="Entrar"
+              method="post">
 
             <div class="campo">
-                <label>Usuario</label>
-                
-                <input type="text" name="usuario_input" placeholder="Ingrese su usuario" required>
+
+                <label for="usuario_input">
+                    Usuario
+                </label>
+
+                <input type="text"
+                       id="usuario_input"
+                       name="usuario_input"
+                       placeholder="Ingrese su usuario"
+                       autocomplete="username"
+                       required />
+
             </div>
 
             <div class="campo">
-                <label>Contraseña</label>
-               
-                <input type="password" name="password_input" placeholder="Ingrese su contraseña" required>
+
+                <label for="password_input">
+                    Contraseña
+                </label>
+
+                <input type="password"
+                       id="password_input"
+                       name="password_input"
+                       placeholder="Ingrese su contraseña"
+                       autocomplete="current-password"
+                       required />
+
             </div>
 
-           
-            <button type="submit" class="boton">
+            <button type="submit"
+                    class="boton">
                 Ingresar
             </button>
 
         </form>
+
+        <div class="pie">
+            Sistema de Gestión e Inventario - FLOMAR
+        </div>
+
     </div>
-</div>
+
+</body>
+
+</html>

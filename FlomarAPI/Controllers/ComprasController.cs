@@ -249,5 +249,33 @@ namespace FlomarAPI.Controllers
                 return StatusCode(500, new RespuestaApi { mensaje = "Error al eliminar la compra: " + ex.Message });
             }
         }
+
+     
+
+
+
+        // NUEVO: LISTAR DETALLES PARA EL REPORTE - GET: api/compras/reporte
+        [HttpGet("reporte")]
+        public async Task<IActionResult> ReporteDetallado()
+        {
+            var compras = await (
+                from c in _context.Compras
+                join p in _context.Proveedores on c.id_proveedor equals p.Id_proveedor
+                join dc in _context.Detalle_compras on c.Id_compra equals dc.id_compra
+                join r in _context.Repuestos on dc.id_repuesto equals r.id_repuesto
+                orderby c.fecha_ingreso descending
+                select new
+                {
+                    fecha = c.fecha_ingreso,
+                    nro = c.numero_compra,
+                    proveedor = p.nombre,
+                    repuesto = r.Nombre,
+                    cantidad = dc.cantidad,
+                    precio = dc.costo_unitario
+                }
+            ).Take(30).ToListAsync();
+
+            return Ok(compras);
+        }
     }
 }

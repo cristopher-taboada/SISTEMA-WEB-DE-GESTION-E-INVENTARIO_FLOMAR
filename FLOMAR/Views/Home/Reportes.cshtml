@@ -1,0 +1,248 @@
+﻿@{
+    Layout = null;
+    decimal c = 0, p = 0;
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <title>Reportes - FLOMAR</title>
+
+    <style>
+            * {
+                box-sizing: border-box;
+            }
+
+            body {
+                background-color: #1a1a1a;
+                color: white;
+                font-family: Arial, sans-serif;
+                padding: 0;
+                margin: 0;
+            }
+
+            .reportes-container {
+                padding: 30px;
+                color: #f5f5f5;
+            }
+
+            /* ==============================
+                       BARRA SUPERIOR (ESTÁNDAR)
+                    ============================== */
+            .top-navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #333;
+                padding-bottom: 15px;
+                margin-bottom: 25px;
+            }
+
+                .top-navbar h3 {
+                    color: #d4af37;
+                    margin: 0;
+                    font-weight: bold;
+                }
+
+            .btn-volver {
+                color: #d4af37;
+                border: 1px solid #d4af37;
+                padding: 8px 16px;
+                text-decoration: none;
+                border-radius: 4px;
+                font-size: 14px;
+                font-weight: bold;
+                transition: all 0.25s ease;
+            }
+
+                .btn-volver:hover {
+                    background: #d4af37;
+                    color: #111;
+                }
+
+            /* ==============================
+                       ENCABEZADO
+                    ============================== */
+            .encabezado-reportes {
+                margin-bottom: 30px;
+            }
+
+            .reportes-titulo {
+                color: #d4af37;
+                font-weight: bold;
+                margin: 0 0 8px 0;
+                font-size: 24px;
+            }
+
+            .reportes-subtitulo {
+                color: #aaa;
+                margin: 0;
+                font-size: 14px;
+            }
+
+            /* ==============================
+                       CONTENEDOR DE PANELES
+                    ============================== */
+            .paneles-wrapper {
+                display: flex;
+                gap: 20px;
+            }
+
+            .panel {
+                background-color: #2b2b2b;
+                padding: 20px;
+                border-top: 3px solid #d4af37;
+            }
+
+            .panel-arqueo {
+                flex: 1;
+            }
+
+            .panel-compras {
+                flex: 2;
+            }
+
+            .titulo-panel {
+                color: #d4af37;
+                font-weight: bold;
+                margin-top: 0;
+                margin-bottom: 15px;
+                font-size: 18.72px;
+            }
+
+            /* ==============================
+                       TABLAS
+                    ============================== */
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+
+            th, td {
+                padding: 10px 8px;
+                border-bottom: 1px solid #444;
+                text-align: left;
+                font-size: 14px;
+            }
+
+            th {
+                color: #d4af37;
+                font-weight: bold;
+            }
+
+            .total-texto {
+                color: #d4af37;
+                font-weight: bold;
+                text-align: right;
+            }
+
+            .total-valor {
+                color: #d4af37;
+                font-weight: bold;
+            }
+
+            /* ==============================
+                       RESPONSIVE
+                    ============================== */
+            @@media (max-width: 900px) {
+                .paneles-wrapper {
+                    flex-direction: column;
+                }
+            }
+
+            @@media (max-width: 768px) {
+                .reportes-container {
+                    padding: 20px 10px;
+                }
+
+                .top-navbar {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 15px;
+                }
+            }
+    </style>
+</head>
+<body>
+
+    <div class="reportes-container">
+
+        <!-- BARRA SUPERIOR (ESTÁNDAR) -->
+        <div class="top-navbar">
+            <h3>FLOMAR</h3>
+            <div style="display: flex; align-items: center; gap: 20px;">
+                <span style="color: #ddd; font-size: 14px;">Reportes</span>
+                <a href="/Home/Admin" class="btn-volver">Volver al panel</a>
+            </div>
+        </div>
+
+        <!-- TÍTULO Y DESCRIPCIÓN -->
+        <div style="margin-bottom: 25px; font-size: 13px; color: #999;">
+            Estás en: <strong style="color: #d4af37;">Reportes</strong>
+        </div>
+
+        <!-- PANELES DE INFORMACIÓN -->
+        <div class="paneles-wrapper">
+
+            <!-- Panel Arqueo Diario -->
+            <div class="panel panel-arqueo">
+                <h3 class="titulo-panel">Arqueo Diario</h3>
+                <table>
+                    <tr>
+                        <th>Vendedor</th>
+                        <th>Total (Bs)</th>
+                    </tr>
+                    @foreach (var v in ViewBag.Ventas)
+                    {
+                        c += v.total_venta;
+                        <tr>
+                            <td>@v.nombre_completo</td>
+                            <td>@v.total_venta</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td class="total-texto">TOTAL CAJA:</td>
+                        <td class="total-valor">@c</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Panel Registro de Compras -->
+            <div class="panel panel-compras">
+                <h3 class="titulo-panel">Registro de Compras</h3>
+                <table>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Nro</th>
+                        <th>Proveedor</th>
+                        <th>Repuesto</th>
+                        <th>Cant.</th>
+                        <th>Precio (Bs)</th>
+                    </tr>
+                    @foreach (var x in ViewBag.Compras)
+                    {
+                        decimal subtotal = x.cantidad * x.precio;
+                        p += subtotal;
+
+                        <tr>
+                            <td>@x.fecha.ToShortDateString()</td>
+                            <td>@x.nro</td>
+                            <td>@x.proveedor</td>
+                            <td>@x.repuesto</td>
+                            <td>@x.cantidad</td>
+                            <td>@x.precio</td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="5" class="total-texto">TOTAL COMPRAS:</td>
+                        <td class="total-valor">@p</td>
+                    </tr>
+                </table>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
