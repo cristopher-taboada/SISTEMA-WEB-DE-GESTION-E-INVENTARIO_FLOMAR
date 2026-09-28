@@ -1,8 +1,7 @@
-using FLOMAR.Data;
 using FLOMAR.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 
@@ -10,59 +9,46 @@ namespace FLOMAR.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly FlomarContext _context;
         private readonly IHttpClientFactory _httpClientFactory;
 
-        public HomeController(FlomarContext context, IHttpClientFactory httpClientFactory)
+        public HomeController(IHttpClientFactory httpClientFactory)
         {
-            _context = context;
             _httpClientFactory = httpClientFactory;
         }
 
+        // PANEL PRINCIPAL (administrador): todos los datos vienen de la API,
+        // el MVC ya no se conecta a MySQL.
         public async Task<IActionResult> Index()
         {
             if (LoginController.RolActual == 0)
                 return RedirectToAction("Index", "Login");
 
-            var totalRepuestos = await _context.Repuestos
-                .CountAsync(r => r.id_estado == 1);
+            var client = _httpClientFactory.CreateClient("FlomarAPI");
 
-            var totalUsuarios = await _context.Usuarios
-                .CountAsync(u => u.id_estado_usuario == 1);
+            var response = await client.GetAsync("api/dashboard/resumen");
 
-            var stockBajo = await _context.Repuestos
-                .CountAsync(r => r.id_estado == 1 && r.stock_actual <= r.stock_minimo);
+            if (!response.IsSuccessStatusCode)
+            {
+                TempData["Error"] = "No se pudo cargar el resumen del panel.";
+                return View(new DashboardViewModel());
+            }
 
-            var hoy = DateTime.Today;
-
-            var ventasHoy = await _context.Ventas
-                .Where(v => v.Fecha_hora.Date == hoy)
-                .SumAsync(v => (decimal?)v.total_venta) ?? 0;
-
-            var ultimosRepuestos = await _context.Repuestos
-                .Where(r => r.id_estado == 1)
-                .OrderByDescending(r => r.id_repuesto)
-                .Take(5)
-                .ToListAsync();
-
-            var alertasStock = await _context.Repuestos
-                .Where(r => r.id_estado == 1 && r.stock_actual <= r.stock_minimo)
-                .OrderBy(r => r.stock_actual)
-                .Take(5)
-                .ToListAsync();
+            var resumen = await response.Content
+                .ReadFromJsonAsync<ResumenDashboardViewModel>();
 
             var modelo = new DashboardViewModel
             {
-                TotalRepuestos = totalRepuestos,
-                TotalUsuarios = totalUsuarios,
-                StockBajo = stockBajo,
-                VentasHoy = ventasHoy,
-                UltimosRepuestos = ultimosRepuestos,
-                AlertasStock = alertasStock
+                TotalRepuestos = resumen?.total_repuestos ?? 0,
+                TotalUsuarios = resumen?.total_usuarios ?? 0,
+                StockBajo = resumen?.stock_bajo ?? 0,
+                VentasHoy = resumen?.ventas_hoy ?? 0,
+                UltimosRepuestos = resumen?.ultimos_repuestos ?? new List<Repuesto>(),
+                AlertasStock = resumen?.alertas_stock ?? new List<Repuesto>()
             };
 
             return View(modelo);
         }
+
 
         public IActionResult Privacy()
         {
