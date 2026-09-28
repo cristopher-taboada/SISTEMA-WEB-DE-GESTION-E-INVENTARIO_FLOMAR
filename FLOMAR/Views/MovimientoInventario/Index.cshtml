@@ -1,4 +1,4 @@
-@model IEnumerable<FLOMAR.Models.MovimientoListaViewModel>
+@model FLOMAR.Models.MovimientoIndexViewModel
 
 @{
     ViewData["Title"] = "Movimientos de Inventario";
@@ -166,6 +166,119 @@
         border: 1px solid #63d471;
         color: #63d471;
     }
+
+    /* ============================================================ */
+    /* ALERTA DE PRODUCTOS SIN MOVIMIENTO (INMOVILIZADOS)           */
+    /* ============================================================ */
+    .alerta-inmovilizado {
+        background: rgba(212, 175, 55, 0.08);
+        border: 1px solid #d4af37;
+        border-left: 5px solid #d4af37;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 25px;
+    }
+
+    .alerta-cabecera {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 16px;
+    }
+
+    .alerta-inmovilizado h3 {
+        margin: 0 0 6px 0;
+        color: #d4af37;
+        font-size: 19px;
+    }
+
+    .alerta-inmovilizado p {
+        margin: 0;
+        color: #bbb;
+        font-size: 14px;
+        max-width: 640px;
+    }
+
+    .filtro-meses {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #aaa;
+        font-size: 13px;
+    }
+
+        .filtro-meses label {
+            text-transform: uppercase;
+            font-weight: bold;
+            color: #d4af37;
+        }
+
+        .filtro-meses input {
+            width: 70px;
+            background: #181818;
+            border: 1px solid #555;
+            color: #eee;
+            border-radius: 5px;
+            padding: 7px 8px;
+            font-weight: bold;
+        }
+
+    .btn-aplicar {
+        background: transparent;
+        color: #d4af37;
+        border: 1px solid #d4af37;
+        padding: 7px 14px;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+        .btn-aplicar:hover {
+            background: #d4af37;
+            color: #111;
+        }
+
+    .alerta-tabla-contenedor {
+        background: #202020;
+        border: 1px solid #3b3b3b;
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+
+    .alerta-tabla {
+        min-width: 950px;
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .badge-ambar {
+        background: rgba(212, 175, 55, 0.2);
+        color: #e5c34b;
+    }
+
+    .badge-nunca {
+        background: rgba(220, 53, 69, 0.2);
+        color: #ff6b6b;
+    }
+
+    .badge-venta {
+        background: rgba(66, 135, 245, 0.2);
+        color: #7fb2ff;
+    }
+
+    .alerta-total {
+        margin-top: 15px;
+        text-align: right;
+        color: #bbb;
+        font-size: 14px;
+    }
+
+        .alerta-total strong {
+            color: #d4af37;
+            font-size: 16px;
+        }
 </style>
 
 
@@ -207,6 +320,150 @@
     }
 
 
+    <!-- ================================================================ -->
+    <!-- ALERTA: REPUESTOS SIN MOVIMIENTO EN LOS ULTIMOS N MESES          -->
+    <!-- ================================================================ -->
+    @if (Model.SinMovimiento.Any())
+    {
+        <div class="alerta-inmovilizado">
+
+            <div class="alerta-cabecera">
+
+                <div>
+                    <h3>&#9888; Alerta: productos sin movimiento</h3>
+                    <p>
+                        @Model.SinMovimiento.Count repuesto(s) no registran ingresos, salidas, ajustes ni mermas
+                        desde hace mas de @Model.MesesSinMovimiento mes(es).
+                        Revisa si conviene promocionarlos, rematarlos o darles de baja.
+                    </p>
+                </div>
+
+                <form asp-controller="MovimientoInventario"
+                      asp-action="Index"
+                      method="get"
+                      class="filtro-meses">
+
+                    <label for="meses">Antiguedad</label>
+
+                    <input type="number"
+                           id="meses"
+                           name="meses"
+                           min="1"
+                           max="120"
+                           value="@Model.MesesSinMovimiento" />
+
+                    <span>meses</span>
+
+                    <button type="submit" class="btn-aplicar">Aplicar</button>
+
+                </form>
+
+            </div>
+
+            <div class="alerta-tabla-contenedor">
+
+                <table class="alerta-tabla compras-table">
+
+                    <thead>
+                        <tr>
+                            <th>Codigo</th>
+                            <th>Repuesto</th>
+                            <th>Stock</th>
+                            <th>Ultimo movimiento</th>
+                            <th>Sin movimiento</th>
+                            <th>Valor inmovilizado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var d in Model.SinMovimiento)
+                        {
+                            <tr>
+
+                                <td class="codigo-compra">@d.codigo</td>
+
+                                <td>
+                                    <strong>@d.nombre</strong>
+                                </td>
+
+                                <td>
+                                    @d.stock_actual
+                                    @if (d.stock_actual <= d.stock_minimo)
+                                    {
+                                        <span class="badge badge-resta">Bajo minimo</span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @if (d.ultimo_movimiento.HasValue)
+                                    {
+                                        @d.ultimo_movimiento.Value.ToString("dd/MM/yyyy")
+
+                                        @if (d.origen_ultimo_movimiento == "Venta")
+                                        {
+                                            <span class="badge badge-venta">Venta</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge badge-ambar">Kardex</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-nunca">Nunca movido</span>
+                                    }
+                                </td>
+
+                                <td class="precio">
+                                    @if (d.dias_sin_movimiento.HasValue)
+                                    {
+                                        <span class="badge badge-ambar">@d.dias_sin_movimiento dias</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-nunca">Sin registro</span>
+                                    }
+                                </td>
+
+                                <td class="precio">Bs @d.valor_inmovilizado.ToString("0.00")</td>
+
+                                <td class="acciones">
+
+                                    <a asp-controller="MovimientoInventario"
+                                       asp-action="Create"
+                                       asp-route-id_repuesto="@d.id_repuesto"
+                                       class="btn-ver">
+
+                                        Registrar movimiento
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="alerta-total">
+                Dinero inmovilizado en estos productos:
+                <strong>Bs @Model.SinMovimiento.Sum(d => d.valor_inmovilizado).ToString("0.00")</strong>
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="alerta alerta-exito">
+            Ningun repuesto lleva mas de @Model.MesesSinMovimiento mes(es) sin movimiento de inventario.
+        </div>
+    }
+
+
     <!-- TARJETA -->
     <div class="compras-card">
 
@@ -228,9 +485,9 @@
 
             <tbody>
 
-                @if (Model.Any())
+                @if (Model.Movimientos.Any())
                 {
-                    @foreach (var m in Model)
+                    @foreach (var m in Model.Movimientos)
                     {
                         <tr>
 

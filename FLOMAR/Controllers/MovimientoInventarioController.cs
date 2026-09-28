@@ -6,15 +6,18 @@ using FLOMAR.Services;
 
 namespace FLOMAR.Controllers
 {
-    // La logica de stock, validaciones y el calculo del stock resultante
-    // viven en la FlomarAPI. Este controlador solo orquesta llamadas HTTP.
+   
     public class MovimientoInventarioController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
 
-        public MovimientoInventarioController(IHttpClientFactory httpClientFactory)
+        public MovimientoInventarioController(
+            IHttpClientFactory httpClientFactory,
+            IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
         }
 
         // Carga los combos del formulario (repuestos y tipos de movimiento)
@@ -30,14 +33,39 @@ namespace FLOMAR.Controllers
         // =========================
         // LISTAR MOVIMIENTOS (kardex)
         // =========================
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? meses)
         {
             var client = _httpClientFactory.CreateClient("FlomarAPI");
 
             var movimientos = await client
                 .GetFromJsonAsync<List<MovimientoListaViewModel>>("api/movimientos");
 
-            return View(movimientos);
+            // Meses de la alerta: se pueden cambiar desde la vista (?meses=N)
+            // y por defecto se toman de appsettings.json -> "MesesSinMovimiento"
+            var mesesAlerta = meses.HasValue && meses.Value > 0
+                ? meses.Value
+                : _configuration.GetValue<int?>("MesesSinMovimiento") ?? 6;
+
+            var sinMovimiento = new List<RepuestoSinMovimientoViewModel>();
+
+            // La API calcula que repuestos no se movieron en ese periodo
+            var respuestaAlerta = await client
+                .GetAsync($"api/movimientos/sin-movimiento?meses={mesesAlerta}");
+
+            if (respuestaAlerta.IsSuccessStatusCode)
+            {
+                sinMovimiento = await respuestaAlerta.Content
+                    .ReadFromJsonAsync<List<RepuestoSinMovimientoViewModel>>() ?? new();
+            }
+
+            var modelo = new MovimientoIndexViewModel
+            {
+                Movimientos = movimientos ?? new(),
+                SinMovimiento = sinMovimiento,
+                MesesSinMovimiento = mesesAlerta
+            };
+
+            return View(modelo);
         }
 
         // =========================
@@ -64,13 +92,19 @@ namespace FLOMAR.Controllers
         // FORMULARIO CREAR (GET)
         // =========================
         [HttpGet]
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int? id_repuesto)
         {
             var client = _httpClientFactory.CreateClient("FlomarAPI");
 
             await CargarCombos(client);
 
-            return View(new MovimientoCrearViewModel());
+            // Si se llega desde la alerta de inmovilizados (?id_repuesto=N),
+            // el repuesto ya queda seleccionado en el formulario
+            return View(new MovimientoCrearViewModel
+            {
+                id_repuesto = id_repuesto ?? 0,
+                id_tipo_movimiento = 0
+            });
         }
 
         // =========================
