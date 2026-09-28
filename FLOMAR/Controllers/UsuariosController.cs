@@ -4,8 +4,6 @@ using FLOMAR.Models;
 
 namespace FLOMAR.Controllers
 {
-    // El acceso a datos vive en la FlomarAPI.
-    // Este controlador solo consume el endpoint api/usuarios.
     public class UsuariosController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -15,7 +13,7 @@ namespace FLOMAR.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        // GET: /Usuarios  (listado de usuarios del administrador)
+        // GET: /Usuarios
         public async Task<IActionResult> Index()
         {
             var client = _httpClientFactory.CreateClient("FlomarAPI");
@@ -23,7 +21,26 @@ namespace FLOMAR.Controllers
             var usuarios = await client
                 .GetFromJsonAsync<List<Usuario>>("api/usuarios");
 
-            return View(usuarios);
+            return View(usuarios ?? new List<Usuario>());
+        }
+
+        // POST: /Usuarios/CambiarEstado/5
+        [HttpPost]
+        public async Task<IActionResult> CambiarEstado(int id)
+        {
+            var client = _httpClientFactory.CreateClient("FlomarAPI");
+
+            try
+            {
+                // Invocamos directamente el endpoint dedicado de la API
+                await client.PutAsync($"api/usuarios/cambiar-estado/{id}", null);
+            }
+            catch (Exception)
+            {
+                // Manejo de errores de conexión
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

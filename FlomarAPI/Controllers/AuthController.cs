@@ -30,6 +30,12 @@ namespace FlomarAPI.Controllers
                 return Unauthorized(new RespuestaApi { mensaje = "Datos incorrectos" });
             }
 
+            // NUEVA VALIDACIÓN: Verificar si el usuario está inactivo (distinto de 1)
+            if (usuario.id_estado_usuario != 1)
+            {
+                return Unauthorized(new RespuestaApi { mensaje = "Tu cuenta se encuentra inactiva. Contacta al administrador." });
+            }
+
             return Ok(new LoginResponse
             {
                 id_usuario = usuario.id_usuario,

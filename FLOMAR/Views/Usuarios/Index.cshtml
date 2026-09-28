@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Usuarios";
 }
-
 <style>
     .usuarios-container {
         padding: 30px;
@@ -149,6 +148,33 @@
         font-weight: bold;
     }
 
+    /* BOTONES DE ACCIÓN (ACTIVAR / DESACTIVAR) */
+    .btn-accion {
+        padding: 6px 14px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        text-decoration: none;
+        display: inline-block;
+        transition: opacity 0.2s ease;
+    }
+
+    .btn-accion:hover {
+        opacity: 0.85;
+    }
+
+    .btn-desactivar {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-activar {
+        background-color: #28a745;
+        color: white;
+    }
+
     .sin-usuarios {
         text-align: center;
         color: #aaa;
@@ -209,7 +235,7 @@
                         <th>Rol</th>
                         <th>Estado</th>
                         <th>Fecha creación</th>
-                        <th>Último acceso</th>
+                        <th style="text-align: center;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -252,15 +278,17 @@
                                     }
                                 </td>
                                 <td>@usuario.fecha_creacion.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td>
-                                    @if (usuario.ultimo_acceso.HasValue)
-                                    {
-                                        @usuario.ultimo_acceso.Value.ToString("dd/MM/yyyy HH:mm")
-                                    }
-                                    else
-                                    {
-                                        <span>Sin acceso registrado</span>
-                                    }
+                                <td style="text-align: center;">
+                                    <form asp-controller="Usuarios" asp-action="CambiarEstado" asp-route-id="@usuario.id_usuario" method="post" style="display:inline;">
+                                        @if (usuario.id_estado_usuario == 1)
+                                        {
+                                            <button type="submit" class="btn-accion btn-desactivar">Desactivar</button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn-accion btn-activar">Activar</button>
+                                        }
+                                    </form>
                                 </td>
                             </tr>
                         }
@@ -277,5 +305,4 @@
             </table>
         </div>
     </div>
-
 </div>

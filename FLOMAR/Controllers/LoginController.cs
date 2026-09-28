@@ -24,7 +24,7 @@ namespace FLOMAR.Controllers
         {
             var client = _httpClientFactory.CreateClient("FlomarAPI");
 
-            // La API valida las credenciales contra la base de datos
+            // La API valida las credenciales y el estado contra la base de datos
             var response = await client.PostAsJsonAsync("api/auth/login", new
             {
                 usuario = usuario_input,
@@ -41,7 +41,24 @@ namespace FLOMAR.Controllers
                 else return RedirectToAction("Vendedor", "Home");
             }
 
-            ViewBag.Error = "Datos incorrectos";
+            // Capturamos el mensaje exacto que envía la API (cuenta inactiva o datos incorrectos)
+            try
+            {
+                var errorObj = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
+                if (errorObj != null && errorObj.ContainsKey("mensaje"))
+                {
+                    ViewBag.Error = errorObj["mensaje"];
+                }
+                else
+                {
+                    ViewBag.Error = "Datos incorrectos";
+                }
+            }
+            catch
+            {
+                ViewBag.Error = "Datos incorrectos";
+            }
+
             return View("Index");
         }
     }

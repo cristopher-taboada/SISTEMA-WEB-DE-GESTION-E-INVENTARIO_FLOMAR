@@ -35,6 +35,22 @@ namespace FlomarAPI.Controllers
                 .ToListAsync();
         }
 
+        // PUT: api/usuarios/cambiar-estado/5  (Endpoint dedicado para alternar el estado y guardar en MySQL)
+        [HttpPut("cambiar-estado/{id}")]
+        public async Task<IActionResult> CambiarEstado(int id)
+        {
+            var usuario = await _context.Usuarios.FindAsync(id);
+            if (usuario == null)
+            {
+                return NotFound();
+            }
+
+            // Invertimos el estado directamente: si es 1 pasa a 2, si es 2 (u otro) pasa a 1
+            usuario.id_estado_usuario = (usuario.id_estado_usuario == 1) ? 2 : 1;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
-
