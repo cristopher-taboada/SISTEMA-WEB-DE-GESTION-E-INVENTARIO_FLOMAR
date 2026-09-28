@@ -25,7 +25,6 @@ namespace FLOMAR.Controllers
         {
             var client = _httpClientFactory.CreateClient("FlomarAPI");
 
-            // La API valida las credenciales y el estado contra la base de datos
             var response = await client.PostAsJsonAsync("api/auth/login", new
             {
                 usuario = usuario_input,
@@ -43,18 +42,13 @@ namespace FLOMAR.Controllers
                 else return RedirectToAction("Vendedor", "Home");
             }
 
-            // Capturamos el mensaje exacto que envía la API (cuenta inactiva o datos incorrectos)
+            // Manejo de errores simple y directo
             try
             {
                 var errorObj = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
-                if (errorObj != null && errorObj.ContainsKey("mensaje"))
-                {
-                    ViewBag.Error = errorObj["mensaje"];
-                }
-                else
-                {
-                    ViewBag.Error = "Datos incorrectos";
-                }
+                ViewBag.Error = (errorObj != null && errorObj.ContainsKey("mensaje"))
+                    ? errorObj["mensaje"]
+                    : "Datos incorrectos";
             }
             catch
             {
@@ -62,6 +56,14 @@ namespace FLOMAR.Controllers
             }
 
             return View("Index");
+        }
+
+        // Único agregado necesario para que funcione el botón de cerrar sesión
+        public IActionResult Logout()
+        {
+            RolActual = 0;
+            IdUsuarioActual = 0;
+            return RedirectToAction("Index", "Login");
         }
     }
 }
