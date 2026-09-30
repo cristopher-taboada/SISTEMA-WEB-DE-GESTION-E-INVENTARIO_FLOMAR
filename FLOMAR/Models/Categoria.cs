@@ -2,9 +2,10 @@
 {
     public class Categoria
     {
+        public int id_categoria { get; set; }
 
-        public int Id { get; set; }
         public string nombre_categoria { get; set; } = string.Empty;
-        public string Descripcion { get; set; } = string.Empty;
+
+        public string? descripcion { get; set; }
     }
 }

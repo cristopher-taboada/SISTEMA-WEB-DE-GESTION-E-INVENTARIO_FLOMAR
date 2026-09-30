@@ -29,7 +29,9 @@ namespace FLOMAR.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                TempData["Error"] = "No se pudo cargar el resumen del panel.";
+                TempData["Error"] =
+                    "No se pudo cargar el resumen del panel.";
+
                 return View(new DashboardViewModel());
             }
 
@@ -42,13 +44,14 @@ namespace FLOMAR.Controllers
                 TotalUsuarios = resumen?.total_usuarios ?? 0,
                 StockBajo = resumen?.stock_bajo ?? 0,
                 VentasHoy = resumen?.ventas_hoy ?? 0,
-                UltimosRepuestos = resumen?.ultimos_repuestos ?? new List<Repuesto>(),
-                AlertasStock = resumen?.alertas_stock ?? new List<Repuesto>()
+                UltimosRepuestos =
+                    resumen?.ultimos_repuestos ?? new List<Repuesto>(),
+                AlertasStock =
+                    resumen?.alertas_stock ?? new List<Repuesto>()
             };
 
             return View(modelo);
         }
-
 
         public IActionResult Privacy()
         {
@@ -63,21 +66,49 @@ namespace FLOMAR.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Vendedor(string textoBusqueda)
+        public async Task<IActionResult> Vendedor(
+            string? textoBusqueda,
+            int? idCategoria)
         {
-            // AQUÍ ESTÁ EL CAMBIO: Permite el acceso si el rol es 1 (Admin) o 2 (Vendedor)
-            if (LoginController.RolActual != 1 && LoginController.RolActual != 2)
+            // Permite el acceso al Administrador y al Vendedor
+            if (LoginController.RolActual != 1 &&
+                LoginController.RolActual != 2)
+            {
                 return RedirectToAction("Index", "Login");
+            }
 
-            var client = _httpClientFactory.CreateClient("FlomarAPI");
+            var client =
+                _httpClientFactory.CreateClient("FlomarAPI");
 
-            var url = string.IsNullOrEmpty(textoBusqueda)
-                ? "api/repuestos"
-                : $"api/repuestos?textoBusqueda={Uri.EscapeDataString(textoBusqueda)}";
+            var parametros = new List<string>();
 
-            var repuestos = await client.GetFromJsonAsync<List<Repuesto>>(url);
+            if (!string.IsNullOrEmpty(textoBusqueda))
+            {
+                parametros.Add(
+                    $"textoBusqueda={Uri.EscapeDataString(textoBusqueda)}");
+            }
 
-            return View(repuestos ?? new List<Repuesto>());
+            if (idCategoria.HasValue)
+            {
+                parametros.Add(
+                    $"idCategoria={idCategoria.Value}");
+            }
+
+            var url = "api/repuestos";
+
+            if (parametros.Count > 0)
+            {
+                url += "?" + string.Join("&", parametros);
+            }
+
+            var repuestos =
+                await client.GetFromJsonAsync<List<Repuesto>>(url);
+
+            ViewBag.IdCategoria = idCategoria;
+            ViewBag.TextoBusqueda = textoBusqueda;
+
+            return View(
+                repuestos ?? new List<Repuesto>());
         }
 
         public async Task<IActionResult> Reportes()
@@ -85,18 +116,35 @@ namespace FLOMAR.Controllers
             if (LoginController.RolActual != 1)
                 return RedirectToAction("Index", "Login");
 
-            var api = _httpClientFactory.CreateClient("FlomarAPI");
+            var api =
+                _httpClientFactory.CreateClient("FlomarAPI");
 
-            var ventas = await api.GetFromJsonAsync<List<Venta>>("api/ventas") ?? new List<Venta>();
-            var usuarios = await api.GetFromJsonAsync<List<Usuario>>("api/usuarios") ?? new List<Usuario>();
-            var compras = await api.GetFromJsonAsync<List<CompraReporteView>>("api/compras/reporte") ?? new List<CompraReporteView>();
+            var ventas =
+                await api.GetFromJsonAsync<List<Venta>>("api/ventas")
+                ?? new List<Venta>();
+
+            var usuarios =
+                await api.GetFromJsonAsync<List<Usuario>>("api/usuarios")
+                ?? new List<Usuario>();
+
+            var compras =
+                await api.GetFromJsonAsync<List<CompraReporteView>>(
+                    "api/compras/reporte")
+                ?? new List<CompraReporteView>();
 
             ViewBag.Ventas = ventas
-                .Where(v => v.id_metodo_pago == 1 && v.Fecha_hora.Date == DateTime.Today)
-                .Join(usuarios,
-                      v => v.Id_vendedor,
-                      u => u.id_usuario,
-                      (v, u) => new { u.nombre_completo, v.total_venta })
+                .Where(v =>
+                    v.id_metodo_pago == 1 &&
+                    v.Fecha_hora.Date == DateTime.Today)
+                .Join(
+                    usuarios,
+                    v => v.Id_vendedor,
+                    u => u.id_usuario,
+                    (v, u) => new
+                    {
+                        u.nombre_completo,
+                        v.total_venta
+                    })
                 .ToList();
 
             ViewBag.Compras = compras;
@@ -104,10 +152,19 @@ namespace FLOMAR.Controllers
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [ResponseCache(
+            Duration = 0,
+            Location = ResponseCacheLocation.None,
+            NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(
+                new ErrorViewModel
+                {
+                    RequestId =
+                        Activity.Current?.Id ??
+                        HttpContext.TraceIdentifier
+                });
         }
     }
 }
