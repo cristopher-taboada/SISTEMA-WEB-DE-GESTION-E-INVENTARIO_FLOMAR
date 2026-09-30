@@ -1,16 +1,23 @@
 @model IEnumerable<FLOMAR.Models.Repuesto>
+
 @{
     Layout = null;
     int rol = FLOMAR.Controllers.LoginController.RolActual;
     string textoRol = (rol == 1) ? "Administrador" : "Vendedor";
     string urlRetorno = (rol == 1) ? "/Home/Admin" : "/Home/Index";
 }
+
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <meta charset="utf-8" />
+
     <title>Punto de Venta - FLOMAR</title>
+
     <style>
+
             body {
                 margin: 0;
                 background-color: #1a1a1a;
@@ -70,9 +77,9 @@
                 font-weight: bold;
             }
 
-                .page-title span {
-                    color: #d4af37;
-                }
+            .page-title span {
+                color: #d4af37;
+            }
 
             .main-layout {
                 display: flex;
@@ -105,20 +112,20 @@
                 margin-bottom: 20px;
             }
 
-                .search-bar input {
-                    flex: 1;
-                    padding: 12px 15px;
-                    background-color: #1a1a1a;
-                    border: 1px solid #333;
-                    border-radius: 4px;
-                    color: #fff;
-                    font-size: 14px;
-                }
+            .search-bar input {
+                flex: 1;
+                padding: 12px 15px;
+                background-color: #1a1a1a;
+                border: 1px solid #333;
+                border-radius: 4px;
+                color: #fff;
+                font-size: 14px;
+            }
 
-                    .search-bar input:focus {
-                        outline: none;
-                        border-color: #d4af37;
-                    }
+            .search-bar input:focus {
+                outline: none;
+                border-color: #d4af37;
+            }
 
             .btn-buscar {
                 background-color: #e4c554;
@@ -131,12 +138,13 @@
                 font-size: 14px;
             }
 
-                .btn-buscar:hover {
-                    background-color: #d4af37;
-                }
+            .btn-buscar:hover {
+                background-color: #d4af37;
+            }
 
             .categories {
                 display: flex;
+                flex-wrap: wrap;
                 gap: 10px;
                 margin-bottom: 25px;
             }
@@ -155,12 +163,17 @@
                 line-height: 20px;
             }
 
-                .cat-btn.active {
-                    background-color: #e4c554;
-                    color: #1a1a1a;
-                    border-color: #e4c554;
-                    font-weight: bold;
-                }
+            .cat-btn:hover {
+                border-color: #d4af37;
+                color: #d4af37;
+            }
+
+            .cat-btn.active {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                border-color: #e4c554;
+                font-weight: bold;
+            }
 
             .products-grid {
                 display: grid;
@@ -208,9 +221,9 @@
                 margin-top: auto;
             }
 
-                .btn-agregar:hover {
-                    background-color: #d4af37;
-                }
+            .btn-agregar:hover {
+                background-color: #d4af37;
+            }
 
             /* Carrito */
             .carrito-header {
@@ -284,9 +297,9 @@
                 margin-top: 4px;
             }
 
-                .btn-quitar:hover {
-                    text-decoration: underline;
-                }
+            .btn-quitar:hover {
+                text-decoration: underline;
+            }
 
             .carrito-summary {
                 border-top: 1px solid #444;
@@ -310,9 +323,9 @@
                 margin-bottom: 15px;
             }
 
-                .summary-total span:last-child {
-                    color: #d4af37;
-                }
+            .summary-total span:last-child {
+                color: #d4af37;
+            }
 
             .btn-confirmar {
                 background-color: #e4c554;
@@ -439,8 +452,11 @@
                     color: #fff;
                 }
     </style>
+
 </head>
+
 <body>
+
     <header>
         <div class="header-logo">FLOMAR</div>
         <div class="header-user">
@@ -448,10 +464,32 @@
             <a href="@urlRetorno" class="btn-volver">Volver al panel</a>
             <a href="/Login/Index" class="btn-cerrar">Cerrar sesión</a>
         </div>
+
+        <div class="header-user">
+
+            <span style="color: #d4af37; font-weight: bold;">
+                Rol: @textoRol
+            </span>
+
+            <a href="@urlRetorno" class="btn-volver">
+                Volver al panel
+            </a>
+
+            <a href="/Login/Index" class="btn-cerrar">
+                Cerrar sesión
+            </a>
+
+        </div>
+
     </header>
 
+
     <div class="container">
-        <h1 class="page-title">Punto de venta <span>FLOMAR</span></h1>
+
+        <h1 class="page-title">
+            Punto de venta <span>FLOMAR</span>
+        </h1>
+
 
         <div class="main-layout">
 
@@ -460,6 +498,7 @@
                 <form class="search-bar" asp-controller="Home" asp-action="Vendedor" method="get">
                     <input type="text" name="textoBusqueda" list="lista-repuestos" value="@Context.Request.Query["textoBusqueda"]" placeholder="Buscar repuesto por nombre o código..." autocomplete="off">
                     <datalist id="lista-repuestos">
+
                         @if (Model != null)
                         {
                             foreach (var repuesto in Model)
@@ -467,18 +506,99 @@
                                 <option value="@repuesto.Nombre"></option>
                             }
                         }
+
                     </datalist>
                     <button type="submit" class="btn-buscar">Buscar</button>
                 </form>
 
+
                 <div class="categories">
-                    <a href="@Url.Action("Vendedor", "Home")" class="cat-btn active">Todos</a>
-                    <button type="button" class="cat-btn">Frenos</button>
-                    <button type="button" class="cat-btn">Filtros</button>
-                    <button type="button" class="cat-btn">Aros</button>
+
+                    <a href="@Url.Action("Vendedor", "Home")"
+                       class="cat-btn @(ViewBag.IdCategoria == null ? "active" : "")">
+                        Todos
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 1 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 1 ? "active" : "")">
+                        Frenos
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 2 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 2 ? "active" : "")">
+                        Suspensión
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 3 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 3 ? "active" : "")">
+                        Motor
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 4 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 4 ? "active" : "")">
+                        Eléctrico
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 5 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 5 ? "active" : "")">
+                        Aceites
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 6 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 6 ? "active" : "")">
+                        Transmisión
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 7 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 7 ? "active" : "")">
+                        Carrocería
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 8 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 8 ? "active" : "")">
+                        Interior
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 9 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 9 ? "active" : "")">
+                        Dirección
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 10 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 10 ? "active" : "")">
+                        Refrigeración
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 11 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 11 ? "active" : "")">
+                        Filtros
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 12 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 12 ? "active" : "")">
+                        Iluminación
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 13 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 13 ? "active" : "")">
+                        Accesorios
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 14 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 14 ? "active" : "")">
+                        Herramientas
+                    </a>
+
+                    <a href="@Url.Action("Vendedor", "Home", new { idCategoria = 15 })"
+                       class="cat-btn @(ViewBag.IdCategoria == 15 ? "active" : "")">
+                        Limpieza
+                    </a>
+
                 </div>
 
+
                 <div class="products-grid">
+
                     @if (Model != null && Model.Any())
                     {
                         foreach (var repuesto in Model)
@@ -498,38 +618,72 @@
                             No se encontraron repuestos registrados en la base de datos.
                         </p>
                     }
+
                 </div>
+
             </div>
 
-            <!-- CARRITO Y RESUMEN -->
+
             <div class="right-panel">
+
                 <div class="carrito-header">
-                    <h2 class="carrito-title">Carrito</h2>
-                    <div class="carrito-badge" id="badge-contador">0</div>
+
+                    <h2 class="carrito-title">
+                        Carrito
+                    </h2>
+
+                    <div class="carrito-badge"
+                         id="badge-contador">
+                        0
+                    </div>
+
                 </div>
+
 
                 <div id="lista-carrito">
-                    <p id="carrito-vacio" style="color: #888; font-size: 13px; text-align: center; margin-top: 20px;">
+
+                    <p id="carrito-vacio"
+                       style="color: #888;
+                        font-size: 13px;
+                        text-align: center;
+                        margin-top: 20px;">
+
                         Aún no hay productos en el carrito.
+
                     </p>
+
                 </div>
 
+
                 <div class="carrito-summary">
+
                     <div class="summary-row">
                         <span>Productos</span>
                         <span id="total-productos">0</span>
                     </div>
+
                     <div class="summary-row">
                         <span>Subtotal</span>
-                        <span>Bs. <span id="subtotal-monto">0.00</span></span>
+                        <span>
+                            Bs.
+                            <span id="subtotal-monto">0.00</span>
+                        </span>
                     </div>
+
                     <div class="summary-row">
                         <span>IVA (13%)</span>
-                        <span>Bs. <span id="iva-monto">0.00</span></span>
+                        <span>
+                            Bs.
+                            <span id="iva-monto">0.00</span>
+                        </span>
                     </div>
+
                     <div class="summary-total">
                         <span>TOTAL</span>
-                        <span>Bs. <span id="total-monto">0.00</span></span>
+                        <span>
+                            Bs.
+                            <span id="total-monto">0.00</span>
+                        </span>
                     </div>
 
                     <!-- BOTONES DE MÉTODO DE PAGO -->
@@ -547,6 +701,7 @@
             </div>
 
         </div>
+
     </div>
 
     <!-- MODAL FLOTANTE DEL QR -->
@@ -565,23 +720,37 @@
     </div>
 
     <script>
+
             let carrito = [];
             let sumaTotalFinal = 0;
 
             function agregarAlCarrito(id, nombre, precio) {
+
                 let item = carrito.find(p => p.id === id);
+
                 if (item) {
                     item.cantidad++;
-                } else {
-                    carrito.push({ id: id, nombre: nombre, precio: precio, cantidad: 1 });
                 }
+                else {
+                    carrito.push({
+                        id: id,
+                        nombre: nombre,
+                        precio: precio,
+                        cantidad: 1
+                    });
+                }
+
                 actualizarCarrito();
             }
 
+
             function eliminarDelCarrito(id) {
+
                 carrito = carrito.filter(p => p.id !== id);
+
                 actualizarCarrito();
             }
+
 
             function actualizarCarrito() {
                 const lista = document.getElementById('lista-carrito');
@@ -594,8 +763,12 @@
 
                 lista.innerHTML = '';
 
+
                 if (carrito.length === 0) {
-                    lista.innerHTML = '<p id="carrito-vacio" style="color: #888; font-size: 13px; text-align: center; margin-top: 20px;">Aún no hay productos en el carrito.</p>';
+
+                    lista.innerHTML =
+                        '<p id="carrito-vacio" style="color: #888; font-size: 13px; text-align: center; margin-top: 20px;">Aún no hay productos en el carrito.</p>';
+
                     badge.innerText = '0';
                     totalProd.innerText = '0';
                     subtotalMonto.innerText = '0.00';
@@ -606,16 +779,27 @@
                     return;
                 }
 
+
                 let totalItemsCount = 0;
                 let sumaSubtotal = 0;
 
+
                 carrito.forEach(prod => {
+
                     totalItemsCount += prod.cantidad;
-                    let subtotalProd = prod.precio * prod.cantidad;
+
+                    let subtotalProd =
+                        prod.precio * prod.cantidad;
+
                     sumaSubtotal += subtotalProd;
 
-                    let div = document.createElement('div');
+
+                    let div =
+                        document.createElement('div');
+
                     div.className = 'cart-item';
+
+
                     div.innerHTML = `
                         <div>
                             <div class="cart-item-name">${prod.nombre}</div>
@@ -625,6 +809,7 @@
                         <div class="cart-item-price">Bs. ${subtotalProd.toFixed(2)}</div>
                     `;
                     lista.appendChild(div);
+
                 });
 
                 let ivaCalculado = sumaSubtotal * 0.13;
@@ -641,7 +826,9 @@
             // FUNCIÓN 1: Decide si guarda directo o si muestra la ventana del QR
             function iniciarVenta() {
                 if (carrito.length === 0) {
+
                     alert('El carrito esta vacio.');
+
                     return;
                 }
 
@@ -676,14 +863,33 @@
                     const data = await resp.json();
 
                     if (resp.ok && data.ok) {
-                        window.location.href = '/Ventas/Detalle/' + data.idVenta;
-                    } else {
-                        alert('No se pudo registrar la venta: ' + (data.mensaje || 'Error desconocido'));
+
+                        window.location.href =
+                            '/Ventas/Detalle/' + data.idVenta;
+
                     }
-                } catch (e) {
-                    alert('Error de conexion al registrar la venta.');
+                    else {
+
+                        alert(
+                            'No se pudo registrar la venta: ' +
+                            (data.mensaje || 'Error desconocido')
+                        );
+
+                    }
+
                 }
+                catch (e) {
+
+                    alert(
+                        'Error de conexion al registrar la venta.'
+                    );
+
+                }
+
             }
+
     </script>
+
 </body>
+
 </html>

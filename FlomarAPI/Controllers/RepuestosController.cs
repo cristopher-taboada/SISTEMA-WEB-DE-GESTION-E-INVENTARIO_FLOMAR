@@ -18,17 +18,30 @@ namespace FlomarAPI.Controllers
         }
 
         // GET: api/repuestos?textoBusqueda=filtro
+        // GET: api/repuestos?idCategoria=1
         [HttpGet]
-        public async Task<ActionResult<List<Repuesto>>> Listar([FromQuery] string? textoBusqueda)
+        public async Task<ActionResult<List<Repuesto>>> Listar(
+            [FromQuery] string? textoBusqueda,
+            [FromQuery] int? idCategoria)
         {
             var query = _context.Repuestos.AsQueryable();
 
             if (!string.IsNullOrEmpty(textoBusqueda))
             {
-                query = query.Where(r => r.Nombre.Contains(textoBusqueda) || r.Codigo.Contains(textoBusqueda));
+                query = query.Where(r =>
+                    r.Nombre.Contains(textoBusqueda) ||
+                    r.Codigo.Contains(textoBusqueda));
             }
 
-            return await query.OrderBy(r => r.Nombre).ToListAsync();
+            if (idCategoria.HasValue)
+            {
+                query = query.Where(r =>
+                    r.id_categoria == idCategoria.Value);
+            }
+
+            return await query
+                .OrderBy(r => r.Nombre)
+                .ToListAsync();
         }
 
         // GET: api/repuestos/5
@@ -39,7 +52,10 @@ namespace FlomarAPI.Controllers
                 .FirstOrDefaultAsync(r => r.id_repuesto == id);
 
             if (repuesto == null)
-                return NotFound(new RespuestaApi { mensaje = "Repuesto no encontrado." });
+                return NotFound(new RespuestaApi
+                {
+                    mensaje = "Repuesto no encontrado."
+                });
 
             return repuesto;
         }
@@ -75,21 +91,31 @@ namespace FlomarAPI.Controllers
             _context.Repuestos.Add(repuesto);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Obtener), new { id = repuesto.id_repuesto }, repuesto);
+            return CreatedAtAction(
+                nameof(Obtener),
+                new { id = repuesto.id_repuesto },
+                repuesto);
         }
 
         // PUT: api/repuestos/5
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Repuesto>> Editar(int id, Repuesto repuesto)
+        public async Task<ActionResult<Repuesto>> Editar(
+            int id,
+            Repuesto repuesto)
         {
             var actual = await _context.Repuestos
                 .FirstOrDefaultAsync(r => r.id_repuesto == id);
 
             if (actual == null)
-                return NotFound(new RespuestaApi { mensaje = "Repuesto no encontrado." });
+                return NotFound(new RespuestaApi
+                {
+                    mensaje = "Repuesto no encontrado."
+                });
 
             bool codigoExiste = await _context.Repuestos
-                .AnyAsync(r => r.Codigo == repuesto.Codigo && r.id_repuesto != id);
+                .AnyAsync(r =>
+                    r.Codigo == repuesto.Codigo &&
+                    r.id_repuesto != id);
 
             if (codigoExiste)
             {
@@ -130,13 +156,20 @@ namespace FlomarAPI.Controllers
                 .FirstOrDefaultAsync(r => r.id_repuesto == id);
 
             if (repuesto == null)
-                return NotFound(new RespuestaApi { mensaje = "Repuesto no encontrado." });
+                return NotFound(new RespuestaApi
+                {
+                    mensaje = "Repuesto no encontrado."
+                });
 
-            repuesto.id_estado = repuesto.id_estado == 1 ? 2 : 1;
+            repuesto.id_estado =
+                repuesto.id_estado == 1 ? 2 : 1;
 
             await _context.SaveChangesAsync();
 
-            return Ok(new RespuestaApi { mensaje = "Estado del repuesto actualizado." });
+            return Ok(new RespuestaApi
+            {
+                mensaje = "Estado del repuesto actualizado."
+            });
         }
     }
 }
