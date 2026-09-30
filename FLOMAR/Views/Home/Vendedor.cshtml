@@ -1,7 +1,6 @@
 @model IEnumerable<FLOMAR.Models.Repuesto>
 @{
     Layout = null;
-    // Identificamos el rol actual para mostrarlo correctamente de forma dinámica
     int rol = FLOMAR.Controllers.LoginController.RolActual;
     string textoRol = (rol == 1) ? "Administrador" : "Vendedor";
     string urlRetorno = (rol == 1) ? "/Home/Admin" : "/Home/Index";
@@ -42,23 +41,7 @@
                 color: #ccc;
             }
 
-            .btn-cerrar {
-                background: transparent;
-                color: #d4af37;
-                border: 1px solid #d4af37;
-                padding: 8px 15px;
-                border-radius: 4px;
-                cursor: pointer;
-                text-decoration: none;
-                transition: all 0.25s ease;
-            }
-
-                .btn-cerrar:hover {
-                    background: #d4af37;
-                    color: #1a1a1a;
-                }
-
-            .btn-volver {
+            .btn-cerrar, .btn-volver {
                 background: transparent;
                 color: #d4af37;
                 border: 1px solid #d4af37;
@@ -71,7 +54,7 @@
                 transition: all 0.25s ease;
             }
 
-                .btn-volver:hover {
+                .btn-cerrar:hover, .btn-volver:hover {
                     background: #d4af37;
                     color: #1a1a1a;
                 }
@@ -115,6 +98,7 @@
                 flex-direction: column;
             }
 
+            /* Buscador y Productos */
             .search-bar {
                 display: flex;
                 gap: 12px;
@@ -228,6 +212,7 @@
                     background-color: #d4af37;
                 }
 
+            /* Carrito */
             .carrito-header {
                 display: flex;
                 justify-content: space-between;
@@ -344,13 +329,121 @@
                 .btn-confirmar:hover {
                     background-color: #d4af37;
                 }
+
+            /* Métodos de Pago */
+            .payment-methods {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 15px;
+            }
+
+                .payment-methods input[type="radio"] {
+                    display: none;
+                }
+
+            .pay-btn {
+                flex: 1;
+                background-color: transparent;
+                border: 1px solid #444;
+                color: #aaa;
+                padding: 10px;
+                border-radius: 4px;
+                cursor: pointer;
+                text-align: center;
+                font-size: 13px;
+                transition: all 0.2s;
+            }
+
+            .payment-methods input[type="radio"]:checked + .pay-btn {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                border-color: #e4c554;
+                font-weight: bold;
+            }
+
+            /* --- ESTILOS DEL MODAL QR --- */
+            .modal-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.85);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+            }
+
+            .modal-content {
+                background-color: #242424;
+                border: 1px solid #d4af37;
+                border-radius: 8px;
+                padding: 30px;
+                text-align: center;
+                width: 320px;
+                box-shadow: 0 5px 25px rgba(0,0,0,0.8);
+            }
+
+                .modal-content h2 {
+                    color: #d4af37;
+                    margin-top: 0;
+                    font-size: 22px;
+                }
+
+                .modal-content p {
+                    color: #ccc;
+                    font-size: 14px;
+                    margin-bottom: 20px;
+                    line-height: 1.5;
+                }
+
+            .qr-box {
+                background: white;
+                padding: 15px;
+                border-radius: 8px;
+                display: inline-block;
+                margin-bottom: 25px;
+            }
+
+            .btn-modal-confirm {
+                background-color: #e4c554;
+                color: #1a1a1a;
+                border: none;
+                padding: 12px 20px;
+                border-radius: 4px;
+                font-weight: bold;
+                cursor: pointer;
+                width: 100%;
+                margin-bottom: 10px;
+                font-size: 14px;
+            }
+
+                .btn-modal-confirm:hover {
+                    background-color: #d4af37;
+                }
+
+            .btn-modal-cancel {
+                background-color: transparent;
+                color: #aaa;
+                border: 1px solid #555;
+                padding: 10px 20px;
+                border-radius: 4px;
+                cursor: pointer;
+                width: 100%;
+                font-size: 13px;
+            }
+
+                .btn-modal-cancel:hover {
+                    background-color: #333;
+                    color: #fff;
+                }
     </style>
 </head>
 <body>
     <header>
         <div class="header-logo">FLOMAR</div>
         <div class="header-user">
-            <!-- MUESTRA DINÁMICAMENTE SI ES ADMINISTRADOR O VENDEDOR -->
             <span style="color: #d4af37; font-weight: bold;">Rol: @textoRol</span>
             <a href="@urlRetorno" class="btn-volver">Volver al panel</a>
             <a href="/Login/Index" class="btn-cerrar">Cerrar sesión</a>
@@ -362,11 +455,10 @@
 
         <div class="main-layout">
 
-            <!-- PANEL IZQUIERDO: BUSCADOR Y CATÁLOGO DE LA BASE DE DATOS -->
+            <!-- PANEL IZQUIERDO -->
             <div class="left-panel">
                 <form class="search-bar" asp-controller="Home" asp-action="Vendedor" method="get">
                     <input type="text" name="textoBusqueda" list="lista-repuestos" value="@Context.Request.Query["textoBusqueda"]" placeholder="Buscar repuesto por nombre o código..." autocomplete="off">
-
                     <datalist id="lista-repuestos">
                         @if (Model != null)
                         {
@@ -376,7 +468,6 @@
                             }
                         }
                     </datalist>
-
                     <button type="submit" class="btn-buscar">Buscar</button>
                 </form>
 
@@ -397,18 +488,14 @@
                                 <p class="product-info">Código: @repuesto.Codigo</p>
                                 <p class="product-info">Precio: Bs. <span class="precio-val">@repuesto.PrecioVenta</span></p>
                                 <p class="product-stock">Stock: @repuesto.Stock</p>
-
-                                <button type="button" class="btn-agregar"
-                                        onclick="agregarAlCarrito(@repuesto.Id, '@repuesto.Nombre', @repuesto.PrecioVenta)">
-                                    + Agregar
-                                </button>
+                                <button type="button" class="btn-agregar" onclick="agregarAlCarrito(@repuesto.Id, '@repuesto.Nombre', @repuesto.PrecioVenta)">+ Agregar</button>
                             </div>
                         }
                     }
                     else
                     {
                         <p style="color: #888; grid-column: 1 / -1; text-align: center; padding: 30px;">
-                            No se encontraron repuestos registrados en la base de datos con ese criterio.
+                            No se encontraron repuestos registrados en la base de datos.
                         </p>
                     }
                 </div>
@@ -444,16 +531,42 @@
                         <span>TOTAL</span>
                         <span>Bs. <span id="total-monto">0.00</span></span>
                     </div>
-                    <button type="button" class="btn-confirmar" onclick="confirmarVenta()">Confirmar venta</button>
-                </div>
 
+                    <!-- BOTONES DE MÉTODO DE PAGO -->
+                    <div style="color: #ccc; font-size: 14px; margin-bottom: 10px;">Método de Pago:</div>
+                    <div class="payment-methods">
+                        <input type="radio" name="metodoPago" id="pagoEfectivo" value="1" checked>
+                        <label for="pagoEfectivo" class="pay-btn">Efectivo</label>
+
+                        <input type="radio" name="metodoPago" id="pagoQR" value="2">
+                        <label for="pagoQR" class="pay-btn">Pago QR</label>
+                    </div>
+
+                    <button type="button" class="btn-confirmar" onclick="iniciarVenta()">Confirmar venta</button>
+                </div>
             </div>
 
         </div>
     </div>
 
+    <!-- MODAL FLOTANTE DEL QR -->
+    <div id="modalQR" class="modal-overlay">
+        <div class="modal-content">
+            <h2>Pago mediante QR</h2>
+            <p>Muestre este código al cliente para que realice la transferencia por <strong>Bs. <span id="qr-total-monto">0.00</span></strong>.</p>
+
+            <div class="qr-box">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Pago-FLOMAR" alt="QR de Pago" width="150" height="150" style="display: block;" />
+            </div>
+
+            <button type="button" class="btn-modal-confirm" onclick="procesarVentaEnServidor()">Confirmar Pago Recibido</button>
+            <button type="button" class="btn-modal-cancel" onclick="cerrarModalQR()">Cancelar / Volver</button>
+        </div>
+    </div>
+
     <script>
             let carrito = [];
+            let sumaTotalFinal = 0;
 
             function agregarAlCarrito(id, nombre, precio) {
                 let item = carrito.find(p => p.id === id);
@@ -477,6 +590,7 @@
                 const subtotalMonto = document.getElementById('subtotal-monto');
                 const ivaMonto = document.getElementById('iva-monto');
                 const totalMonto = document.getElementById('total-monto');
+                const qrTotalMonto = document.getElementById('qr-total-monto');
 
                 lista.innerHTML = '';
 
@@ -487,6 +601,8 @@
                     subtotalMonto.innerText = '0.00';
                     ivaMonto.innerText = '0.00';
                     totalMonto.innerText = '0.00';
+                    sumaTotalFinal = 0;
+                    qrTotalMonto.innerText = '0.00';
                     return;
                 }
 
@@ -506,37 +622,56 @@
                             <div class="cart-item-qty">Cantidad: ${prod.cantidad} (Bs. ${prod.precio} c/u)</div>
                             <button type="button" class="btn-quitar" onclick="eliminarDelCarrito(${prod.id})">Eliminar</button>
                         </div>
-                        <div class="cart-item-price">Bs. ${subtotalProd}</div>
+                        <div class="cart-item-price">Bs. ${subtotalProd.toFixed(2)}</div>
                     `;
                     lista.appendChild(div);
                 });
 
                 let ivaCalculado = sumaSubtotal * 0.13;
-                let sumaTotalFinal = sumaSubtotal + ivaCalculado;
+                sumaTotalFinal = sumaSubtotal + ivaCalculado;
 
                 badge.innerText = totalItemsCount;
                 totalProd.innerText = totalItemsCount;
                 subtotalMonto.innerText = sumaSubtotal.toFixed(2);
                 ivaMonto.innerText = ivaCalculado.toFixed(2);
                 totalMonto.innerText = sumaTotalFinal.toFixed(2);
+                qrTotalMonto.innerText = sumaTotalFinal.toFixed(2);
             }
 
-            // Envia el carrito al servidor (MVC -> API), la API registra la
-            // venta y descuenta el stock. Luego redirige al comprobante.
-            async function confirmarVenta() {
+            // FUNCIÓN 1: Decide si guarda directo o si muestra la ventana del QR
+            function iniciarVenta() {
                 if (carrito.length === 0) {
                     alert('El carrito esta vacio.');
                     return;
                 }
-                if (!confirm('¿Confirmar la venta?')) return;
 
+                const metodoSeleccionado = document.querySelector('input[name="metodoPago"]:checked').value;
+
+                if (metodoSeleccionado === "2") {
+                    // Si es QR, mostramos la ventana flotante oscura
+                    document.getElementById('modalQR').style.display = 'flex';
+                } else {
+                    // Si es Efectivo, le preguntamos normal y guardamos
+                    if (confirm('¿Confirmar el cobro en Efectivo por Bs. ' + sumaTotalFinal.toFixed(2) + '?')) {
+                        procesarVentaEnServidor();
+                    }
+                }
+            }
+
+            function cerrarModalQR() {
+                document.getElementById('modalQR').style.display = 'none';
+            }
+
+            // FUNCIÓN 2: Hace el envío real a la API una vez que se confirmó todo
+            async function procesarVentaEnServidor() {
+                const metodoSeleccionado = document.querySelector('input[name="metodoPago"]:checked').value;
                 const lineas = carrito.map(p => ({ id_repuesto: p.id, cantidad: p.cantidad }));
 
                 try {
                     const resp = await fetch('/Ventas/Confirmar', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ id_metodo_pago: 1, lineas: lineas })
+                        body: JSON.stringify({ id_metodo_pago: parseInt(metodoSeleccionado), lineas: lineas })
                     });
                     const data = await resp.json();
 
